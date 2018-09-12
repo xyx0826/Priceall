@@ -3,9 +3,12 @@ using Priceall.Helper;
 using Priceall.Hotkey;
 using Priceall.Properties;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+
+[assembly: AssemblyVersion("1.0.1")]
 
 namespace Priceall
 {

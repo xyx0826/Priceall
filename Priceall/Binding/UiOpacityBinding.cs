@@ -34,7 +34,7 @@ namespace Priceall.Binding
             set
             {
                 _wndOpacity = value;
-                if (_wndOpacity < 0.2) _wndOpacity = 0.2;
+                if (_wndOpacity < 0) _wndOpacity = 0.0;
                 else if (_wndOpacity > 1.0) _wndOpacity = 1.0;
                 OnPropertyChanged("WndOpacity");
             }

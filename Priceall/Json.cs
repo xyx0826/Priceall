@@ -36,30 +36,29 @@ namespace Priceall
             }
         }
 
-        public float BuyValue
+        public double BuyValue
         {
             get
             {
                 return _responseObject.SelectToken("appraisal.totals.buy")
-                    .ToObject<float>();
+                    .ToObject<double>();
             }
         }
 
-        public float SellValue
+        public double SellValue
         {
             get
             {
-                return _responseObject.SelectToken("appraisal.totals.sell")
-                    .ToObject<float>();
+                return (double)_responseObject.SelectToken("appraisal.totals.sell");
             }
         }
 
-        public float Volume
+        public double Volume
         {
             get
             {
                 return _responseObject.SelectToken("appraisal.totals.volume")
-                    .ToObject<float>();
+                    .ToObject<double>();
             }
         }
     }

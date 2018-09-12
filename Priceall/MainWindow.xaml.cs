@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-[assembly: AssemblyVersion("1.0.2")]
+[assembly: AssemblyVersion("1.0.3")]
 
 namespace Priceall
 {
@@ -119,7 +119,7 @@ namespace Priceall
                 else
                 {
                     _infoBinding.SetTypeIcon(json.Kind);
-                    _infoBinding.Price = json.SellValue.ToString("C2");
+                    _infoBinding.Price = String.Format("{0:N}", json.SellValue);
                 }
             }
         }

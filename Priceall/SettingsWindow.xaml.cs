@@ -79,6 +79,19 @@ namespace Priceall
             }
         }
 
+        public int QueryCooldown
+        {
+            get { return Settings.Default.QueryCooldown; }
+            set
+            {
+                if (value != 0)
+                {
+                    Settings.Default.QueryCooldown = value;
+                    Settings.Default.Save();
+                }
+            }
+        }
+
         public string AppVersion => Assembly.GetEntryAssembly().GetName().Version.ToString();
         #endregion
 

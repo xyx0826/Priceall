@@ -41,6 +41,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -55,6 +56,11 @@
                 <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Query cooldown:"
+                       ToolTip="Minimum time in milliseconds between two Evepraisal queries. Please do not spam requests."/>
+                <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="TextBox_PreviewTextInput"
+                         Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="About" Height="Auto">

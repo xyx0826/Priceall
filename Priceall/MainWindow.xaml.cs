@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-[assembly: AssemblyVersion("1.0.1")]
+[assembly: AssemblyVersion("1.0.2")]
 
 namespace Priceall
 {
@@ -47,12 +47,7 @@ namespace Priceall
         /// </summary>
         private async void OnHotKeyHandler()
         {
-            var queryElapsed = (DateTime.Now - _lastQueryTime).TotalMilliseconds;
-            if (queryElapsed >= Settings.Default.QueryCooldown)
-            {
-                _lastQueryTime = DateTime.Now;
-                await QueryAppraisal();
-            }
+            await QueryAppraisal();
         }
 
         /// <summary>
@@ -106,21 +101,26 @@ namespace Priceall
 
         private async void QueryAppraisal(string clipboardContent)
         {
-            _infoBinding.Price = "Hold on...";
-            _infoBinding.SetTypeIcon("searchmarket");
-
-            var appraisal = await _appraisal.QueryAppraisal(clipboardContent);
-            var json = new Json(appraisal);
-
-            if (!String.IsNullOrEmpty(json.ErrorMessage))
+            var queryElapsed = (DateTime.Now - _lastQueryTime).TotalMilliseconds;
+            if (queryElapsed >= Settings.Default.QueryCooldown)
             {
-                _infoBinding.SetTypeIcon("heuristic");
-                _infoBinding.Price = json.ErrorMessage;
-            }
-            else
-            {
-                _infoBinding.SetTypeIcon(json.Kind);
-                _infoBinding.Price = json.SellValue.ToString("C2");
+                _lastQueryTime = DateTime.Now;
+                _infoBinding.Price = "Hold on...";
+                _infoBinding.SetTypeIcon("searchmarket");
+
+                var appraisal = await _appraisal.QueryAppraisal(clipboardContent);
+                var json = new Json(appraisal);
+
+                if (!String.IsNullOrEmpty(json.ErrorMessage))
+                {
+                    _infoBinding.SetTypeIcon("heuristic");
+                    _infoBinding.Price = json.ErrorMessage;
+                }
+                else
+                {
+                    _infoBinding.SetTypeIcon(json.Kind);
+                    _infoBinding.Price = json.SellValue.ToString("C2");
+                }
             }
         }
 

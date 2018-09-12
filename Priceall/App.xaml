@@ -1,0 +1,15 @@
+﻿<Application x:Class="Priceall.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resource/Fonts.xaml"/>
+                <ResourceDictionary Source="Resource/Styles.xaml"/>
+                <ResourceDictionary Source="Resource/TypeIcons.xaml"/>
+                <ResourceDictionary Source="Resource/UiIcons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

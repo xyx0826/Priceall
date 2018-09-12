@@ -1,0 +1,84 @@
+﻿<Window x:Class="Priceall.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Settings"
+        SizeToContent="WidthAndHeight"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
+    <StackPanel Orientation="Vertical" Margin="8">
+        <!-- TODO: Keybinding -->
+        <Label Content="Hover over setting names to see its description." FontWeight="Bold"/>
+        <!-- <GroupBox Header="Keybindings" Height="Auto">
+            <Grid Margin="8" Height="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Press to query:"
+                       ToolTip="The key combo for making an Evepraisal query."/>
+                <ComboBox Grid.Row="0" Grid.Column="2"
+                          ItemsSource="{Binding ModifierKeys}" DisplayMemberPath="Name"
+                          SelectedItem="{Binding SelectedModifierKey1}"/>
+                <ComboBox Grid.Row="1" Grid.Column="2"
+                          ItemsSource="{Binding ModifierKeys}" DisplayMemberPath="Name"
+                          SelectedItem="{Binding SelectedModifierKey2}"/>
+                <ComboBox Grid.Row="2" Grid.Column="2"
+                          ItemsSource="{Binding VirtualKeys}" DisplayMemberPath="Name"
+                          SelectedItem="{Binding SelectedVirtualKey}"/>
+            </Grid>
+        </GroupBox> -->
+        <GroupBox Header="Appraisal settings" Height="Auto">
+            <Grid Margin="8" Height="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Data source:"
+                       ToolTip="Data source for appraisal prices. Currently only Evepraisal is available."/>
+                <Label Grid.Row="0" Grid.Column="2" Content="Evepraisal.com"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Query length limit:"
+                       ToolTip="The maximum length of clipboard text to send to Evepraisal."/>
+                <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="TextBox_PreviewTextInput"
+                         Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="About" Height="Auto">
+            <Grid Margin="8" Height="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Priceall version:"
+                       ToolTip="Version of Priceall. Priceall is still in early stage of development."/>
+                <Label Grid.Row="0" Grid.Column="2" Content="{Binding AppVersion}"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Updates and help:"
+                       ToolTip="Link to Priceall's code repository."/>
+                <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
+                    <Hyperlink NavigateUri="https://github.com/xyx0826/Priceall" RequestNavigate="OpenGithubPage">
+                        GitHub
+                    </Hyperlink>
+                </TextBlock>
+            </Grid>
+        </GroupBox>
+    </StackPanel>
+</Window>

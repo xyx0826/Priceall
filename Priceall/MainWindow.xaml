@@ -1,0 +1,83 @@
+﻿<Window x:Class="Priceall.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize"
+        Width="300" Height="100"
+        Loaded="Window_Loaded" Deactivated="SetWindowOnTop">
+    <Window.Background>
+        <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" Opacity="{Binding WndOpacity}">
+            <GradientStop Color="#3b5f73" Offset="1"/>
+            <GradientStop Color="#175f79" Offset="0"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <!-- Main StackPanel -->
+    <DockPanel x:Name="MainDockPanel" LastChildFill="True">
+        <!-- Control: buttons etc -->
+        <Grid DockPanel.Dock="Bottom" x:Name="AppraisalControls" HorizontalAlignment="Right" IsHitTestVisible="True">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Margin="4,0,0,2"
+                    ToolTip="Hold to drag. Right click to pin/unpin."
+                    PreviewMouseDown="StartDragMoving" 
+                    PreviewMouseRightButtonUp="TogglePin">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Rectangle Style="{StaticResource ResourceKey=MoveGlyph}" 
+                                   Opacity="{Binding RectOpacity}"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="1"  Margin="4,0,0,2" 
+                    Click="ShowSettings">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Rectangle Style="{StaticResource ResourceKey=Settings}"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Grid.Column="2"  Margin="4,0,0,2"
+                    ToolTip="Left click to quit."
+                    Click="AppShutdown">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Rectangle Style="{StaticResource ResourceKey=Close}"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+        <!-- Display: icons, labels, etc -->
+        <Grid x:Name="AppraisalInfo" 
+              Margin="0,0,5,0"
+              MouseWheel="TweakWindowTransparency">
+            <Button Style="{StaticResource ResourceKey=ClearButton}"
+                Click="QueryAppraisal">
+                <Button.Content>
+                    <DockPanel Width="{Binding ActualWidth, ElementName=AppraisalInfo}" 
+                               LastChildFill="True">
+                        <Image MaxWidth="48" DockPanel.Dock="Left" Source="{Binding TypeIconImage}"/>
+                        <Label VerticalContentAlignment="Center" DockPanel.Dock="Right">
+                            <Label.Content>
+                                <Viewbox>
+                                    <TextBlock FontFamily="{StaticResource EveSansNeue}" 
+                                               Foreground="White" 
+                                               Text="{Binding Price}" 
+                                               TextWrapping="Wrap"/>
+                                </Viewbox>
+                            </Label.Content>
+                        </Label>
+                    </DockPanel>
+                </Button.Content>
+            </Button>
+        </Grid>
+    </DockPanel>
+</Window>

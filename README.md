@@ -1,4 +1,4 @@
-# Priceall
+# Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall) 
 Priceall is an app designed for quick EVE Online price-checking.
 
 It currently uses evepraisal.com as the data source.
@@ -6,6 +6,8 @@ It currently uses evepraisal.com as the data source.
 Ideally it eases the life of gankers, merchants and industrialists: Priceall makes it extremely easy and fast to check the value of any kind of item list.
 
 # Usage
+Click [me](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts) to get the latest version! Download `build.zip`.
+ 
 Priceall stays as an always-on-top overlay window. Therefore it is **not compatible** with fullscreen game.
 
 Simply **copy** something (D-scan result, cargo scan result, contract etc.) onto clipboard and **click** the window to query for appraisal.

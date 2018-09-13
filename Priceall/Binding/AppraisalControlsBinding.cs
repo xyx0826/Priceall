@@ -12,6 +12,12 @@ namespace Priceall.Binding
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public void Refresh()
+        {
+            SetRectOpacityStyle(Settings.Default.IsDragEnabled);
+            OnPropertyChanged(null);
+        }
         #endregion
 
         public AppraisalControlsBinding()

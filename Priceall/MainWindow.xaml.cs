@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-[assembly: AssemblyVersion("1.0.3")]
+[assembly: AssemblyVersion("1.1.4")]
 
 namespace Priceall
 {
@@ -19,7 +19,7 @@ namespace Priceall
     {
         static readonly AppraisalInfoBinding _infoBinding = new AppraisalInfoBinding();
         static readonly AppraisalControlsBinding _controlsBinding = new AppraisalControlsBinding();
-        static readonly UiOpacityBinding _opacityBinding = new UiOpacityBinding();
+        static readonly UiStyleBinding _styleBinding = new UiStyleBinding();
         static readonly AppraisalHelper _appraisal = new AppraisalHelper();
         static readonly HotkeyHelper _hotkey = new HotkeyHelper();
 
@@ -34,12 +34,18 @@ namespace Priceall
 
         #region Window loading and terminating
         /// <summary>
-        /// Registers hotkeys as soon as window handle is fully initialized.
+        /// Initialize hotkeys and data contexts.
         /// </summary>
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
             var hotkey = new Hotkey.Hotkey(ModifierKeys.Control | ModifierKeys.Shift, Key.C, OnHotKeyHandler);
+
+            _settingsWindow.Owner = this;
+
+            DataContext = _styleBinding;
+            AppraisalInfo.DataContext = _infoBinding;
+            AppraisalControls.DataContext = _controlsBinding;
         }
 
         /// <summary>
@@ -51,29 +57,10 @@ namespace Priceall
         }
 
         /// <summary>
-        /// Binds data contexts as soon as window is loaded.
-        /// </summary>
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Top = Settings.Default.WindowTopPos;
-            Left = Settings.Default.WindowLeftPos;
-
-            _settingsWindow.Owner = this;
-
-            DataContext = _opacityBinding;
-            AppraisalInfo.DataContext = _infoBinding;
-            AppraisalControls.DataContext = _controlsBinding;
-        }
-
-        /// <summary>
         /// Saves config and shuts down the app.
         /// </summary>
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
-            Settings.Default.WindowTopPos = Top;
-            Settings.Default.WindowLeftPos = Left;
-            Settings.Default.WindowOpacity = _opacityBinding.WndOpacity;
-
             Settings.Default.Save();
             Application.Current.Shutdown();
         }
@@ -119,7 +106,9 @@ namespace Priceall
                 else
                 {
                     _infoBinding.SetTypeIcon(json.Kind);
-                    _infoBinding.Price = String.Format("{0:N}", json.SellValue);
+                    if (Settings.Default.IsUsingPrettyPrint)
+                        _infoBinding.Price = json.PrettyPrintedValue;
+                    else _infoBinding.Price = String.Format("{0:N}", json.SellValue);
                 }
             }
         }
@@ -148,8 +137,25 @@ namespace Priceall
         /// </summary>
         private void TweakWindowTransparency(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta > 0) _opacityBinding.WndOpacity += 0.05;
-            else _opacityBinding.WndOpacity -= 0.05;
+            bool isZooming = (Keyboard.Modifiers & ModifierKeys.Control) > 0;
+            if (isZooming)
+            {
+                if (e.Delta > 0)
+                {
+                    _styleBinding.WndWidth += 12;
+                    _styleBinding.WndHeight += 4;
+                }
+                else
+                {
+                    _styleBinding.WndWidth -= 12;
+                    _styleBinding.WndHeight -= 4;
+                }
+            }
+            else
+            {
+                if (e.Delta > 0) _styleBinding.WndOpacity += 0.05;
+                else _styleBinding.WndOpacity -= 0.05;
+            }
         }
 
         /// <summary>
@@ -169,6 +175,19 @@ namespace Priceall
             var currentState = Settings.Default.IsDragEnabled;
             Settings.Default.IsDragEnabled = !currentState;
             _controlsBinding.SetRectOpacityStyle(!currentState);
+        }
+
+        public void RefreshPriceColor()
+        {
+            _infoBinding.RefreshPriceColor();
+        }
+
+        public void ResetSettings()
+        {
+            Settings.Default.Reset();
+            _infoBinding.Refresh();
+            _controlsBinding.Refresh();
+            _styleBinding.Refresh();
         }
 
         /// <summary>

@@ -8,11 +8,23 @@
     <Setting Name="WindowLeftPos" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="WindowWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
+    <Setting Name="WindowHeight" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
     <Setting Name="WindowOpacity" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="PriceFontColor" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
     <Setting Name="IsDragEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="IsUsingPrettyPrint" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MaxStringLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">65536</Value>
@@ -31,6 +43,9 @@
     </Setting>
     <Setting Name="VirtualKey" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="PriceColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">FFFFFF</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -60,7 +60,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Hotkey\Hotkey.cs" />
-    <Compile Include="Binding\UiOpacityBinding.cs" />
+    <Compile Include="Binding\UiStyleBinding.cs" />
     <Compile Include="Binding\AppraisalInfoBinding.cs" />
     <Compile Include="Binding\AppraisalControlsBinding.cs" />
     <Compile Include="Hotkey\HotkeyHelper.cs" />

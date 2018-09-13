@@ -1,11 +1,11 @@
-﻿using System.Windows;
-using System.ComponentModel;
-using Priceall.Properties;
-using System.Text.RegularExpressions;
-using System.Reflection;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿using Priceall.Properties;
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Priceall
@@ -25,9 +25,7 @@ namespace Priceall
         #endregion
 
         static readonly Regex _numberRegex = new Regex("[^0-9]+");
-
-        //public List<KeyDef> ModifierKeys { get; set; }
-        //public List<KeyDef> VirtualKeys { get; set; }
+        static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
 
         public SettingsWindow()
         {
@@ -39,19 +37,6 @@ namespace Priceall
         /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //ModifierKeys = new List<KeyDef>();
-            //VirtualKeys = new List<KeyDef>();
-
-            //foreach (var keyValue in Enum.GetValues(typeof(ModifierKeys)))
-            //{
-            //    ModifierKeys.Add(new KeyDef(Enum.GetName(typeof(ModifierKeys), keyValue), (int)keyValue));
-            //}
-
-            //foreach (var keyValue in Enum.GetValues(typeof(Key)))
-            //{
-            //    VirtualKeys.Add(new KeyDef(Enum.GetName(typeof(Key), keyValue), (int)keyValue));
-            //}
-
             DataContext = this;
         }
 
@@ -92,12 +77,39 @@ namespace Priceall
             }
         }
 
+        public bool IsUsingPrettyPrint
+        {
+            get
+            {
+                return Settings.Default.IsUsingPrettyPrint;
+            }
+            set
+            {
+                Settings.Default.IsUsingPrettyPrint = value;
+            }
+        }
+
+        public string PriceColor
+        {
+            get { return Settings.Default.PriceColor; }
+            set
+            {
+                Settings.Default.PriceColor = value;
+                ((MainWindow)Owner).RefreshPriceColor();
+            }
+        }
+
         public string AppVersion => Assembly.GetEntryAssembly().GetName().Version.ToString();
         #endregion
 
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void NumberFilter(object sender, TextCompositionEventArgs e)
         {
             e.Handled = _numberRegex.IsMatch(e.Text);
+        }
+
+        private void ColorFilter(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = _hexRegex.IsMatch(e.Text);
         }
 
         private void OpenGithubPage(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
@@ -105,15 +117,10 @@ namespace Priceall
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
         }
 
-        //public class KeyDef
-        //{
-        //    public KeyDef(string name, int value)
-        //    {
-        //        Name = name;
-        //        Value = value;
-        //    }
-        //    public string Name { get; set; }
-        //    public int Value { get; set; }
-        //}
+        private void ResetSettings(object sender, RoutedEventArgs e)
+        {
+            ((MainWindow)Owner).ResetSettings();
+            OnPropertyChanged(null);
+        }
     }
 }

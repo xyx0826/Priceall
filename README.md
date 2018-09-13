@@ -20,6 +20,8 @@ To drag the window around, drag the Drag button. Right click the Drag button to 
 
 To change window background transparency, hover mouse over the window and scroll. Window background color customization will come later.
 
+To resize the window, hold `Ctrl` and scroll on the window.
+
 # Development
 Priceall uses C# with WPF. It is in early stage of development. Many features are planned but not implemented.
 
@@ -28,3 +30,16 @@ Issues, suggestions and pull requests are welcome.
 My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if you wish!
 
 *Dataminers: also check out my other repo, `TriExplorer`. It's a modern remake of `TriExporter`, but still in development.*
+
+# Changelog
+## Version 1.1, build 4
+- *(Tragot_Gomndor @ Reddit)* You can now hold `Ctrl` and scroll to change window size.
+- *(Tragot_Gomndor @ Reddit)* You can now choose simple price display (e.g. `12.34 Mil`) instead of whole numbers.
+    - *Turn on/off this feature in the settings.*
+- *(Tragot_Gomndor @ Reddit & karl-kaefer @ GitHub)* You can now tune window opacity down to zero and allow click-through.
+    - *Icon, text and buttons on the widget will still be clickable.*
+- You can now specify a hex color (e.g. `C4B3A2`) for price tag display.
+    - *If you specify an invalid color, Priceall will use white.*
+    - *Known issue: when you edit color in settings, the window will become laggy.*
+- There is now a "Reset all settings" button in the settings.
+    - *Known issue: you need to click the button twice to fully reset the window's position and size.*

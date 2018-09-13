@@ -42,6 +42,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -54,18 +56,29 @@
                 <Label Grid.Row="1" Grid.Column="0" Content="Query length limit:"
                        ToolTip="The maximum length of clipboard text to send to Evepraisal."/>
                 <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="TextBox_PreviewTextInput"
+                         PreviewTextInput="NumberFilter"
                          Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Grid.Row="2" Grid.Column="0" Content="Query cooldown:"
                        ToolTip="Minimum time in milliseconds between two Evepraisal queries. Please do not spam requests."/>
                 <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="TextBox_PreviewTextInput"
+                         PreviewTextInput="NumberFilter"
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="Use formatted values:"
+                       ToolTip="When checked, show value in thousands, millions and billions."/>
+                <CheckBox Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
+                          IsChecked="{Binding IsUsingPrettyPrint}"/>
+                <Label Grid.Row="4" Grid.Column="0" Content="Custom price tag color:"
+                       ToolTip="Enter a hex color tag, e.g. 2B2C2D for use on the price tag."/>
+                <TextBox Grid.Row="4" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                         MaxLength="6"
+                         PreviewTextInput="ColorFilter"
+                         Text="{Binding PriceColor, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="About" Height="Auto">
             <Grid Margin="8" Height="Auto">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -86,5 +99,7 @@
                 </TextBlock>
             </Grid>
         </GroupBox>
+        <Separator/>
+        <Button Foreground="Red" Content="Reset all settings" Click="ResetSettings"/>
     </StackPanel>
 </Window>

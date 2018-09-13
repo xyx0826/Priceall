@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using Priceall.Properties;
+using System;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Priceall.Binding
@@ -12,6 +15,16 @@ namespace Priceall.Binding
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public void Refresh()
+        {
+            OnPropertyChanged(null);
+        }
+
+        public void RefreshPriceColor()
+        {
+            OnPropertyChanged("PriceFontColor");
         }
         #endregion
 
@@ -33,11 +46,17 @@ namespace Priceall.Binding
             }
         }
 
-        public bool RectAppearDisabled
+        public Brush PriceFontColor
         {
-            set
+            get
             {
-                OnPropertyChanged("RectOpacity");
+                try
+                {
+                    return (SolidColorBrush)
+                        (new BrushConverter()
+                        .ConvertFrom("#" + Settings.Default.PriceColor));
+                }
+                catch (FormatException) { return new SolidColorBrush(Colors.White); }
             }
         }
 

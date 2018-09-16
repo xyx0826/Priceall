@@ -11,7 +11,7 @@ using System.Windows.Input;
 namespace Priceall
 {
     /// <summary>
-    /// SettingsWindow.xaml 的交互逻辑
+    /// Priceall settings window.
     /// </summary>
     public partial class SettingsWindow : Window, INotifyPropertyChanged
     {
@@ -96,6 +96,15 @@ namespace Priceall
             {
                 Settings.Default.PriceColor = value;
                 ((MainWindow)Owner).RefreshPriceColor();
+            }
+        }
+
+        public Visibility UpdateTagVisibility
+        {
+            get
+            {
+                return ((Owner as MainWindow).IsUpdateAvailable ?
+                    Visibility.Visible : Visibility.Collapsed);
             }
         }
 

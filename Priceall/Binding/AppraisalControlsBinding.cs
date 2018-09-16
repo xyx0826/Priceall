@@ -1,5 +1,6 @@
 ﻿using Priceall.Properties;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace Priceall.Binding
 {
@@ -23,6 +24,7 @@ namespace Priceall.Binding
         public AppraisalControlsBinding()
         {
             SetRectOpacityStyle(Settings.Default.IsDragEnabled);
+            IsUpdateAvail = false;
         }
 
         public double RectOpacity { get; set; }
@@ -36,6 +38,32 @@ namespace Priceall.Binding
             if (enabled) RectOpacity = 1.0;
             else RectOpacity = 0.4;
             OnPropertyChanged("RectOpacity");
+        }
+
+        private bool _isUpdateAvail;
+
+        public bool IsUpdateAvail
+        {
+            get { return _isUpdateAvail; }
+            set
+            {
+                _isUpdateAvail = value;
+                OnPropertyChanged("RectBackgroundBrush");
+            }
+        }
+
+        public SolidColorBrush RectBackgroundBrush
+        {
+            get
+            {
+                if (IsUpdateAvail)
+                {
+                    return (SolidColorBrush)
+                        (new BrushConverter()
+                        .ConvertFrom("#FFA500"));
+                }
+                else return null;
+            }
         }
     }
 }

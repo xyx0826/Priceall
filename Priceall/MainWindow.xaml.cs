@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-[assembly: AssemblyVersion("1.1.4")]
+[assembly: AssemblyVersion("1.2.5")]
 
 namespace Priceall
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// Priceall widget window.
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -27,25 +27,59 @@ namespace Priceall
         
         DateTime _lastQueryTime;
 
+        public bool IsUpdateAvailable { get; set; }
+
+        /// <summary>
+        /// Binds data contexts ASAP to prevent flickering.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        #region Window loading and terminating
-        /// <summary>
-        /// Initialize hotkeys and data contexts.
-        /// </summary>
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-            var hotkey = new Hotkey.Hotkey(ModifierKeys.Control | ModifierKeys.Shift, Key.C, OnHotKeyHandler);
-
-            _settingsWindow.Owner = this;
+            UpdateSettings();   // this has to be done before all those binding occurs
 
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
             AppraisalControls.DataContext = _controlsBinding;
+        }
+
+        #region Window loading and terminating
+        /// <summary>
+        /// Initializes hotkeys, checks updates.
+        /// </summary>
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            _settingsWindow.Owner = this;
+            var hotkey = new Hotkey.Hotkey(ModifierKeys.Control | ModifierKeys.Shift, Key.C, OnHotKeyHandler);
+            CheckForUpdates();
+        }
+
+        /// <summary>
+        /// Checks for older Priceall settings and migrate them over.
+        /// </summary>
+        private void UpdateSettings()
+        {
+            if (Settings.Default.UpgradeRequired)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+            }
+        }
+
+        /// <summary>
+        /// Checks for update from AppVeyor in the background.
+        /// If an update is found, the setting icon will become orange.
+        /// </summary>
+        private void CheckForUpdates()
+        {
+            var helper = new UpdateHelper();
+            Task.Run(async () =>
+            {
+                IsUpdateAvailable = await helper.CheckForUpdates();
+                _controlsBinding.IsUpdateAvail = IsUpdateAvailable;
+            });
         }
 
         /// <summary>

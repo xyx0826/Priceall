@@ -38,14 +38,16 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Grid.Column="1"  Margin="4,0,0,2" 
-                    Click="ShowSettings">
-                <Button.Template>
-                    <ControlTemplate>
-                        <Rectangle Style="{StaticResource ResourceKey=Settings}"/>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+            <Grid Background="{Binding RectBackgroundBrush}" Grid.Column="1"  Margin="4,0,0,2">
+                <Button Click="ShowSettings">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Rectangle Style="{StaticResource ResourceKey=Settings}"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+            </Grid>
             <Button Grid.Column="2"  Margin="4,0,0,2"
                     ToolTip="Left click to quit."
                     Click="AppShutdown">

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Settings"
+        ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         Loaded="Window_Loaded"
         Closing="Window_Closing">
@@ -97,6 +98,9 @@
                         GitHub
                     </Hyperlink>
                 </TextBlock>
+                <Label Grid.Row="2" Grid.ColumnSpan="3" Visibility="{Binding UpdateTagVisibility}"
+                       Content="An updated version of Priceall is available!" 
+                       FontStyle="Italic"/>
             </Grid>
         </GroupBox>
         <Separator/>

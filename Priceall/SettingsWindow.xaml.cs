@@ -89,6 +89,19 @@ namespace Priceall
             }
         }
 
+        public bool IsUsingConditionalColors
+        {
+            get
+            {
+                return Settings.Default.IsUsingConditionalColors;
+            }
+            set
+            {
+                Settings.Default.IsUsingConditionalColors = value;
+                OnPropertyChanged("IsUsingConditionalColors");
+            }
+        }
+
         public string PriceColor
         {
             get { return Settings.Default.PriceColor; }
@@ -96,6 +109,42 @@ namespace Priceall
             {
                 Settings.Default.PriceColor = value;
                 ((MainWindow)Owner).RefreshPriceColor();
+            }
+        }
+
+        public int LowerPrice
+        {
+            get { return Settings.Default.LowerPrice; }
+            set
+            {
+                Settings.Default.LowerPrice = value;
+            }
+        }
+
+        public int UpperPrice
+        {
+            get { return Settings.Default.UpperPrice; }
+            set
+            {
+                Settings.Default.UpperPrice = value;
+            }
+        }
+
+        public string LowerColor
+        {
+            get { return Settings.Default.LowerColor; }
+            set
+            {
+                Settings.Default.LowerColor = value;
+            }
+        }
+
+        public string UpperColor
+        {
+            get { return Settings.Default.UpperColor; }
+            set
+            {
+                Settings.Default.UpperColor = value;
             }
         }
 

@@ -55,6 +55,13 @@ My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if 
 *Dataminers: also check out my other repo, `TriExplorer`. It's a modern remake of `TriExporter`, but still in development.*
 
 # Changelog
+## Version 1.2, build 6
+- *(Perry_Swift @ Reddit)* You can now choose to use **conditional colors**.
+    - Specify a **lower** price threshold and a color, as well as an **upper** one.
+    - If the price is below the lower threshold, the lower color will be used.
+    - If the price is above the upper threshold, the upper color will be used.
+    - In case two thresholds conflict (e.g. higher threshold is less than lower threshold), the **lower** one will take precedence.
+
 ## Version 1.2, build 5
 - Priceall will now check for updates on launch. If you see the settings button turning orange, there is an update available.
 - Your settings will no longer be lost when updating Priceall.

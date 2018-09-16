@@ -52,6 +52,17 @@ namespace Priceall.Binding
             {
                 try
                 {
+                    if (Settings.Default.IsUsingConditionalColors)
+                    {
+                        if (PriceLowerOrHigher == true)
+                            return (SolidColorBrush)
+                             (new BrushConverter()
+                             .ConvertFrom("#" + Settings.Default.LowerColor));
+                        else if (PriceLowerOrHigher == false)
+                            return (SolidColorBrush)
+                             (new BrushConverter()
+                             .ConvertFrom("#" + Settings.Default.UpperColor));
+                    }
                     return (SolidColorBrush)
                         (new BrushConverter()
                         .ConvertFrom("#" + Settings.Default.PriceColor));
@@ -59,6 +70,8 @@ namespace Priceall.Binding
                 catch (FormatException) { return new SolidColorBrush(Colors.White); }
             }
         }
+
+        public bool? PriceLowerOrHigher { get; set; }
 
         public BitmapImage TypeIconImage { get; set; }
 

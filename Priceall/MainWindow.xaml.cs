@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-[assembly: AssemblyVersion("1.2.5")]
+[assembly: AssemblyVersion("1.2.6")]
 
 namespace Priceall
 {
@@ -135,11 +135,27 @@ namespace Priceall
                 if (!String.IsNullOrEmpty(json.ErrorMessage))
                 {
                     _infoBinding.SetTypeIcon("heuristic");
+                    _infoBinding.PriceLowerOrHigher = null;
+                    RefreshPriceColor();
                     _infoBinding.Price = json.ErrorMessage;
                 }
                 else
                 {
                     _infoBinding.SetTypeIcon(json.Kind);
+
+                    var price = json.SellValue;
+                    if (json.SellValue < Settings.Default.LowerPrice)
+                    {
+                        _infoBinding.PriceLowerOrHigher = true;
+                    }
+                    else if (json.SellValue > Settings.Default.UpperPrice)
+                    {
+                        _infoBinding.PriceLowerOrHigher = false;
+                    }
+                    else _infoBinding.PriceLowerOrHigher = null;
+
+                    RefreshPriceColor();
+
                     if (Settings.Default.IsUsingPrettyPrint)
                         _infoBinding.Price = json.PrettyPrintedValue;
                     else _infoBinding.Price = String.Format("{0:N}", json.SellValue);

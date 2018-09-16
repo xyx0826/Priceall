@@ -43,8 +43,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -64,16 +62,71 @@
                 <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="NumberFilter"
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Grid.Row="3" Grid.Column="0" Content="Use formatted values:"
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Styles" Height="Auto">
+            <Grid Margin="8" Height="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Use formatted values:"
                        ToolTip="When checked, show value in thousands, millions and billions."/>
-                <CheckBox Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
+                <CheckBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
                           IsChecked="{Binding IsUsingPrettyPrint}"/>
-                <Label Grid.Row="4" Grid.Column="0" Content="Custom price tag color:"
-                       ToolTip="Enter a hex color tag, e.g. 2B2C2D for use on the price tag."/>
-                <TextBox Grid.Row="4" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                <Label Grid.Row="1" Grid.Column="0" Content="Default price tag color:"
+                       ToolTip="Default price tag color. Can be overriden by conditional colors."/>
+                <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
                          MaxLength="6"
                          PreviewTextInput="ColorFilter"
                          Text="{Binding PriceColor, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Use conditional colors:"
+                       ToolTip="When enabled, price tag color will change according to price value."/>
+                <CheckBox Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
+                          IsChecked="{Binding IsUsingConditionalColors}"/>
+                <Grid Grid.Row="3" Grid.ColumnSpan="3" IsEnabled="{Binding IsUsingConditionalColors}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="When price below..." HorizontalContentAlignment="Right"
+                       ToolTip="The price threshold for applying the lower color."/>
+                    <TextBox Grid.Row="0" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="NumberFilter"
+                         Text="{Binding LowerPrice, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Use this color." HorizontalContentAlignment="Right"
+                       ToolTip="The lower color."/>
+                    <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="ColorFilter"
+                         Text="{Binding LowerColor, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="When price above..." HorizontalContentAlignment="Right"
+                       ToolTip="The price threshold for applying the upper color."/>
+                    <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="NumberFilter"
+                         Text="{Binding UpperPrice, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Grid.Row="3" Grid.Column="0" Content="Use this color." HorizontalContentAlignment="Right"
+                       ToolTip="The upper color."/>
+                    <TextBox Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="ColorFilter"
+                         Text="{Binding UpperColor, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
             </Grid>
         </GroupBox>
         <GroupBox Header="About" Height="Auto">

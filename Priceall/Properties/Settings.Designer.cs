@@ -214,5 +214,65 @@ namespace Priceall.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsUsingConditionalColors {
+            get {
+                return ((bool)(this["IsUsingConditionalColors"]));
+            }
+            set {
+                this["IsUsingConditionalColors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LowerPrice {
+            get {
+                return ((int)(this["LowerPrice"]));
+            }
+            set {
+                this["LowerPrice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int UpperPrice {
+            get {
+                return ((int)(this["UpperPrice"]));
+            }
+            set {
+                this["UpperPrice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LowerColor {
+            get {
+                return ((string)(this["LowerColor"]));
+            }
+            set {
+                this["LowerColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UpperColor {
+            get {
+                return ((string)(this["UpperColor"]));
+            }
+            set {
+                this["UpperColor"] = value;
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Priceall.Properties;
 using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,6 +10,7 @@ namespace Priceall.Helper
 {
     class AppraisalHelper
     {
+        #region Properties
         static readonly HttpClient _client = new HttpClient();
         static readonly UriBuilder _uriBuilder = 
             new UriBuilder("https://evepraisal.com/appraisal.json");
@@ -26,7 +27,7 @@ namespace Priceall.Helper
         }
 
         string _marketSystem;
-        string MarketSystem
+        public string MarketSystem
         {
             get { return _marketSystem; }
             set
@@ -35,16 +36,20 @@ namespace Priceall.Helper
                 UpdateMarketSystem();
             }
         }
+        #endregion
 
         /// <summary>
-        /// Instantiates an appraisal helper class and set User-Agent.
+        /// Instantiates an Evepraisal helper and set appropriate User-Agent and params.
         /// </summary>
+        /// <param name="isPersist">Whether appraisal requests shall persist on serverside. Defaulted to no.</param>
+        /// <param name="marketSystem">The system for price checking. Defaulted to Jita.</param>
         public AppraisalHelper(bool isPersist = false, string marketSystem = "jita")
         {
+            // set request user-agent
             var appVersion = Assembly.GetEntryAssembly().GetName().Version;
             _client.DefaultRequestHeaders.Add("User-Agent", 
                 $"Priceall/{appVersion} (Github.com/xyx0826/Priceall)");
-
+            // set request params
             IsPersist = isPersist;
             MarketSystem = marketSystem;
         }
@@ -70,38 +75,35 @@ namespace Priceall.Helper
             _uriBuilder.Query = queryParams.ToString();
         }
 
-        async Task<string> QueryAppraisalAsync(string query)
-        {
-            return await Task.Run(async () =>
-            {
-                try
-                {
-                    var response = await _client.PostAsync(_uriBuilder.ToString(),
-                        new StringContent(query));
-                    return await response.Content.ReadAsStringAsync();
-                }
-                catch (HttpRequestException) { return String.Empty; }
-            });
-        }
-
         /// <summary>
         /// Queries appraisal.
         /// </summary>
         /// <param name="clipboardContent">Content from clipboard to be parsed.</param>
         public async Task<string> QueryAppraisal(string query)
         {
-            // If string is too long then trim it
+            // if string is too long, do not proceed
             if (query.Length > Settings.Default.MaxStringLength)
-                query = query.Take(Settings.Default.MaxStringLength).ToString();
-
+                return "{\"error_message\": \"Clipboard text too long.\"}";
+            // if no string in clipboard, do not proceed
             if (String.IsNullOrEmpty(query))
                 return "{\"error_message\": \"No text found on clipboard.\"}";
 
-            var response = await QueryAppraisalAsync(query);
+            // initial checks passed, ask server for response
+            var jsonResponse = String.Empty;
 
-            if (String.IsNullOrEmpty(response))
+            try
+            {
+                var httpResponse = await _client.PostAsync(_uriBuilder.ToString(),
+                    new StringContent(query));
+                jsonResponse = await httpResponse.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException e) { Debug.WriteLine("HttpRequestException: " + e.Message); }
+
+            // empty response is a network error
+            if (String.IsNullOrEmpty(jsonResponse))
                 return "{\"error_message\": \"Network error.\"}";
-            else return response;
+
+            return jsonResponse;
         }
     }
 }

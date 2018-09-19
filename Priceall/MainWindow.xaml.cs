@@ -157,7 +157,7 @@ namespace Priceall
                     RefreshPriceColor();
 
                     if (Settings.Default.IsUsingPrettyPrint)
-                        _infoBinding.Price = json.PrettyPrintedValue;
+                        _infoBinding.Price = json.PrettyPrintValue();
                     else _infoBinding.Price = String.Format("{0:N}", json.SellValue);
                 }
             }

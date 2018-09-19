@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace Priceall
@@ -7,11 +8,22 @@ namespace Priceall
     {
         static JObject _responseObject;
 
-        public Json(string praisalResponse)
+        /// <summary>
+        /// Parses an Evepraisal JSON response into a browsable object.
+        /// </summary>
+        /// <param name="evePraisalResponse">JSON response from Evepraisal.</param>
+        public Json(string evePraisalResponse)
         {
-            _responseObject = JObject.Parse(praisalResponse);
+            try
+            {
+                _responseObject = JObject.Parse(evePraisalResponse);
+            }
+            catch (JsonReaderException) { throw; }
         }
 
+        /// <summary>
+        /// The error message of the response. Returns empty string if error is not found.
+        /// </summary>
         public string ErrorMessage
         {
             get
@@ -27,6 +39,9 @@ namespace Priceall
             }
         }
 
+        /// <summary>
+        /// Type of the item list identified by Evepraisal.
+        /// </summary>
         public string Kind
         {
             get
@@ -36,6 +51,9 @@ namespace Priceall
             }
         }
 
+        /// <summary>
+        /// Buy value of the item list.
+        /// </summary>
         public double BuyValue
         {
             get
@@ -45,6 +63,9 @@ namespace Priceall
             }
         }
 
+        /// <summary>
+        /// Sell value of the item list.
+        /// </summary>
         public double SellValue
         {
             get
@@ -53,35 +74,42 @@ namespace Priceall
             }
         }
 
-        public string PrettyPrintedValue
-        {
-            get
-            {
-                if (SellValue < 1000)   // do not preformat if below 1k // 不到1k就不格式化
-                {
-                    return SellValue.ToString("F2") + " ISK";
-                }
-                else if (SellValue < 1000000)    // format in k's if below 1mil // 100w以下用千表示
-                {
-                    return (SellValue / 1000).ToString("F2") + " K";
-                }
-                else if (SellValue < 1000000000) // format in mils if below 1bil // 10e以下用百万表示
-                {
-                    return (SellValue / 1000000).ToString("F2") + " Mil";
-                }
-                else // format in bils if higher // 超出10e用十亿表示
-                {
-                    return (SellValue / 1000000000).ToString("F2") + " Bil";
-                }
-            }
-        }
-
+        /// <summary>
+        /// Total volume of the item list.
+        /// </summary>
         public double Volume
         {
             get
             {
                 return _responseObject.SelectToken("appraisal.totals.volume")
                     .ToObject<double>();
+            }
+        }
+
+        /// <summary>
+        /// Gets the formatted (prettyprinted) presentation of item list value.
+        /// </summary>
+        /// <param name="buyOrSell">True for sell value, false for buy value. Defaulted to buy value.</param>
+        /// <returns>Pretty-printed string of the specified value.</returns>
+        public string PrettyPrintValue(bool buyOrSell = false)
+        {
+            var value = (buyOrSell ? BuyValue : SellValue);
+
+            if (value < 1000)   // do not preformat if below 1k // 不到1k就不格式化
+            {
+                return value.ToString("F2") + " ISK";
+            }
+            else if (value < 1000000)    // format in k's if below 1mil // 100w以下用千表示
+            {
+                return (value / 1000).ToString("F2") + " K";
+            }
+            else if (value < 1000000000) // format in mils if below 1bil // 10e以下用百万表示
+            {
+                return (value / 1000000).ToString("F2") + " Mil";
+            }
+            else // format in bils if higher // 超出10e用十亿表示
+            {
+                return (value / 1000000000).ToString("F2") + " Bil";
             }
         }
     }

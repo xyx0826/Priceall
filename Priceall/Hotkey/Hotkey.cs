@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -9,7 +8,7 @@ namespace Priceall.Hotkey
     /// <summary>
     /// Class representing a hotkey registration.
     /// </summary>
-    public class Hotkey : IDisposable
+    public class Hotkey
     {
         #region P/Invoke
         [DllImport("user32.dll")]
@@ -21,49 +20,71 @@ namespace Priceall.Hotkey
 
         const int WM_HOTKEY = 0x0312;
 
-        int _keyRegId;
-        static Action _hotkeyAction;
-        bool _disposed = false;
+        public string Name;
+        public int KeyId;
+        public ModifierKeys ModifierKeyCombo;
+        public Key VirtualKey;
+
+        static Action _keyAction;
         
-        public Hotkey(ModifierKeys modifierKey, Key virtualkey, Action action)
+        /// <summary>
+        /// Creates and registers a hotkey of the given keypresses.
+        /// </summary>
+        /// <param name="modifierKey">A combination of modifier keys.</param>
+        /// <param name="virtualkey">A single virtual key.</param>
+        /// <param name="action">The action to be executed on hotkey press.</param>
+        public Hotkey(string name, ModifierKeys modifierKey, Key virtualkey, Action action)
         {
-            Register(modifierKey, virtualkey, action);
-        }
-        
-        public bool Register(ModifierKeys modifierKey, Key virtualKey, Action action)
-        {
-            int virtualKeyCode = KeyInterop.VirtualKeyFromKey(virtualKey);
-            _keyRegId = virtualKeyCode + ((int)modifierKey * 0x10000);
-            bool result = RegisterHotKey(IntPtr.Zero, _keyRegId, (uint)modifierKey, (uint)virtualKeyCode);
+            Name = name;
+            ModifierKeyCombo = modifierKey;
+            VirtualKey = virtualkey;
+            _keyAction = action;
 
-            _hotkeyAction = action;
-
-            ComponentDispatcher.ThreadFilterMessage += new ThreadMessageEventHandler(OnTfm);
-            
-            Debug.Print(result.ToString() + ", " + _keyRegId + ", " + virtualKeyCode);
-
-            return result;
-        }
-        
-        public void Unregister()
-        {
-            UnregisterHotKey(IntPtr.Zero, _keyRegId);
-        }
-
-        private static void OnTfm(ref MSG msg, ref bool handled)
-        {
-            if (msg.message == WM_HOTKEY && !handled)
+            if (Register() != true)
             {
-                _hotkeyAction.Invoke();
-                handled = true;
+                throw new InvalidOperationException("Hotkey registration failed.");
             }
         }
-
-        public void Dispose()
+        
+        /// <summary>
+        /// Registers the hotkey.
+        /// </summary>
+        /// <returns>Whether the registration is successful.</returns>
+        public bool Register()
         {
-            if (!_disposed) Unregister();
-            _disposed = true;
+            var virtualKeyCode = KeyInterop.VirtualKeyFromKey(VirtualKey);
+            KeyId = virtualKeyCode + ((int)ModifierKeyCombo * 0x10000);
+            
+            ComponentDispatcher.ThreadFilterMessage += (ref MSG msg, ref bool handled) =>
+            {
+                if (msg.message == WM_HOTKEY && !handled)
+                {
+                    _keyAction.Invoke();
+                    handled = true;
+                }
+            };
+
+            // key params to pass: hotkey combo and its unique keyId
+            return RegisterHotKey(IntPtr.Zero, KeyId, 
+                (uint)ModifierKeyCombo, (uint)virtualKeyCode);
+        }
+
+        /// <summary>
+        /// Unregisters the hotkey.
+        /// </summary>
+        public void Unregister()
+        {
+            UnregisterHotKey(IntPtr.Zero, KeyId);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Converts the key definition of this hotkey to comma-separated form.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"{Name},{(int)ModifierKeyCombo},{(int)VirtualKey}";
         }
     }
 }

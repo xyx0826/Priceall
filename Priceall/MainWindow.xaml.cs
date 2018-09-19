@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-[assembly: AssemblyVersion("1.2.6")]
-
 namespace Priceall
 {
     /// <summary>
@@ -51,7 +49,7 @@ namespace Priceall
             base.OnSourceInitialized(e);
 
             _settingsWindow.Owner = this;
-            var hotkey = new Hotkey.Hotkey(ModifierKeys.Control | ModifierKeys.Shift, Key.C, OnHotKeyHandler);
+            _hotkey.TryCreateHotkey("QueryKey", ModifierKeys.Control | ModifierKeys.Shift, Key.C, OnHotKeyHandler);
             CheckForUpdates();
         }
 
@@ -95,6 +93,8 @@ namespace Priceall
         /// </summary>
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
+            _hotkey.SaveHotkeys();
+            _hotkey.UnregisterAllHotkeys();
             Settings.Default.Save();
             Application.Current.Shutdown();
         }

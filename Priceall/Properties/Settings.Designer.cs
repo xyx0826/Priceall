@@ -274,5 +274,16 @@ namespace Priceall.Properties {
                 this["UpperColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection Hotkeys {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Hotkeys"]));
+            }
+            set {
+                this["Hotkeys"] = value;
+            }
+        }
     }
 }

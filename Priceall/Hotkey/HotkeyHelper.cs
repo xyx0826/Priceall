@@ -1,5 +1,6 @@
 ﻿using Priceall.Properties;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Input;
@@ -22,29 +23,55 @@ namespace Priceall.Hotkey
         }
 
         /// <summary>
-        /// Creates a hotkey with the given name from settings. If not found, a new one will be created.
+        /// Attempts to register a new hotkey. If same-name hotkey exists, they will be overwritten.
         /// </summary>
         /// <param name="name">Name (identifier) of the hotkey.</param>
-        /// <param name="modifierKeyCombo">Combo keypress of modifier keys.</param>
-        /// <param name="virtualKey">Keypress of virtual key.</param>
+        /// <param name="modifierKeys">Modifier key combo of this hotkey.</param>
+        /// <param name="virtualKey">Virtual key of this hotkey.</param>
         /// <param name="action">Action for this hotkey.</param>
         /// <returns></returns>
-        public bool TryCreateHotkey(string name, ModifierKeys modifierKeyCombo, Key virtualKey, Action action)
+        public bool RegisterNewHotkey(string name, ModifierKeys modifierKeys, Key virtualKey, Action action)
         {
-            // first, assuse it is a new one
-            var modKey = (int)modifierKeyCombo;
-            var virtKey = (int)virtualKey;
+            // remove same-name hotkeys (if any) and overwrite them later
+            var hotkeyDupes = ActiveHotkeys.Where(hotkey => hotkey.Name == name);
+            foreach (var hotkey in hotkeyDupes)
+            {
+                hotkey.Unregister();
+                ActiveHotkeys.Remove(hotkey);
+            }
+
+            // attempt to create a new hotkey
+            try
+            {
+                ActiveHotkeys.Add(new Hotkey(name, modifierKeys, virtualKey, action));
+                return true;
+            }
+            catch (InvalidOperationException) { return false; }
+        }
+
+        /// <summary>
+        /// Attempts to create a hotkey with the given name from settings.
+        /// </summary>
+        /// <param name="name">Name (identifier) of the hotkey.</param>
+        /// <param name="action">Action for this hotkey.</param>
+        /// <returns></returns>
+        public bool RegisterHotkeyFromSettings(string name, Action action)
+        {
             // see if the key already exists
             if (SavedHotkeys.TryGetValue(name, out string keyInfo) == true)
             {
                 // deserialize key info stored as csv
                 var keys = keyInfo.Split(',');
-                Int32.TryParse(keys[0], out modKey);
-                Int32.TryParse(keys[1], out virtKey);
+                Int32.TryParse(keys[0], out int modKey);
+                Int32.TryParse(keys[1], out int virtKey);
+                try
+                {
+                    ActiveHotkeys.Add(new Hotkey(name, (ModifierKeys)modKey, (Key)virtKey, action));
+                    return true;
+                }
+                catch (InvalidOperationException) { return false; }
             }
-
-            ActiveHotkeys.Add(new Hotkey(name, (ModifierKeys)modKey, (Key)virtKey, action));
-            return true;
+            else return false;
         }
 
         /// <summary>
@@ -71,7 +98,7 @@ namespace Priceall.Hotkey
         }
 
         /// <summary>
-        /// Converts every valid hotkey definition into its string form and stores to settings.
+        /// Converts every active hotkey definition into its string form and stores to settings.
         /// </summary>
         public void SaveHotkeys()
         {

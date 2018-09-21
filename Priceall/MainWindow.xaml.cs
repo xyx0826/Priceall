@@ -3,10 +3,10 @@ using Priceall.Helper;
 using Priceall.Hotkey;
 using Priceall.Properties;
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace Priceall
 {
@@ -19,6 +19,7 @@ namespace Priceall
         static readonly AppraisalControlsBinding _controlsBinding = new AppraisalControlsBinding();
         static readonly UiStyleBinding _styleBinding = new UiStyleBinding();
         static readonly AppraisalHelper _appraisal = new AppraisalHelper();
+        static readonly ClipboardHelper _clipboard = new ClipboardHelper();
         static readonly HotkeyHelper _hotkey = new HotkeyHelper();
 
         static Window _settingsWindow = new SettingsWindow();
@@ -47,10 +48,17 @@ namespace Priceall
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-
             _settingsWindow.Owner = this;
-            _hotkey.TryCreateHotkey("QueryKey", ModifierKeys.Control | ModifierKeys.Shift, Key.C, OnHotKeyHandler);
+            _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
+
+            InitializeClipboard();
             CheckForUpdates();
+        }
+
+        private void InitializeClipboard()
+        {
+            var helper = new WindowInteropHelper(this);
+            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle), OnHotKeyHandler);
         }
 
         /// <summary>
@@ -107,7 +115,7 @@ namespace Priceall
         /// <returns></returns>
         private async Task QueryAppraisal()
         {
-            var clipboardContent = ClipboardHelper.ReadClipboardText();
+            var clipboardContent = _clipboard.ReadClipboardText();
             await Task.Run(() => { QueryAppraisal(clipboardContent); });
         }
 
@@ -116,7 +124,7 @@ namespace Priceall
         /// </summary>
         private async void QueryAppraisal(object sender, RoutedEventArgs e)
         {
-            var clipboardContent = ClipboardHelper.ReadClipboardText();
+            var clipboardContent = _clipboard.ReadClipboardText();
             await Task.Run(() => { QueryAppraisal(clipboardContent); });
         }
 
@@ -169,7 +177,7 @@ namespace Priceall
         /// <returns>Clipboard content, or empty string if clipboard does not have text.</returns>
         private string ReadClipboardOnMainThread()
         {
-            return ClipboardHelper.ReadClipboardText();
+            return _clipboard.ReadClipboardText();
         }
         #endregion
 

@@ -3,6 +3,10 @@ Priceall is an app for quick EVE Online price-checking.
 
 If you don't like tabbing out and pasting to browser, then this app is for you!
 
+**You are viewing the `dev` branch which may contain unstable or work-in-progress features. The stable branch is the `master` branch. Still, please feel free to fork, clone or PR on this branch.**
+
+**Note that the AppVeyor badge above still points to the `master` build feed.**
+
 # Usage
 Click [me](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts) and download `build.zip` to get the latest version!
 

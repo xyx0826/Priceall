@@ -77,6 +77,28 @@ namespace Priceall
             }
         }
 
+        public bool IsUsingAutomaticRefresh
+        {
+            get
+            {
+                return Settings.Default.IsUsingAutomaticRefresh;
+            }
+            set
+            {
+                Settings.Default.IsUsingAutomaticRefresh = value;
+                ((MainWindow)Owner).ToggleAutoRefresh();
+            }
+        }
+
+        public Visibility AutoRefreshTagVisibility
+        {
+            get
+            {
+                return (Settings.Default.FLAG_AUTO_REFRESH_OFF
+                    ? Visibility.Visible : Visibility.Collapsed);
+            }
+        }
+
         public bool IsUsingPrettyPrint
         {
             get

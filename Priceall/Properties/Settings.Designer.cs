@@ -110,6 +110,18 @@ namespace Priceall.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsUsingAutomaticRefresh {
+            get {
+                return ((bool)(this["IsUsingAutomaticRefresh"]));
+            }
+            set {
+                this["IsUsingAutomaticRefresh"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool IsUsingPrettyPrint {
             get {
                 return ((bool)(this["IsUsingPrettyPrint"]));
@@ -286,6 +298,18 @@ namespace Priceall.Properties {
             }
             set {
                 this["Hotkeys"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FLAG_AUTO_REFRESH_OFF {
+            get {
+                return ((bool)(this["FLAG_AUTO_REFRESH_OFF"]));
+            }
+            set {
+                this["FLAG_AUTO_REFRESH_OFF"] = value;
             }
         }
     }

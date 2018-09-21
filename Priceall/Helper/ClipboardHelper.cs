@@ -5,6 +5,10 @@ using System.Windows.Interop;
 
 namespace Priceall.Helper
 {
+    /// <summary>
+    /// Helper class for clipboard interaction.
+    /// Provides text retrieval from clipboard or update event subscription.
+    /// </summary>
     class ClipboardHelper
     {
         IntPtr _hwndNextViewer = IntPtr.Zero;

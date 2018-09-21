@@ -56,7 +56,7 @@ namespace Priceall.Binding
         {
             get
             {
-                if (IsUpdateAvail)
+                if (IsUpdateAvail || Settings.Default.FLAG_AUTO_REFRESH_OFF)
                 {
                     return (SolidColorBrush)
                         (new BrushConverter()

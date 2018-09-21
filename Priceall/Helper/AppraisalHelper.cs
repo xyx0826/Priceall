@@ -8,6 +8,10 @@ using System.Web;
 
 namespace Priceall.Helper
 {
+    /// <summary>
+    /// Helper class for interacting with Evepraisal.com.
+    /// Provides persistance and market system customization.
+    /// </summary>
     class AppraisalHelper
     {
         #region Properties

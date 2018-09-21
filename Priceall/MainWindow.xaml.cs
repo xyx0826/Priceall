@@ -34,7 +34,8 @@ namespace Priceall
         public MainWindow()
         {
             InitializeComponent();
-            UpdateSettings();   // this has to be done before all those binding occurs
+            UpdateSettings();   // migrate settings over from older Priceall version
+            Task.Run(async () => { await FlagsHelper.CheckAllFlags(); });   // update flag values in settings
 
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
@@ -59,6 +60,13 @@ namespace Priceall
         {
             var helper = new WindowInteropHelper(this);
             _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle), OnHotKeyHandler);
+        }
+
+        public void ToggleAutoRefresh()
+        {
+            if (Settings.Default.IsUsingAutomaticRefresh)
+                _clipboard.StartListener();
+            else _clipboard.StopListener();
         }
 
         /// <summary>

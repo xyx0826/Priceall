@@ -15,9 +15,12 @@ namespace Priceall
     /// </summary>
     public partial class MainWindow : Window
     {
+        // initialize binding sources
         static readonly AppraisalInfoBinding _infoBinding = new AppraisalInfoBinding();
         static readonly AppraisalControlsBinding _controlsBinding = new AppraisalControlsBinding();
         static readonly UiStyleBinding _styleBinding = new UiStyleBinding();
+
+        // initialize helpers
         static readonly AppraisalHelper _appraisal = new AppraisalHelper();
         static readonly ClipboardHelper _clipboard = new ClipboardHelper();
         static readonly HotkeyHelper _hotkey = new HotkeyHelper();
@@ -53,15 +56,22 @@ namespace Priceall
             _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
 
             InitializeClipboard();
+            ToggleAutoRefresh();
             CheckForUpdates();
         }
 
+        /// <summary>
+        /// Passes MainWindow handle to clipboard helper for setting up later.
+        /// </summary>
         private void InitializeClipboard()
         {
             var helper = new WindowInteropHelper(this);
             _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle), OnHotKeyHandler);
         }
 
+        /// <summary>
+        /// Toggles auto refresh based on setting value.
+        /// </summary>
         public void ToggleAutoRefresh()
         {
             if (Settings.Default.IsUsingAutomaticRefresh)
@@ -136,6 +146,10 @@ namespace Priceall
             await Task.Run(() => { QueryAppraisal(clipboardContent); });
         }
 
+        /// <summary>
+        /// Universal entry for triggering a price check.
+        /// </summary>
+        /// <param name="clipboardContent">Content in clipboard to be price checked.</param>
         private async void QueryAppraisal(string clipboardContent)
         {
             var queryElapsed = (DateTime.Now - _lastQueryTime).TotalMilliseconds;
@@ -243,11 +257,17 @@ namespace Priceall
             _controlsBinding.SetRectOpacityStyle(!currentState);
         }
 
+        /// <summary>
+        /// Triggers a price tag color refresh based on setting value.
+        /// </summary>
         public void RefreshPriceColor()
         {
             _infoBinding.RefreshPriceColor();
         }
 
+        /// <summary>
+        /// Resets all settings and their bounded displays.
+        /// </summary>
         public void ResetSettings()
         {
             Settings.Default.Reset();

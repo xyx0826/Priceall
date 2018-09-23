@@ -3,9 +3,10 @@ Priceall is an app for quick EVE Online price-checking.
 
 If you don't like tabbing out and pasting to browser, then this app is for you!
 
-**You are viewing the `dev` branch which may contain unstable or work-in-progress features. The stable branch is the `master` branch. Still, please feel free to fork, clone or PR on this branch.**
-
-**Note that the AppVeyor badge above still points to the `master` build feed.**
+# Table of Contents
+- Usage: how to download; how to use
+- Development: information regarding Priceall's repo
+- Changelog: new features and bug fixes
 
 # Usage
 Click [me](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts) and download `build.zip` to get the latest version!
@@ -13,6 +14,8 @@ Click [me](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts) and
 Priceall is designed for checking item list prices **as quick as possible**, without moving your eyes away from the game.
 
 **Copy** an item list and hit `Ctrl + Shift + C` to let Priceall do the work for you.
+
+**Experimental:** you can now enable auto refresh. When clipboard content changes, Priceall will automatically do a price-checking for you.
 
 ![Basic](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-01-basic.gif)
 
@@ -39,7 +42,7 @@ If you make the widget **fully transparent**, it can support **click-through**.
 **Things to know:**
 - Priceall works as an always-on-top window - it's not an actual "overlay" like the one Steam or Discord have. Therefore it might not work for fullscreen game.
 - Priceall currently uses [Evepraisal](http://evepraisal.com) for price checking. Thus, Priceall supports all kinds of item list that Evepraisal supports - cargo scan results, contracts, blueprint material lists, etc.
-- Priceall's defeault hotket, `Ctrl + Shift + C`, is *global* and by design will not be passed to other apps. Hotkey customization will come later, but in the mean time if you use this hotkey in EVE, you might want to set it to something else.
+- Priceall's default hotkey, `Ctrl + Shift + C`, is *global* and by design will not be passed to other apps. Hotkey customization will come later, but in the mean time if you use this hotkey in EVE, you might want to set it to something else.
 
 There are three buttons at the bottom: Drag, Settings and Close.
 
@@ -50,15 +53,22 @@ To change window background transparency, hover mouse over the window and scroll
 To resize the window, hold `Ctrl` and scroll on the window.
 
 # Development
-Priceall uses C# with WPF. It is in early stage of development. Many features are planned but not implemented.
+Priceall uses C# with WPF. Issues, suggestions and pull requests are welcome.
 
-Issues, suggestions and pull requests are welcome.
+The `master` branch contains stable code. The AppVeyor badge and download link above also link to `master` branch's build feed.
+
+Priceall's development now happens on the `dev` branch that may contain unfinished or unstable features. Please direct all pull requests to the `dev` branch.
 
 My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if you wish!
 
 *Dataminers: also check out my other repo, `TriExplorer`. It's a modern remake of `TriExporter`, but still in development.*
 
 # Changelog
+## Version 1.3, build 7
+- *(razaqq @ Github)* You can now enable **auto refresh** on clipboard content changes.
+  - When enabled, Priceall will perform a price check whenever clipboard text changes. No hotkeys needed! Query cooldown still applies.
+  - *We cannot estimate its impact on Evepraisal server performance. Priceall may kindly ask you to turn it off when things get out of control.*
+
 ## Version 1.2, build 6
 - *(Perry_Swift @ Reddit)* You can now choose to use **conditional colors**.
     - Specify a **lower** price threshold and a color, as well as an **upper** one.
@@ -78,6 +88,5 @@ My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if 
     - *Icon, text and buttons on the widget will still be clickable.*
 - You can now specify a hex color (e.g. `C4B3A2`) for price tag display.
     - *If you specify an invalid color, Priceall will use white.*
-    - *Known issue: when you edit color in settings, the window will become laggy.*
 - There is now a "Reset all settings" button in the settings.
     - *Known issue: you need to click the button twice to fully reset the window's position and size.*

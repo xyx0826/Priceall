@@ -71,6 +71,7 @@ namespace Priceall.Helper
         public void StopListener()
         {
             _hwndSource.RemoveHook(OnClipboardChanged);
+            ChangeClipboardChain(_hwndSource.Handle, _hwndNextViewer);
             _isViewing = false;
         }
 

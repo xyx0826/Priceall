@@ -64,8 +64,11 @@ My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if 
 *Dataminers: also check out my other repo, `TriExplorer`. It's a modern remake of `TriExporter`, but still in development.*
 
 # Changelog
+## Version 1.3, build 8
+- Fixed an issue where Priceall will not start with auto-refresh enabled as intended.
+
 ## Version 1.3, build 7
-- *(razaqq @ Github)* You can now enable **auto refresh** on clipboard content changes.
+- *(razaqq @ GitHub)* You can now enable **auto refresh** on clipboard content changes.
   - When enabled, Priceall will perform a price check whenever clipboard text changes. No hotkeys needed! Query cooldown still applies.
   - *We cannot estimate its impact on Evepraisal server performance. Priceall may kindly ask you to turn it off when things get out of control.*
 

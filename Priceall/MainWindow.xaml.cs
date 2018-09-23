@@ -3,12 +3,10 @@ using Priceall.Helper;
 using Priceall.Hotkey;
 using Priceall.Properties;
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-
-[assembly: AssemblyVersion("1.2.6")]
+using System.Windows.Interop;
 
 namespace Priceall
 {
@@ -21,6 +19,7 @@ namespace Priceall
         static readonly AppraisalControlsBinding _controlsBinding = new AppraisalControlsBinding();
         static readonly UiStyleBinding _styleBinding = new UiStyleBinding();
         static readonly AppraisalHelper _appraisal = new AppraisalHelper();
+        static readonly ClipboardHelper _clipboard = new ClipboardHelper();
         static readonly HotkeyHelper _hotkey = new HotkeyHelper();
 
         static Window _settingsWindow = new SettingsWindow();
@@ -35,7 +34,8 @@ namespace Priceall
         public MainWindow()
         {
             InitializeComponent();
-            UpdateSettings();   // this has to be done before all those binding occurs
+            UpdateSettings();   // migrate settings over from older Priceall version
+            Task.Run(async () => { await FlagsHelper.CheckAllFlags(); });   // update flag values in settings
 
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
@@ -49,10 +49,24 @@ namespace Priceall
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-
             _settingsWindow.Owner = this;
-            var hotkey = new Hotkey.Hotkey(ModifierKeys.Control | ModifierKeys.Shift, Key.C, OnHotKeyHandler);
+            _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
+
+            InitializeClipboard();
             CheckForUpdates();
+        }
+
+        private void InitializeClipboard()
+        {
+            var helper = new WindowInteropHelper(this);
+            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle), OnHotKeyHandler);
+        }
+
+        public void ToggleAutoRefresh()
+        {
+            if (Settings.Default.IsUsingAutomaticRefresh)
+                _clipboard.StartListener();
+            else _clipboard.StopListener();
         }
 
         /// <summary>
@@ -95,6 +109,8 @@ namespace Priceall
         /// </summary>
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
+            _hotkey.SaveHotkeys();
+            _hotkey.UnregisterAllHotkeys();
             Settings.Default.Save();
             Application.Current.Shutdown();
         }
@@ -107,7 +123,7 @@ namespace Priceall
         /// <returns></returns>
         private async Task QueryAppraisal()
         {
-            var clipboardContent = ClipboardHelper.ReadClipboardText();
+            var clipboardContent = _clipboard.ReadClipboardText();
             await Task.Run(() => { QueryAppraisal(clipboardContent); });
         }
 
@@ -116,7 +132,7 @@ namespace Priceall
         /// </summary>
         private async void QueryAppraisal(object sender, RoutedEventArgs e)
         {
-            var clipboardContent = ClipboardHelper.ReadClipboardText();
+            var clipboardContent = _clipboard.ReadClipboardText();
             await Task.Run(() => { QueryAppraisal(clipboardContent); });
         }
 
@@ -157,7 +173,7 @@ namespace Priceall
                     RefreshPriceColor();
 
                     if (Settings.Default.IsUsingPrettyPrint)
-                        _infoBinding.Price = json.PrettyPrintedValue;
+                        _infoBinding.Price = json.PrettyPrintValue();
                     else _infoBinding.Price = String.Format("{0:N}", json.SellValue);
                 }
             }
@@ -169,7 +185,7 @@ namespace Priceall
         /// <returns>Clipboard content, or empty string if clipboard does not have text.</returns>
         private string ReadClipboardOnMainThread()
         {
-            return ClipboardHelper.ReadClipboardText();
+            return _clipboard.ReadClipboardText();
         }
         #endregion
 

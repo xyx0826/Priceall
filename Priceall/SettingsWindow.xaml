@@ -43,6 +43,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -62,6 +64,14 @@
                 <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="NumberFilter"
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="Use automatic refresh:"
+                       ToolTip="When enabled, Priceall will refresh pricing everytime clipboard text changes."/>
+                <CheckBox Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
+                          IsChecked="{Binding IsUsingAutomaticRefresh}"/>
+                <Label Grid.Row="4" Grid.ColumnSpan="3" Visibility="{Binding AutoRefreshTagVisibility}"
+                       Content="Sorry - please turn auto refresh off. There's too much stress on servers."
+                       Foreground="Red"
+                       FontStyle="Italic"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="Styles" Height="Auto">
@@ -153,6 +163,7 @@
                 </TextBlock>
                 <Label Grid.Row="2" Grid.ColumnSpan="3" Visibility="{Binding UpdateTagVisibility}"
                        Content="An updated version of Priceall is available!" 
+                       Foreground="Red"
                        FontStyle="Italic"/>
             </Grid>
         </GroupBox>

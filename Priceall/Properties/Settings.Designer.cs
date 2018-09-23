@@ -110,6 +110,18 @@ namespace Priceall.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsUsingAutomaticRefresh {
+            get {
+                return ((bool)(this["IsUsingAutomaticRefresh"]));
+            }
+            set {
+                this["IsUsingAutomaticRefresh"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool IsUsingPrettyPrint {
             get {
                 return ((bool)(this["IsUsingPrettyPrint"]));
@@ -272,6 +284,32 @@ namespace Priceall.Properties {
             }
             set {
                 this["UpperColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>QueryKey,6,46</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Hotkeys {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Hotkeys"]));
+            }
+            set {
+                this["Hotkeys"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FLAG_AUTO_REFRESH_OFF {
+            get {
+                return ((bool)(this["FLAG_AUTO_REFRESH_OFF"]));
+            }
+            set {
+                this["FLAG_AUTO_REFRESH_OFF"] = value;
             }
         }
     }

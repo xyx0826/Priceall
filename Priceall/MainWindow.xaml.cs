@@ -81,6 +81,16 @@ namespace Priceall
         }
 
         /// <summary>
+        /// Overwrites the current query hotkey.
+        /// </summary>
+        /// <param name="modKeys">New modifier key combo.</param>
+        /// <param name="virtKey">New virtual key.</param>
+        public void UpdateQueryHotkey(ModifierKeys modKeys, Key virtKey)
+        {
+            _hotkey.RegisterNewHotkey("QueryKey", modKeys, virtKey, OnHotKeyHandler);
+        }
+
+        /// <summary>
         /// Checks for older Priceall settings and migrate them over.
         /// </summary>
         private void UpdateSettings()

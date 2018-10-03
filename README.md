@@ -42,7 +42,7 @@ If you make the widget **fully transparent**, it can support **click-through**.
 **Things to know:**
 - Priceall works as an always-on-top window - it's not an actual "overlay" like the one Steam or Discord have. Therefore it might not work for fullscreen game.
 - Priceall currently uses [Evepraisal](http://evepraisal.com) for price checking. Thus, Priceall supports all kinds of item list that Evepraisal supports - cargo scan results, contracts, blueprint material lists, etc.
-- Priceall's default hotkey, `Ctrl + Shift + C`, is *global* and by design will not be passed to other apps. Hotkey customization will come later, but in the mean time if you use this hotkey in EVE, you might want to set it to something else.
+- Priceall's hotkey, by default `Ctrl + Shift + C`, is *global* and by design will not be passed to other apps.
 
 There are three buttons at the bottom: Drag, Settings and Close.
 
@@ -64,6 +64,11 @@ My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if 
 *Dataminers: also check out my other repo, `TriExplorer`. It's a modern remake of `TriExporter`, but still in development.*
 
 # Changelog
+## Version 1.4, build 9
+- *(razaqq @ GitHub)* You can now customize query hotkey in settings.
+  - Click on the editor textbox and press the key combo of your choice.
+  - The new hotkey will immediately take effect.
+  - *Known issue: weird display in the editor textbox.*
 ## Version 1.3, build 8
 - Fixed an issue where Priceall will not start with auto-refresh enabled as intended.
 

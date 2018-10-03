@@ -1,11 +1,10 @@
 ﻿using Priceall.Properties;
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Priceall
@@ -23,9 +22,14 @@ namespace Priceall
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
-
+        
         static readonly Regex _numberRegex = new Regex("[^0-9]+");
         static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
+
+        static ModifierKeys _modifierKey;
+        static Key _virtualKey;
+
+        static bool _keyRecording = false;
 
         public SettingsWindow()
         {
@@ -201,6 +205,63 @@ namespace Priceall
         {
             ((MainWindow)Owner).ResetSettings();
             OnPropertyChanged(null);
+        }
+        
+        public string KeyCombo
+        {
+            get { return Settings.Default.KeyCombo; }
+            set
+            {
+                Settings.Default.KeyCombo = value;
+                OnPropertyChanged("KeyCombo");
+            }
+        }
+
+        private void EditHotkey(object sender, KeyEventArgs e)
+        {
+            if (!_keyRecording)
+            {
+                KeyCombo = "";
+                _modifierKey = 0;
+                _virtualKey = 0;
+                _keyRecording = true;
+            }
+
+            Debug.WriteLine($"Key state: {e.Key}");
+
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            {
+                _modifierKey = _modifierKey | ModifierKeys.Shift;
+                KeyCombo += "Shift ";
+            }
+
+            else if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                _modifierKey = _modifierKey | ModifierKeys.Control;
+                KeyCombo += "Ctrl ";
+            }
+
+            else if (e.Key == Key.LeftAlt || e.Key == Key.RightAlt)
+            {
+                _modifierKey = _modifierKey | ModifierKeys.Alt;
+                KeyCombo += "Alt ";
+            }
+
+            else
+            {
+                // key recording complete
+                _virtualKey = e.Key;
+                KeyCombo += e.Key;
+                _keyRecording = false;
+                ((MainWindow)Owner).UpdateQueryHotkey(_modifierKey, _virtualKey);
+            }
+
+            Debug.WriteLine($"Modkeys is now {(uint)_modifierKey}; Virtkey is now {(uint)_virtualKey}");
+        }
+
+        private void BlockFilter(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

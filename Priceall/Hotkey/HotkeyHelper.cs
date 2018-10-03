@@ -34,10 +34,10 @@ namespace Priceall.Hotkey
         {
             // remove same-name hotkeys (if any) and overwrite them later
             var hotkeyDupes = ActiveHotkeys.Where(hotkey => hotkey.Name == name);
-            foreach (var hotkey in hotkeyDupes)
+            for (int i = 0; i < hotkeyDupes.Count(); i ++)
             {
-                hotkey.Unregister();
-                ActiveHotkeys.Remove(hotkey);
+                hotkeyDupes.ElementAt(i).Unregister();
+                ActiveHotkeys.Remove(hotkeyDupes.ElementAt(i));
             }
 
             // attempt to create a new hotkey

@@ -55,6 +55,7 @@ namespace Priceall
             _settingsWindow.Owner = this;
             _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
 
+            SetWindowOnTopDelegate();
             InitializeClipboard();
             ToggleAutoRefresh();
             CheckForUpdates();
@@ -77,6 +78,16 @@ namespace Priceall
             if (Settings.Default.IsUsingAutomaticRefresh)
                 _clipboard.StartListener();
             else _clipboard.StopListener();
+        }
+
+        /// <summary>
+        /// Overwrites the current query hotkey.
+        /// </summary>
+        /// <param name="modKeys">New modifier key combo.</param>
+        /// <param name="virtKey">New virtual key.</param>
+        public void UpdateQueryHotkey(ModifierKeys modKeys, Key virtKey)
+        {
+            _hotkey.RegisterNewHotkey("QueryKey", modKeys, virtKey, OnHotKeyHandler);
         }
 
         /// <summary>
@@ -152,6 +163,8 @@ namespace Priceall
         /// <param name="clipboardContent">Content in clipboard to be price checked.</param>
         private async void QueryAppraisal(string clipboardContent)
         {
+            SetWindowOnTopDelegate();
+
             var queryElapsed = (DateTime.Now - _lastQueryTime).TotalMilliseconds;
             if (queryElapsed >= Settings.Default.QueryCooldown)
             {
@@ -207,9 +220,22 @@ namespace Priceall
         /// <summary>
         /// Sets the window to be topmost (overlay).
         /// </summary>
-        private void SetWindowOnTop(object sender, EventArgs e)
+        private void SetWindowOnTop(object sender = null, EventArgs e = null)
         {
             Topmost = true;
+        }
+
+        /// <summary>
+        /// Sets the window to be topmost (overlay).
+        /// Executed on MainWindow's delegate (UI thread).
+        /// </summary>
+        private void SetWindowOnTopDelegate()
+        {
+            Dispatcher.BeginInvoke(
+                new Action(() =>  
+                {
+                    SetWindowOnTop();
+                }));
         }
 
         /// <summary>

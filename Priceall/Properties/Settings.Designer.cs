@@ -324,5 +324,17 @@ namespace Priceall.Properties {
                 this["KeyCombo"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UpdateAvailable {
+            get {
+                return ((bool)(this["UpdateAvailable"]));
+            }
+            set {
+                this["UpdateAvailable"] = value;
+            }
+        }
     }
 }

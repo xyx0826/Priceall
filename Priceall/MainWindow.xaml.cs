@@ -1,4 +1,5 @@
 ﻿using Priceall.Binding;
+using Priceall.Events;
 using Priceall.Helper;
 using Priceall.Hotkey;
 using Priceall.Properties;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using static Priceall.Events.UiEvents;
 
 namespace Priceall
 {
@@ -29,8 +31,6 @@ namespace Priceall
         
         DateTime _lastQueryTime;
 
-        public bool IsUpdateAvailable { get; set; }
-
         /// <summary>
         /// Binds data contexts ASAP to prevent flickering.
         /// </summary>
@@ -43,6 +43,11 @@ namespace Priceall
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
             AppraisalControls.DataContext = _controlsBinding;
+
+            // subscribe settings events
+            Instance.AutoRefreshToggled += ToggleAutoRefresh;
+            Instance.PriceColorChanged += RefreshPriceColor;
+            Instance.QueryHotkeyUpdated += UpdateQueryHotkey;
         }
 
         #region Window loading and terminating
@@ -73,7 +78,7 @@ namespace Priceall
         /// <summary>
         /// Toggles auto refresh based on setting value.
         /// </summary>
-        public void ToggleAutoRefresh()
+        public void ToggleAutoRefresh(object sender = null, EventArgs e = null)
         {
             if (Settings.Default.IsUsingAutomaticRefresh)
                 _clipboard.StartListener();
@@ -85,9 +90,9 @@ namespace Priceall
         /// </summary>
         /// <param name="modKeys">New modifier key combo.</param>
         /// <param name="virtKey">New virtual key.</param>
-        public void UpdateQueryHotkey(ModifierKeys modKeys, Key virtKey)
+        public void UpdateQueryHotkey(object sender, QueryHotkeyUpdatedEventArgs e)
         {
-            _hotkey.RegisterNewHotkey("QueryKey", modKeys, virtKey, OnHotKeyHandler);
+            _hotkey.RegisterNewHotkey("QueryKey", e.ModKeys, e.VirtKey, OnHotKeyHandler);
         }
 
         /// <summary>
@@ -112,8 +117,8 @@ namespace Priceall
             var helper = new UpdateHelper();
             Task.Run(async () =>
             {
-                IsUpdateAvailable = await helper.CheckForUpdates();
-                _controlsBinding.IsUpdateAvail = IsUpdateAvailable;
+                Settings.Default.UpdateAvailable = await helper.CheckForUpdates();
+                _controlsBinding.IsUpdateAvail = Settings.Default.UpdateAvailable;
             });
         }
 
@@ -286,7 +291,7 @@ namespace Priceall
         /// <summary>
         /// Triggers a price tag color refresh based on setting value.
         /// </summary>
-        public void RefreshPriceColor()
+        public void RefreshPriceColor(object sender = null, EventArgs e = null)
         {
             _infoBinding.RefreshPriceColor();
         }

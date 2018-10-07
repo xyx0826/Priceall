@@ -10,33 +10,7 @@
         Loaded="Window_Loaded"
         Closing="Window_Closing">
     <StackPanel Orientation="Vertical" Margin="8">
-        <!-- TODO: Keybinding -->
         <Label Content="Hover over setting names to see its description." FontWeight="Bold"/>
-        <!-- <GroupBox Header="Keybindings" Height="Auto">
-            <Grid Margin="8" Height="Auto">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Press to query:"
-                       ToolTip="The key combo for making an Evepraisal query."/>
-                <ComboBox Grid.Row="0" Grid.Column="2"
-                          ItemsSource="{Binding ModifierKeys}" DisplayMemberPath="Name"
-                          SelectedItem="{Binding SelectedModifierKey1}"/>
-                <ComboBox Grid.Row="1" Grid.Column="2"
-                          ItemsSource="{Binding ModifierKeys}" DisplayMemberPath="Name"
-                          SelectedItem="{Binding SelectedModifierKey2}"/>
-                <ComboBox Grid.Row="2" Grid.Column="2"
-                          ItemsSource="{Binding VirtualKeys}" DisplayMemberPath="Name"
-                          SelectedItem="{Binding SelectedVirtualKey}"/>
-            </Grid>
-        </GroupBox> -->
         <GroupBox Header="Appraisal settings" Height="Auto">
             <Grid Margin="8" Height="Auto">
                 <Grid.RowDefinitions>
@@ -59,7 +33,7 @@
                        ToolTip="The maximum length of clipboard text to send to Evepraisal."/>
                 <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="NumberFilter"
-                         Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding QueryLengthLimit, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Grid.Row="2" Grid.Column="0" Content="Query cooldown:"
                        ToolTip="Minimum time in milliseconds between two Evepraisal queries. Please do not spam requests."/>
                 <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"

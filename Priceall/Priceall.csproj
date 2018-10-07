@@ -59,6 +59,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Binding\SettingsBinding.cs" />
+    <Compile Include="Events\UiEvents.cs" />
     <Compile Include="Helper\FlagsHelper.cs" />
     <Compile Include="Helper\UpdateHelper.cs" />
     <Compile Include="Hotkey\Hotkey.cs" />

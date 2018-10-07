@@ -1,4 +1,5 @@
 # Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall) 
+![Icon](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/Priceall.png)
 Priceall is an app for quick EVE Online price-checking.
 
 If you don't like tabbing out and pasting to browser, then this app is for you!
@@ -64,6 +65,10 @@ My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if 
 *Dataminers: also check out my other repo, `TriExplorer`. It's a modern remake of `TriExporter`, but still in development.*
 
 # Changelog
+## Version 1.4, build 10
+- Added a simple app icon for Priceall.
+- Rewrited settings handler code to use event model.
+
 ## Version 1.4, build 9
 - *(razaqq @ GitHub)* You can now customize query hotkey in settings.
   - Click on the editor textbox and press the key combo of your choice.

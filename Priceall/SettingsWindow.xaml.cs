@@ -74,7 +74,7 @@ namespace Priceall
 
         private void ResetSettings(object sender, RoutedEventArgs e)
         {
-            ((MainWindow)Owner).ResetSettings();
+            Instance.ResetSettings();
             OnPropertyChanged(null);
         }
 

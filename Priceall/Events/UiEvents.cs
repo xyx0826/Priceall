@@ -20,6 +20,8 @@ namespace Priceall.Events
         }
         #endregion
 
+        #region Event handlers
+        // Toggle auto refresh
         public event EventHandler AutoRefreshToggled;
 
         protected virtual void OnAutoRefreshToggled(EventArgs e)
@@ -32,6 +34,7 @@ namespace Priceall.Events
             OnAutoRefreshToggled(EventArgs.Empty);
         }
 
+        // Update query hotkey
         public event EventHandler<QueryHotkeyUpdatedEventArgs> QueryHotkeyUpdated;
 
         protected virtual void OnQueryHotkeyUpdated(QueryHotkeyUpdatedEventArgs e)
@@ -50,6 +53,7 @@ namespace Priceall.Events
             public Key VirtKey { get; set; }
         }
 
+        // Change price color
         public event EventHandler PriceColorChanged;
 
         protected virtual void OnPriceColorChanged(EventArgs e)
@@ -61,5 +65,19 @@ namespace Priceall.Events
         {
             OnPriceColorChanged(EventArgs.Empty);
         }
+
+        // Reset settings
+        public event EventHandler SettingsReset;
+
+        protected virtual void OnSettingsReset(EventArgs e)
+        {
+            SettingsReset?.Invoke(this, e);
+        }
+
+        public void ResetSettings()
+        {
+            OnSettingsReset(EventArgs.Empty);
+        }
+        #endregion
     }
 }

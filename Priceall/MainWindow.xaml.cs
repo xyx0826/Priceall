@@ -1,5 +1,4 @@
 ﻿using Priceall.Binding;
-using Priceall.Events;
 using Priceall.Helper;
 using Priceall.Hotkey;
 using Priceall.Properties;
@@ -48,6 +47,7 @@ namespace Priceall
             Instance.AutoRefreshToggled += ToggleAutoRefresh;
             Instance.PriceColorChanged += RefreshPriceColor;
             Instance.QueryHotkeyUpdated += UpdateQueryHotkey;
+            Instance.SettingsReset += ResetSettings;
         }
 
         #region Window loading and terminating
@@ -299,7 +299,7 @@ namespace Priceall
         /// <summary>
         /// Resets all settings and their bounded displays.
         /// </summary>
-        public void ResetSettings()
+        public void ResetSettings(object sender, EventArgs e)
         {
             Settings.Default.Reset();
             _infoBinding.Refresh();

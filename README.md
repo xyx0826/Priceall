@@ -1,5 +1,6 @@
 # Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall) 
-![Icon](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/Priceall.png)
+<img src="https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/Priceall.png" width="128" height="128" />
+
 Priceall is an app for quick EVE Online price-checking.
 
 If you don't like tabbing out and pasting to browser, then this app is for you!

@@ -70,6 +70,7 @@
     <Compile Include="Binding\UiStyleBinding.cs" />
     <Compile Include="Binding\AppraisalInfoBinding.cs" />
     <Compile Include="Binding\AppraisalControlsBinding.cs" />
+    <Compile Include="Hotkey\HotkeyEnums.cs" />
     <Compile Include="Hotkey\HotkeyHelper.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <DependentUpon>Settings.settings</DependentUpon>

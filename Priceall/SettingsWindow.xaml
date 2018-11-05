@@ -43,7 +43,8 @@
                        ToolTip="Hotkey used to trigger a query."/>
                 <TextBox Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="BlockFilter"
-                         PreviewKeyDown="EditHotkey"
+                         PreviewKeyDown="EditingKeyDown"
+                         PreviewKeyUp="EditingKeyUp"
                          Text="{Binding KeyCombo, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Grid.Row="4" Grid.Column="0" Content="Use automatic refresh:"
                        ToolTip="When enabled, Priceall will refresh pricing everytime clipboard text changes."/>

@@ -58,7 +58,7 @@ namespace Priceall
         {
             base.OnSourceInitialized(e);
             _settingsWindow.Owner = this;
-            _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
+            // _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
 
             SetWindowOnTopDelegate();
             InitializeClipboard();
@@ -92,7 +92,7 @@ namespace Priceall
         /// <param name="virtKey">New virtual key.</param>
         public void UpdateQueryHotkey(object sender, QueryHotkeyUpdatedEventArgs e)
         {
-            _hotkey.RegisterNewHotkey("QueryKey", e.ModKeys, e.VirtKey, OnHotKeyHandler);
+            _hotkey.RegisterNewHotkey("QueryKey", e.KeyCombo, OnHotKeyHandler);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace Priceall
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
             _hotkey.SaveHotkeys();
-            _hotkey.UnregisterAllHotkeys();
+            _hotkey.Uninitialize();
             Settings.Default.Save();
             Application.Current.Shutdown();
         }

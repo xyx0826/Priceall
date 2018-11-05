@@ -1,108 +1,65 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using System.Windows.Input;
-using System.Windows.Interop;
 
 namespace Priceall.Hotkey
 {
     /// <summary>
-    /// Class representing a hotkey registration.
+    /// Class representing a hotkey definition.
     /// </summary>
     public class Hotkey
     {
-        public struct KeyboardHook
-        {
-            public int vkCode;
-            public int scanCode;
-            public int flags;
-            public int time;
-            public int dwExtraInfo;
-        }
-
-        public delegate int keyboardHookProc(int code, int wParam, ref KeyboardHook lParam);
-
-        #region P/Invoke
-        /// <summary>
-        /// Installs an application-defined hook procedure into a hook chain.
-        /// </summary>
-        /// <param name="idHook">The type of hook procedure to be installed.</param>
-        /// <param name="lpfn">A pointer to the hook procedure.</param>
-        /// <param name="hmod">A handle to the DLL containing the hook procedure pointed to by the lpfn parameter.</param>
-        /// <param name="dwThreadId">The identifier of the thread with which the hook procedure is to be associated.</param>
-        /// <returns></returns>
-        [DllImport("user32.dll")]
-        static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc lpfn, IntPtr hmod, uint dwThreadId);
-
-        [DllImport("user32.dll")]
-        static extern int CallNextHookEx(IntPtr hhk, int nCode, int wParam, ref KeyboardHook lParam);
-
-        #endregion
-
-        const int WH_KEYBOARD_LL = 13;
-
         public string Name;
-        public int KeyId;
-        public ModifierKeys ModifierKeyCombo;
-        public Key VirtualKey;
-
-        public IntPtr currentHook = IntPtr.Zero;
-
-        static Action _keyAction;
+        public Key[] Keys;
+        static Action Action;
         
         /// <summary>
-        /// Creates and registers a hotkey of the given keypresses.
+        /// Creates a hotkey of the given keypresses.
         /// </summary>
-        /// <param name="modifierKey">A combination of modifier keys.</param>
-        /// <param name="virtualkey">A single virtual key.</param>
+        /// <param name="name">The name for the hotkey.</param>
+        /// <param name="keys">The key combo for the hotkey.</param>
         /// <param name="action">The action to be executed on hotkey press.</param>
-        public Hotkey(string name, ModifierKeys modifierKey, Key virtualkey, Action action)
+        public Hotkey(string name, Key[] keys, Action action)
         {
             Name = name;
-            ModifierKeyCombo = modifierKey;
-            VirtualKey = virtualkey;
-            _keyAction = action;
-
-            if (Register() != true)
-            {
-                throw new InvalidOperationException("Hotkey registration failed.");
-            }
-        }
-        
-        /// <summary>
-        /// Registers the hotkey.
-        /// </summary>
-        /// <returns>Whether the registration is successful.</returns>
-        public bool Register()
-        {
-            currentHook = SetWindowsHookEx(WH_KEYBOARD_LL, OnHookCall, IntPtr.Zero, 0);
-
-            return true;
-
-            // key params to pass: hotkey combo and its unique keyId
-            // return RegisterHotKey(IntPtr.Zero, KeyId, 
-            //     (uint)ModifierKeyCombo, (uint)virtualKeyCode);
+            Keys = keys;
+            Action = action;
         }
 
         /// <summary>
-        /// Unregisters the hotkey.
+        /// Creates a hotkey using a csv-formatted key combo.
         /// </summary>
-        public void Unregister()
+        /// <param name="name">The name for the hotkey.</param>
+        /// <param name="keys">The key combo for the hotke, in CSV format.</param>
+        /// <param name="action">The action to be executed on hotkey press.</param>
+        public Hotkey(string name, string keys, Action action)
         {
-            // UnregisterHotKey(IntPtr.Zero, KeyId);
-            // GC.SuppressFinalize(this);
+            Name = name;
+            Keys = DeserializeKeyCombo(keys);
+            Action = action;
         }
 
-        public int OnHookCall(int code, int wParam, ref KeyboardHook lParam)
+        public bool IsKeyHit(Key[] pressedKeys)
         {
-            if (code >= 0)
+            return false;
+        }
+
+        /// <summary>
+        /// Deserializes a CSV-formatted key combo def into a list of .NET keys.
+        /// </summary>
+        /// <param name="keys">Key combo in CSV format.</param>
+        /// <returns>An array of keys.</returns>
+        Key[] DeserializeKeyCombo(string keys)
+        {
+            var keyList = new List<Key>();
+            foreach (var key in keys.Split(','))
             {
-                if (((KeyboardMessages)wParam) == KeyboardMessages.KeyDown)
+                if (Int32.TryParse(key, out int keyCode))
                 {
-                    Debug.WriteLine($"Key pressed: {KeyInfo.GetKey(lParam.vkCode)}");
+                    keyList.Add((Key)keyCode);
                 }
             }
-            return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
+            return keyList.ToArray();
         }
 
         /// <summary>
@@ -111,7 +68,7 @@ namespace Priceall.Hotkey
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name},{(int)ModifierKeyCombo},{(int)VirtualKey}";
+            return $"{Name},{String.Join(",", Keys)}";
         }
     }
 }

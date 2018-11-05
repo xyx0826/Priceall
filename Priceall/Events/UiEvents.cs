@@ -49,8 +49,7 @@ namespace Priceall.Events
 
         public class QueryHotkeyUpdatedEventArgs : EventArgs
         {
-            public ModifierKeys ModKeys { get; set; }
-            public Key VirtKey { get; set; }
+            public Key[] KeyCombo { get; set; }
         }
 
         // Change price color

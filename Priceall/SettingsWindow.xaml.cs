@@ -1,4 +1,5 @@
 ﻿using Priceall.Binding;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -25,10 +26,8 @@ namespace Priceall
         static readonly Regex _numberRegex = new Regex("[^0-9]+");
         static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
 
-        static ModifierKeys _modifierKey;
-        static Key _virtualKey;
-
-        static bool _keyRecording = false;
+        static List<Key> _keys = new List<Key>();
+        static int _keysHeld = 0;
 
         static SettingsBinding _settings;
 
@@ -78,52 +77,48 @@ namespace Priceall
             OnPropertyChanged(null);
         }
 
-        private void EditHotkey(object sender, KeyEventArgs e)
+        private void EditingKeyDown(object sender, KeyEventArgs e)
         {
-            if (!_keyRecording)
+            // clear key list and begin new recording
+            if (_keysHeld == 0)
             {
-                _settings.KeyCombo = "";
-                _modifierKey = 0;
-                _virtualKey = 0;
-                _keyRecording = true;
+                Debug.WriteLine("Recording a new keycombo.");
+                _keys.Clear();
             }
 
-            Debug.WriteLine($"Key state: {e.Key}");
-
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            // prevent duplicates
+            if (!e.IsRepeat && !_keys.Contains(e.Key))
             {
-                _modifierKey = _modifierKey | ModifierKeys.Shift;
-                _settings.KeyCombo += "Shift ";
+                // annoying windows alt codes
+                var altDown = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+
+                Debug.WriteLine($"Adding {(altDown ? e.SystemKey : e.Key)}");
+                _keysHeld++;
+                _keys.Add(altDown ? e.SystemKey : e.Key);
             }
+        }
 
-            else if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-            {
-                _modifierKey = _modifierKey | ModifierKeys.Control;
-                _settings.KeyCombo += "Ctrl ";
-            }
+        private void EditingKeyUp(object sender, KeyEventArgs e)
+        {
+            var altDown = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+            _keysHeld--;
 
-            else if (e.Key == Key.LeftAlt || e.Key == Key.RightAlt)
-            {
-                _modifierKey = _modifierKey | ModifierKeys.Alt;
-                _settings.KeyCombo += "Alt ";
-            }
+            Debug.WriteLine($"Releasing {(altDown ? e.SystemKey : e.Key)}");
 
-            else
+            // no more keys down, recording complete
+            if (_keysHeld == 0)
             {
+                Debug.WriteLine($"Recording complete. New keycombo with {_keys.Count} keys.");
+                return;
+
                 // key recording complete
-                _virtualKey = e.Key;
-                _settings.KeyCombo += e.Key;
-                _keyRecording = false;
                 // create event args and fire update event
                 var keyArgs = new QueryHotkeyUpdatedEventArgs
                 {
-                    ModKeys = _modifierKey,
-                    VirtKey = _virtualKey
+                    KeyCombo = _keys.ToArray()
                 };
                 Instance.UpdateQueryHotkey(keyArgs);
             }
-
-            Debug.WriteLine($"Modkeys is now {(uint)_modifierKey}; Virtkey is now {(uint)_virtualKey}");
         }
 
         private void BlockFilter(object sender, TextCompositionEventArgs e)

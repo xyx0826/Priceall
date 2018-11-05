@@ -4,46 +4,58 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Input;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace Priceall.Hotkey
 {
     /// <summary>
-    /// Class for managing multiple hotkeys. Not in use yet.
+    /// Class for managing multiple hotkeys, or record new hotkeys.
     /// </summary>
     class HotkeyHelper
     {
+        // Runtime hotkeys
         public Dictionary<string, string> SavedHotkeys { get; set; }
         public List<Hotkey> ActiveHotkeys { get; set; }
 
+        // Keys tracking
+        List<Key> _pressedKeys = new List<Key>();
+
+        // Hotkey hooking
+        const int WH_KEYBOARD_LL = 13;
+        IntPtr _currentHook = IntPtr.Zero;
+        keyboardHookProc _callback;
+
         public HotkeyHelper()
         {
+            // Initialize low-level hook
+            Initialize();
+            // Restore hotkeys
             SavedHotkeys = new Dictionary<string, string>();
             ActiveHotkeys = new List<Hotkey>();
-            LoadHotkeys();
+            // LoadHotkeys();
         }
 
         /// <summary>
         /// Attempts to register a new hotkey. If same-name hotkey exists, they will be overwritten.
         /// </summary>
         /// <param name="name">Name (identifier) of the hotkey.</param>
-        /// <param name="modifierKeys">Modifier key combo of this hotkey.</param>
-        /// <param name="virtualKey">Virtual key of this hotkey.</param>
+        /// <param name="keys">Key combo of this hotkey. Includes virtual keys and modifier keys.</param>
         /// <param name="action">Action for this hotkey.</param>
         /// <returns></returns>
-        public bool RegisterNewHotkey(string name, ModifierKeys modifierKeys, Key virtualKey, Action action)
+        public bool RegisterNewHotkey(string name, Key[] keys, Action action)
         {
             // remove same-name hotkeys (if any) and overwrite them later
             var hotkeyDupes = ActiveHotkeys.Where(hotkey => hotkey.Name == name);
             for (int i = 0; i < hotkeyDupes.Count(); i ++)
             {
-                hotkeyDupes.ElementAt(i).Unregister();
                 ActiveHotkeys.Remove(hotkeyDupes.ElementAt(i));
             }
 
             // attempt to create a new hotkey
             try
             {
-                ActiveHotkeys.Add(new Hotkey(name, modifierKeys, virtualKey, action));
+                ActiveHotkeys.Add(new Hotkey(name, keys, action));
                 return true;
             }
             catch (InvalidOperationException) { return false; }
@@ -60,13 +72,9 @@ namespace Priceall.Hotkey
             // see if the key already exists
             if (SavedHotkeys.TryGetValue(name, out string keyInfo) == true)
             {
-                // deserialize key info stored as csv
-                var keys = keyInfo.Split(',');
-                Int32.TryParse(keys[0], out int modKey);
-                Int32.TryParse(keys[1], out int virtKey);
                 try
                 {
-                    ActiveHotkeys.Add(new Hotkey(name, (ModifierKeys)modKey, (Key)virtKey, action));
+                    ActiveHotkeys.Add(new Hotkey(name, keyInfo, action));
                     return true;
                 }
                 catch (InvalidOperationException) { return false; }
@@ -74,14 +82,7 @@ namespace Priceall.Hotkey
             else return false;
         }
 
-        /// <summary>
-        /// Unregisters all currently active hotkeys.
-        /// </summary>
-        public void UnregisterAllHotkeys()
-        {
-            foreach (var hotkey in ActiveHotkeys) hotkey.Unregister();
-        }
-
+        #region Hotkey saving & loading
         /// <summary>
         /// Loads all saved hotkeys from settings.
         /// </summary>
@@ -109,5 +110,79 @@ namespace Priceall.Hotkey
             }
             Settings.Default.Hotkeys = hotkeys;
         }
+        #endregion
+
+        #region P/Invoke & hooking
+        // Initializes a global windows hook.
+        [DllImport("user32.dll")]
+        static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc lpfn, IntPtr hmod, uint dwThreadId);
+
+        // Passes hook event to the next listener.
+        [DllImport("user32.dll")]
+        static extern int CallNextHookEx(IntPtr hhk, int nCode, int wParam, ref KeyboardHook lParam);
+
+        // Uninitializes the global windows hook.
+        [DllImport("user32.dll")]
+        static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        // Delegate (callback) required for installing the hook.
+        public delegate int keyboardHookProc(int code, int wParam, ref KeyboardHook lParam);
+
+        /// <summary>
+        /// Starts global hook to listen for keypresses.
+        /// </summary>
+        /// <returns>Whether the registration is successful.</returns>
+        public bool Initialize()
+        {
+            _callback = OnHookCall;
+            _currentHook = SetWindowsHookEx(WH_KEYBOARD_LL, _callback, IntPtr.Zero, 0);
+            return (_currentHook != IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Uninstalls the global windows hook.
+        /// </summary>
+        /// <returns>Whether the uninitialization is successful.</returns>
+        public bool Uninitialize()
+        {
+            return UnhookWindowsHookEx(_currentHook);
+        }
+
+        /// <summary>
+        /// Callback fired every time a key is pressed.
+        /// </summary>
+        public int OnHookCall(int code, int wParam, ref KeyboardHook lParam)
+        {
+            if (code >= 0)
+            {
+                var msg = (KeyboardMessages)wParam;
+                var key = KeyInterop.KeyFromVirtualKey(lParam.vkCode);
+                // Interop doesn't catch alt keys correctly
+                switch (lParam.vkCode)
+                {
+                    case 0xa4:
+                        key = Key.LeftAlt;
+                        break;
+                    case 0xa5:
+                        key = Key.RightAlt;
+                        break;
+                }
+
+                if (msg != KeyboardMessages.KeyDown
+                    && msg != KeyboardMessages.SysKeyDown)
+                {
+                    _pressedKeys.Remove(key);
+                }
+                else if (!_pressedKeys.Contains(key))
+                {
+                    _pressedKeys.Add(key);
+                }
+
+                Debug.WriteLine($"Key event from {key.ToString()}; " +
+                    $"{_pressedKeys.Count} keys currently pressed.");
+            }
+            return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
+        }
+        #endregion
     }
 }

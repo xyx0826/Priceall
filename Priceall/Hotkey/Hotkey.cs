@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace Priceall.Hotkey
 {
@@ -25,6 +26,7 @@ namespace Priceall.Hotkey
             Name = name;
             Keys = keys;
             Action = action;
+            Array.Sort(Keys);
         }
 
         /// <summary>
@@ -38,17 +40,20 @@ namespace Priceall.Hotkey
             Name = name;
             Keys = DeserializeKeyCombo(keys);
             Action = action;
+            Array.Sort(Keys);
         }
 
         public bool IsKeyHit(Key[] pressedKeys)
         {
             // Check for length
             if (pressedKeys.Length != Keys.Length) return false;
-            for (int i = 0; i < Keys.Length; i ++)
-            {
-                if (pressedKeys[i] != Keys[i]) return false;
-            }
-            return true;
+            Array.Sort(pressedKeys);
+            return pressedKeys.SequenceEqual(Keys);
+        }
+
+        public void Invoke()
+        {
+            Action.Invoke();
         }
 
         /// <summary>

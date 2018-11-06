@@ -33,7 +33,7 @@ namespace Priceall.Hotkey
             // Restore hotkeys
             SavedHotkeys = new Dictionary<string, string>();
             ActiveHotkeys = new List<Hotkey>();
-            // LoadHotkeys();
+            LoadHotkeys();
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Priceall.Hotkey
         }
 
         /// <summary>
-        /// Attempts to load a hotkey with the given name from settings.
+         /// Attempts to load a hotkey with the given name from settings.
         /// </summary>
         /// <param name="name">Name (identifier) of the hotkey.</param>
         /// <param name="action">Action for this hotkey.</param>
@@ -93,7 +93,8 @@ namespace Priceall.Hotkey
                 foreach (var hotkey in Settings.Default.Hotkeys)
                 {
                     var keyInfo = hotkey.Split(',');
-                    SavedHotkeys.Add(keyInfo[0], $"{keyInfo[1]},{keyInfo[2]}");
+                    SavedHotkeys.Add(hotkey.Split(',')[0], 
+                        hotkey.Substring(hotkey.IndexOf(',') + 1));
                 }
             }
         }
@@ -139,7 +140,7 @@ namespace Priceall.Hotkey
         {
             _callback = OnHookCall;
             _currentHook = SetWindowsHookEx(WH_KEYBOARD_LL, _callback, IntPtr.Zero, 0);
-            return (_currentHook != IntPtr.Zero);
+            return _currentHook != IntPtr.Zero;
         }
 
         /// <summary>
@@ -174,15 +175,27 @@ namespace Priceall.Hotkey
                 if (msg != KeyboardMessages.KeyDown
                     && msg != KeyboardMessages.SysKeyDown)
                 {
+                    // Key released event
                     _pressedKeys.Remove(key);
                 }
-                else if (!_pressedKeys.Contains(key))
+                else if (_pressedKeys.Contains(key))
                 {
+                    // Key repeated event
+                    return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
+                }
+                else
+                {
+                    // Key pressed event (fresh)
                     _pressedKeys.Add(key);
                 }
 
-                Debug.WriteLine($"Key event from {key.ToString()}; " +
-                    $"{_pressedKeys.Count} keys currently pressed.");
+                foreach (var activeHotkey in ActiveHotkeys)
+                {
+                    if (activeHotkey.IsKeyHit(_pressedKeys.ToArray()))
+                    {
+                        activeHotkey.Invoke();
+                    }
+                }
             }
             return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
         }

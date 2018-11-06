@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Input;
 
@@ -41,7 +42,13 @@ namespace Priceall.Hotkey
 
         public bool IsKeyHit(Key[] pressedKeys)
         {
-            return false;
+            // Check for length
+            if (pressedKeys.Length != Keys.Length) return false;
+            for (int i = 0; i < Keys.Length; i ++)
+            {
+                if (pressedKeys[i] != Keys[i]) return false;
+            }
+            return true;
         }
 
         /// <summary>

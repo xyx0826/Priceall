@@ -24,7 +24,7 @@ namespace Priceall.Hotkey
         // Hotkey hooking
         const int WH_KEYBOARD_LL = 13;
         IntPtr _currentHook = IntPtr.Zero;
-        keyboardHookProc _callback;
+        KeyboardHookProc _callback;
 
         public HotkeyHelper()
         {
@@ -62,12 +62,12 @@ namespace Priceall.Hotkey
         }
 
         /// <summary>
-        /// Attempts to create a hotkey with the given name from settings.
+        /// Attempts to load a hotkey with the given name from settings.
         /// </summary>
         /// <param name="name">Name (identifier) of the hotkey.</param>
         /// <param name="action">Action for this hotkey.</param>
         /// <returns></returns>
-        public bool RegisterHotkeyFromSettings(string name, Action action)
+        public bool LoadHotkeyFromSettings(string name, Action action)
         {
             // see if the key already exists
             if (SavedHotkeys.TryGetValue(name, out string keyInfo) == true)
@@ -115,7 +115,7 @@ namespace Priceall.Hotkey
         #region P/Invoke & hooking
         // Initializes a global windows hook.
         [DllImport("user32.dll")]
-        static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc lpfn, IntPtr hmod, uint dwThreadId);
+        static extern IntPtr SetWindowsHookEx(int idHook, KeyboardHookProc lpfn, IntPtr hmod, uint dwThreadId);
 
         // Passes hook event to the next listener.
         [DllImport("user32.dll")]
@@ -126,7 +126,10 @@ namespace Priceall.Hotkey
         static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
         // Delegate (callback) required for installing the hook.
-        public delegate int keyboardHookProc(int code, int wParam, ref KeyboardHook lParam);
+        public delegate int KeyboardHookProc(int code, int wParam, ref KeyboardHook lParam);
+
+        // Delegate (callback) required for returning the new hotkey.
+        public delegate void HotkeyRecorded(Key[] keyCombo);
 
         /// <summary>
         /// Starts global hook to listen for keypresses.

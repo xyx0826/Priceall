@@ -58,7 +58,7 @@ namespace Priceall
         {
             base.OnSourceInitialized(e);
             _settingsWindow.Owner = this;
-            // _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
+            _hotkey.LoadHotkeyFromSettings("QueryKey", OnHotKeyHandler);
 
             SetWindowOnTopDelegate();
             InitializeClipboard();
@@ -241,6 +241,15 @@ namespace Priceall
                 {
                     SetWindowOnTop();
                 }));
+        }
+
+        /// <summary>
+        /// Delegate for receiving a newly-recorded hotkey.
+        /// </summary>
+        /// <param name="keyCombo">Pass the keys!</param>
+        private void HotkeyRecordedDelegate(Key[] keyCombo)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

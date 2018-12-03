@@ -104,19 +104,6 @@ namespace Priceall
         }
 
         /// <summary>
-        /// Checks for older Priceall settings and migrate them over.
-        /// </summary>
-        private void UpdateSettings()
-        {
-            if (Settings.Default.UpgradeRequired)
-            {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
-            }
-        }
-
-        /// <summary>
         /// Checks for update from AppVeyor in the background.
         /// If an update is found, the setting icon will become orange.
         /// </summary>

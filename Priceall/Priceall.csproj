@@ -66,6 +66,7 @@
     <Compile Include="Events\HotkeyEvents.cs" />
     <Compile Include="Events\UiEvents.cs" />
     <Compile Include="Services\FlagService.cs" />
+    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Hotkey\Hotkey.cs" />
     <Compile Include="Binding\UiStyleBinding.cs" />

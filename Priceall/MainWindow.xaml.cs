@@ -25,7 +25,6 @@ namespace Priceall
         // initialize helpers
         static readonly AppraisalService _appraisal = new AppraisalService();
         static readonly ClipboardService _clipboard = new ClipboardService();
-        static readonly HotkeyHelper _hotkey = new HotkeyHelper();
 
         static Window _settingsWindow = new SettingsWindow();
         
@@ -38,6 +37,7 @@ namespace Priceall
         {
             InitializeComponent();
             SettingsService.UpdateSettings();   // migrate settings over from older Priceall version
+            HotkeyHelper.Initialize();
             Task.Run(async () => { await FlagService.CheckAllFlags(); });   // update flag values in settings
 
             DataContext = _styleBinding;
@@ -59,14 +59,7 @@ namespace Priceall
             base.OnSourceInitialized(e);
             _settingsWindow.Owner = this;
 
-            if (_hotkey.TryLoadHotkey("QueryKey", OnHotKeyHandler))
-            {
-                Instance.UpdateQueryHotkey(
-                    new QueryHotkeyUpdatedEventArgs
-                    {
-                        KeyCombo = _hotkey.FindHotkeyByName("QueryKey").Keys
-                    });
-            }
+            HotkeyHelper.ActivateHotkeyFromSettings("QueryKey", OnHotKeyHandler);
 
             SetWindowOnTopDelegate();
             InitializeClipboard();
@@ -101,7 +94,7 @@ namespace Priceall
         /// <param name="virtKey">New virtual key.</param>
         public void UpdateQueryHotkey(object sender, QueryHotkeyUpdatedEventArgs e)
         {
-            _hotkey.CreateNewHotkey("QueryKey", e.KeyCombo, OnHotKeyHandler);
+            HotkeyHelper.CreateNewHotkey("QueryKey", e.KeyCombo, OnHotKeyHandler);
         }
 
         /// <summary>
@@ -130,8 +123,8 @@ namespace Priceall
         /// </summary>
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
-            _hotkey.SaveHotkeys();
-            _hotkey.Uninitialize();
+            HotkeyHelper.SaveActiveHotkeys();
+            HotkeyHelper.Uninitialize();
             Settings.Default.Save();
             Application.Current.Shutdown();
         }
@@ -238,21 +231,6 @@ namespace Priceall
                 {
                     SetWindowOnTop();
                 }));
-        }
-
-        /// <summary>
-        /// Delegate for receiving a newly-recorded hotkey.
-        /// </summary>
-        /// <param name="keyCombo">Pass the keys!</param>
-        private void HotkeyRecordedDelegate(Key[] keyCombo)
-        {
-            Debug.Write($"New hotkey recorded: {String.Join(", ", keyCombo)}");
-            _hotkey.CreateNewHotkey("QueryKey", keyCombo, OnHotKeyHandler);
-            Instance.UpdateQueryHotkey(
-                new QueryHotkeyUpdatedEventArgs
-                    {
-                        KeyCombo = _hotkey.FindHotkeyByName("QueryKey").Keys
-                    });
         }
 
         /// <summary>

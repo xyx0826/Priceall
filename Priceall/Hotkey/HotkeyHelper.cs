@@ -1,8 +1,7 @@
-﻿using Priceall.Properties;
+﻿using Priceall.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
@@ -12,137 +11,31 @@ namespace Priceall.Hotkey
     /// <summary>
     /// Class for managing multiple hotkeys, or record new hotkeys.
     /// </summary>
-    internal class HotkeyHelper
+    internal static class HotkeyHelper
     {
-        // A list of modifier keys.
-        private static readonly Key[] _modifierKeys = {
+        #region Constant (variables)
+        private const int WH_KEYBOARD_LL = 13;
+
+        private static readonly Key[] MODIFIER_KEYS = {
             Key.LeftCtrl, Key.RightCtrl,
             Key.LeftShift, Key.RightShift,
             Key.LeftAlt, Key.RightAlt,
             Key.System
         };
-
-        // Runtime hotkeys
-        /// <summary>
-        /// Stores all hotkeys defined in settings.
-        /// These hotkeys are inactive until being assigned actions.
-        /// </summary>
-        public Dictionary<string, string> SavedHotkeys { get; set; }
-        /// <summary>
-        /// Stores all valid hotkeys.
-        /// These hotkeys have actions assigned and will respond correctly.
-        /// </summary>
-        public List<Hotkey> ActiveHotkeys { get; set; }
-
-        // Keys tracking
-        private List<Key> _pressedKeys = new List<Key>();
-
-        // Hotkey hooking
-        private const int WH_KEYBOARD_LL = 13;
-        private IntPtr _currentHook = IntPtr.Zero;
-        private KeyboardHookProc _callback;
-
-        // Hotkey recording
-        private bool _isRecording = false;
-        private HotkeyRecorded _recordingCallback;
-
-        public HotkeyHelper()
-        {
-            // Initialize low-level hook
-            if (!Initialize())
-                Debug.WriteLine("For some reason hooking failed.");
-            // Restore hotkeys
-            SavedHotkeys = new Dictionary<string, string>();
-            ActiveHotkeys = new List<Hotkey>();
-            LoadAllHotkeys();
-        }
-
-        #region Hotkey management
-        /// <summary>
-        /// Attempts to create a new hotkey. If same-name hotkey exists, they will be overwritten.
-        /// </summary>
-        /// <param name="name">Name (identifier) of the hotkey.</param>
-        /// <param name="keys">Key combo of this hotkey. Includes virtual keys and modifier keys.</param>
-        /// <param name="action">Action for this hotkey.</param>
-        public void CreateNewHotkey(string name, Key[] keys, Action action)
-        {
-            // remove same-name hotkeys (if any) and overwrite them later
-            var hotkeyDupes = ActiveHotkeys.Where(hotkey => hotkey.Name == name);
-            for (int i = 0; i < hotkeyDupes.Count(); i++)
-            {
-                ActiveHotkeys.Remove(hotkeyDupes.ElementAt(i));
-            }
-
-            // attempt to create a new hotkey
-            ActiveHotkeys.Add(new Hotkey(name, keys, action));
-        }
-
-        /// <summary>
-        /// Loads all saved hotkeys from settings.
-        /// </summary>
-        public void LoadAllHotkeys()
-        {
-            if (Settings.Default.Hotkeys != null)
-            {
-                foreach (var hotkey in Settings.Default.Hotkeys)
-                {
-                    var keyInfo = hotkey.Split(',');
-                    SavedHotkeys.Add(hotkey.Split(',')[0],
-                        hotkey.Substring(hotkey.IndexOf(',') + 1));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Attempts to load a hotkey with the given name from settings.
-        /// </summary>
-        /// <param name="name">Name (identifier) of the hotkey.</param>
-        /// <param name="action">Action for this hotkey.</param>
-        /// <returns></returns>
-        public bool TryLoadHotkey(string name, Action action)
-        {
-            // see if the key already exists
-            if (SavedHotkeys.TryGetValue(name, out string keyInfo) == true)
-            {
-                try
-                {
-                    ActiveHotkeys.Add(new Hotkey(name, keyInfo, action));
-                    return true;
-                }
-                catch (InvalidOperationException) { return false; }
-            }
-            else return false;
-        }
-
-        /// <summary>
-        /// Attempts to find an active hotkey with the specified name.
-        /// </summary>
-        /// <param name="name">The name of hotkey to be searched for.</param>
-        /// <returns>A Hotkey if found, or null.</returns>
-        public Hotkey FindHotkeyByName(string name)
-        {
-            foreach (var hotkey in ActiveHotkeys)
-            {
-                if (hotkey.Name == name) return hotkey;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Converts every active hotkey definition into its string form and stores to settings.
-        /// </summary>
-        public void SaveHotkeys()
-        {
-            var hotkeys = new StringCollection();
-            foreach (var hotkey in ActiveHotkeys)
-            {
-                hotkeys.Add(hotkey.ToString());
-            }
-            Settings.Default.Hotkeys = hotkeys;
-        }
         #endregion
 
-        #region P/Invoke & hooking
+        #region Runtime hotkey and key lists
+        // List of all active hotkeys.
+        private static List<Hotkey> _hotkeys = new List<Hotkey>();
+        // List of currently held keys.
+        private static List<Key> _pressedKeys = new List<Key>();
+        #endregion
+
+        private static IntPtr _currentHook = IntPtr.Zero;
+        private static bool _isRecording = false;
+        private static HotkeyRecorded _recordingCallback;
+
+        #region P/Invoke functions and delegate methods
         // Initializes a global windows hook.
         [DllImport("user32.dll")]
         private static extern IntPtr SetWindowsHookEx(int idHook, KeyboardHookProc lpfn, IntPtr hmod, uint dwThreadId);
@@ -154,7 +47,6 @@ namespace Priceall.Hotkey
         // Uninitializes the global windows hook.
         [DllImport("user32.dll")]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-        #endregion
 
         // Delegate (callback) required for installing the hook.
         public delegate int KeyboardHookProc(int code, int wParam, ref KeyboardHook lParam);
@@ -162,36 +54,106 @@ namespace Priceall.Hotkey
         // Delegate (callback) required for returning the new hotkey.
         public delegate void HotkeyRecorded(Key[] keyCombo);
 
+        // Instance of keyboard hook delegate to prevent it from being GC'd.
+        private static KeyboardHookProc _callback;
+        #endregion
+
+        #region Initialization/uninitialization
         /// <summary>
         /// Starts global hook to listen for keypresses.
         /// </summary>
         /// <returns>Whether the registration is successful.</returns>
-        public bool Initialize()
+        public static bool Initialize()
         {
             _callback = OnHookCall;
             _currentHook = SetWindowsHookEx(WH_KEYBOARD_LL, _callback, IntPtr.Zero, 0);
-            return _currentHook != IntPtr.Zero;
+            return _currentHook == IntPtr.Zero;
         }
 
         /// <summary>
         /// Uninstalls the global windows hook.
         /// </summary>
         /// <returns>Whether the uninitialization is successful.</returns>
-        public bool Uninitialize()
+        public static bool Uninitialize()
         {
             return UnhookWindowsHookEx(_currentHook);
         }
+        #endregion
+        
+        #region Hotkey management
+        /// <summary>
+        /// Attempts to create a new hotkey. If same-name hotkey exists, they will be overwritten.
+        /// </summary>
+        /// <param name="name">Name (identifier) of the hotkey.</param>
+        /// <param name="keys">Key combo of this hotkey. Includes virtual keys and modifier keys.</param>
+        /// <param name="action">Action for this hotkey.</param>
+        public static void CreateNewHotkey(string name, Key[] keys, Action action)
+        {
+            // remove same-name hotkeys (if any) and overwrite them later
+            var hotkeyDupes = _hotkeys.Where(hotkey => hotkey.Name == name);
+            for (int i = 0; i < hotkeyDupes.Count(); i++)
+            {
+                _hotkeys.Remove(hotkeyDupes.ElementAt(i));
+            }
 
-        public void StartRecording(HotkeyRecorded callback)
+            // attempt to create a new hotkey
+            _hotkeys.Add(new Hotkey(name, keys, action));
+        }
+
+        /// <summary>
+        /// Attempts to activate a hotkey with the given name from settings.
+        /// </summary>
+        /// <param name="name">Name (identifier) of the hotkey.</param>
+        /// <param name="action">Action for this hotkey.</param>
+        /// <returns></returns>
+        public static bool ActivateHotkeyFromSettings(string name, Action action)
+        {
+            foreach (var hotkey in SettingsService
+                    .GetSetting<StringCollection>("Hotkeys"))
+            {
+                var keyInfo = hotkey.Split(',');
+                if (keyInfo[0] == name)
+                {
+                    // Found the hotkey by name in settings
+                    _hotkeys.Add(new Hotkey(keyInfo[0], keyInfo[1], action));
+                    return true;
+                }
+            }
+
+            // Hotkey of the same name is not found
+            return false;
+        }
+
+        /// <summary>
+        /// Converts every active hotkey definition 
+        /// into its string form and stores to settings.
+        /// </summary>
+        public static void SaveActiveHotkeys()
+        {
+            var hotkeys = new StringCollection();
+            foreach (var hotkey in _hotkeys)
+            {
+                hotkeys.Add(hotkey.ToString());
+            }
+            SettingsService.SetSetting("Hotkeys", hotkeys);
+        }
+
+        /// <summary>
+        /// Puts hotkey service in recording mode to capture a new hotkey combo.
+        /// </summary>
+        /// <param name="callback">Callback method to be called 
+        /// when the recording finishes.</param>
+        public static void StartRecording(HotkeyRecorded callback)
         {
             _isRecording = true;
             _recordingCallback = callback;
         }
-
+        #endregion
+        
         /// <summary>
         /// Callback fired every time a key is pressed.
         /// </summary>
-        public int OnHookCall(int code, int wParam, ref KeyboardHook lParam)
+        public static int OnHookCall(int code, int wParam, ref KeyboardHook lParam)
         {
             if (code >= 0)
             {
@@ -225,7 +187,7 @@ namespace Priceall.Hotkey
                     // Key pressed event (fresh)
                     _pressedKeys.Add(key);
 
-                    if (_isRecording && !_modifierKeys.Contains(key))
+                    if (_isRecording && !MODIFIER_KEYS.Contains(key))
                     {
                         // If recording, check for key combo completion
                         _isRecording = false;
@@ -236,7 +198,7 @@ namespace Priceall.Hotkey
                 if (!_isRecording)
                 {
                     // If not recording, check for hotkey hits
-                    foreach (var activeHotkey in ActiveHotkeys)
+                    foreach (var activeHotkey in _hotkeys)
                     {
                         if (activeHotkey.IsKeyHit(_pressedKeys.ToArray()))
                         {

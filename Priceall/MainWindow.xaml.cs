@@ -80,7 +80,8 @@ namespace Priceall
         private void InitializeClipboard()
         {
             var helper = new WindowInteropHelper(this);
-            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle), OnHotKeyHandler);
+            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle));
+            _clipboard.ClipboardChanged += QueryAppraisalAsync;
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace Priceall
         /// </summary>
         private async void OnHotKeyHandler()
         {
-            await QueryAppraisal();
+            await QueryAppraisalAsync();
         }
 
         /// <summary>
@@ -141,26 +142,28 @@ namespace Priceall
         /// Queries appraisal, triggered by hotkey.
         /// </summary>
         /// <returns></returns>
-        private async Task QueryAppraisal()
+        private async Task QueryAppraisalAsync()
         {
             var clipboardContent = _clipboard.ReadClipboardText();
-            await Task.Run(() => { QueryAppraisal(clipboardContent); });
+            await Task.Run(() => { QueryAppraisalAsync(clipboardContent); });
         }
 
         /// <summary>
-        /// Queries appraisal, triggered by button.
+        /// Queries appraisal, triggered by 
         /// </summary>
-        private async void QueryAppraisal(object sender, RoutedEventArgs e)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void QueryAppraisalAsync(object sender, EventArgs e)
         {
             var clipboardContent = _clipboard.ReadClipboardText();
-            await Task.Run(() => { QueryAppraisal(clipboardContent); });
+            await Task.Run(() => { QueryAppraisalAsync(clipboardContent); });
         }
 
         /// <summary>
         /// Universal entry for triggering a price check.
         /// </summary>
         /// <param name="clipboardContent">Content in clipboard to be price checked.</param>
-        private async void QueryAppraisal(string clipboardContent)
+        private async void QueryAppraisalAsync(string clipboardContent)
         {
             SetWindowOnTopDelegate();
 

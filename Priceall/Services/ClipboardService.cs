@@ -13,7 +13,6 @@ namespace Priceall.Services
     {
         IntPtr _hwndNextViewer = IntPtr.Zero;
         HwndSource _hwndSource;
-        Action _clipboardAction;
         
         #region P/Invoke
         internal const int WM_DRAWCLIPBOARD = 0x0308;
@@ -30,28 +29,23 @@ namespace Priceall.Services
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         #endregion
 
+        #region Event
+        public event EventHandler ClipboardChanged;
+
+        protected virtual void OnClipboardChanged(EventArgs e)
+        {
+            ClipboardChanged?.Invoke(this, e);
+        }
+        #endregion
+
         /// <summary>
         /// Stores the HwndSource of the listening window and action to do.
         /// </summary>
         /// <param name="hwndSource">HwndSource of the listening window.</param>
         /// <param name="action">Action to invoke when clipboard event occurs.</param>
-        public void InitializeListener(HwndSource hwndSource, Action action)
+        public void InitializeListener(HwndSource hwndSource)
         {
             _hwndSource = hwndSource;
-            _clipboardAction = action;
-        }
-
-        /// <summary>
-        /// Reads clipboard.
-        /// </summary>
-        /// <returns>Clipboard content, or empty string if clipboard does not have text.</returns>
-        public string ReadClipboardText()
-        {
-            if (Clipboard.ContainsText())
-            {
-                return Clipboard.GetText();
-            }
-            return String.Empty;
         }
         
         /// <summary>
@@ -70,6 +64,19 @@ namespace Priceall.Services
         {
             _hwndSource.RemoveHook(OnClipboardChanged);
             ChangeClipboardChain(_hwndSource.Handle, _hwndNextViewer);
+        }
+
+        /// <summary>
+        /// Reads clipboard.
+        /// </summary>
+        /// <returns>Clipboard content, or empty string if clipboard does not have text.</returns>
+        public string ReadClipboardText()
+        {
+            if (Clipboard.ContainsText())
+            {
+                return Clipboard.GetText();
+            }
+            return String.Empty;
         }
 
         /// <summary>
@@ -93,7 +100,8 @@ namespace Priceall.Services
                     break;
 
                 case WM_DRAWCLIPBOARD:
-                    _clipboardAction.Invoke();
+                    // Clipboard content has changed. Fire the event.
+                    OnClipboardChanged(EventArgs.Empty);
                     SendMessage(_hwndNextViewer, msg, wParam, lParam);
                     break;
             }

@@ -1,21 +1,21 @@
 ﻿using Priceall.Properties;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Windows.Input;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 namespace Priceall.Hotkey
 {
     /// <summary>
     /// Class for managing multiple hotkeys, or record new hotkeys.
     /// </summary>
-    class HotkeyHelper
+    internal class HotkeyHelper
     {
         // A list of modifier keys.
-        static readonly Key[] _modifierKeys = {
+        private static readonly Key[] _modifierKeys = {
             Key.LeftCtrl, Key.RightCtrl,
             Key.LeftShift, Key.RightShift,
             Key.LeftAlt, Key.RightAlt,
@@ -35,13 +35,12 @@ namespace Priceall.Hotkey
         public List<Hotkey> ActiveHotkeys { get; set; }
 
         // Keys tracking
-        List<Key> _pressedKeys = new List<Key>();
-        List<Key> _recordedKeys = new List<Key>();
+        private List<Key> _pressedKeys = new List<Key>();
 
         // Hotkey hooking
-        const int WH_KEYBOARD_LL = 13;
-        IntPtr _currentHook = IntPtr.Zero;
-        KeyboardHookProc _callback;
+        private const int WH_KEYBOARD_LL = 13;
+        private IntPtr _currentHook = IntPtr.Zero;
+        private KeyboardHookProc _callback;
 
         // Hotkey recording
         private bool _isRecording = false;
@@ -88,7 +87,7 @@ namespace Priceall.Hotkey
                 foreach (var hotkey in Settings.Default.Hotkeys)
                 {
                     var keyInfo = hotkey.Split(',');
-                    SavedHotkeys.Add(hotkey.Split(',')[0], 
+                    SavedHotkeys.Add(hotkey.Split(',')[0],
                         hotkey.Substring(hotkey.IndexOf(',') + 1));
                 }
             }
@@ -146,15 +145,15 @@ namespace Priceall.Hotkey
         #region P/Invoke & hooking
         // Initializes a global windows hook.
         [DllImport("user32.dll")]
-        static extern IntPtr SetWindowsHookEx(int idHook, KeyboardHookProc lpfn, IntPtr hmod, uint dwThreadId);
+        private static extern IntPtr SetWindowsHookEx(int idHook, KeyboardHookProc lpfn, IntPtr hmod, uint dwThreadId);
 
         // Passes hook event to the next listener.
         [DllImport("user32.dll")]
-        static extern int CallNextHookEx(IntPtr hhk, int nCode, int wParam, ref KeyboardHook lParam);
+        private static extern int CallNextHookEx(IntPtr hhk, int nCode, int wParam, ref KeyboardHook lParam);
 
         // Uninitializes the global windows hook.
         [DllImport("user32.dll")]
-        static extern bool UnhookWindowsHookEx(IntPtr hhk);
+        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
         #endregion
 
         // Delegate (callback) required for installing the hook.
@@ -210,58 +209,38 @@ namespace Priceall.Hotkey
                         break;
                 }
 
-                // Not recording, use _pressedKeys list to check for hotkey hits
+                if (msg != KeyboardMessages.KeyDown
+                    && msg != KeyboardMessages.SysKeyDown)
+                {
+                    // Key released event
+                    _pressedKeys.Remove(key);
+                }
+                else if (_pressedKeys.Contains(key))
+                {
+                    // Key repeated event
+                    return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
+                }
+                else
+                {
+                    // Key pressed event (fresh)
+                    _pressedKeys.Add(key);
+
+                    if (_isRecording && !_modifierKeys.Contains(key))
+                    {
+                        // If recording, check for key combo completion
+                        _isRecording = false;
+                        _recordingCallback(_pressedKeys.ToArray());
+                    }
+                }
+
                 if (!_isRecording)
                 {
-                    if (msg != KeyboardMessages.KeyDown
-                        && msg != KeyboardMessages.SysKeyDown)
-                    {
-                        // Key released event
-                        _pressedKeys.Remove(key);
-                    }
-                    else if (_pressedKeys.Contains(key))
-                    {
-                        // Key repeated event
-                        return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
-                    }
-                    else
-                    {
-                        // Key pressed event (fresh)
-                        _pressedKeys.Add(key);
-                    }
-
-                    // check whether current key combo hits any hotkey
+                    // If not recording, check for hotkey hits
                     foreach (var activeHotkey in ActiveHotkeys)
                     {
                         if (activeHotkey.IsKeyHit(_pressedKeys.ToArray()))
                         {
                             activeHotkey.Invoke();
-                        }
-                    }
-                }
-                // Is recording, use _recordedKeys list to save all keys
-                else
-                {
-                    if (msg != KeyboardMessages.KeyDown
-                        && msg != KeyboardMessages.SysKeyDown)
-                    {
-                        // Key is released, remove it from list
-                        _recordedKeys.Remove(key);
-                    }
-                    else if (_pressedKeys.Contains(key))
-                    {
-                        // Key repeated event
-                        return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
-                    }
-                    else
-                    {
-                        // Key pressed event (fresh)
-                        _recordedKeys.Add(key);
-                        if (!_modifierKeys.Contains(key))
-                        {
-                            // We've got a non-modifier key, stop recording
-                            _recordingCallback(_pressedKeys.ToArray());
-                            _isRecording = false;
                         }
                     }
                 }

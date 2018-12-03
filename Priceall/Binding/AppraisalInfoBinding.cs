@@ -30,7 +30,7 @@ namespace Priceall.Binding
 
         public AppraisalInfoBinding()
         {
-            Price = "Copy, click. (or Ctrl + Shift + C)";
+            Price = "Priceall";
             SetTypeIcon("searchmarket");
         }
 

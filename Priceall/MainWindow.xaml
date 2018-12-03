@@ -62,8 +62,7 @@
         <Grid x:Name="AppraisalInfo"
               Margin="0,0,5,0"
               MouseWheel="TweakWindowTransparency">
-            <Button Style="{StaticResource ResourceKey=ClearButton}"
-                Click="QueryAppraisal">
+            <Button Style="{StaticResource ResourceKey=ClearButton}">
                 <Button.Content>
                     <DockPanel Width="{Binding ActualWidth, ElementName=AppraisalInfo}" 
                                LastChildFill="True">

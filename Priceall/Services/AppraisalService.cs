@@ -9,18 +9,19 @@ using System.Web;
 namespace Priceall.Services
 {
     /// <summary>
-    /// Services class for interacting with Evepraisal.com.
+    /// Service class for interacting with Evepraisal.com.
     /// Provides persistance and market system customization.
     /// </summary>
-    class AppraisalService
+    static class AppraisalService
     {
         #region Properties
+        static string _userAgent;
         static readonly HttpClient _client = new HttpClient();
         static readonly UriBuilder _uriBuilder = 
             new UriBuilder("https://evepraisal.com/appraisal.json");
 
-        bool _isPersist;
-        public bool IsPersist
+        static bool _isPersist;
+        public static bool IsPersist
         {
             get { return _isPersist; }
             set
@@ -30,8 +31,8 @@ namespace Priceall.Services
             }
         }
 
-        string _marketSystem;
-        public string MarketSystem
+        static string _marketSystem;
+        public static string MarketSystem
         {
             get { return _marketSystem; }
             set
@@ -41,27 +42,25 @@ namespace Priceall.Services
             }
         }
         #endregion
-
+        
         /// <summary>
-        /// Instantiates an Evepraisal service and set appropriate User-Agent and params.
+        /// Initializes Evepraisal service and set appropriate User-Agent and params.
         /// </summary>
         /// <param name="isPersist">Whether appraisal requests shall persist on serverside. Defaulted to no.</param>
         /// <param name="marketSystem">The system for price checking. Defaulted to Jita.</param>
-        public AppraisalService(bool isPersist = false, string marketSystem = "jita")
+        public static void Initialize(bool isPersist = false, string marketSystem = "jita")
         {
-            // set request user-agent
             var appVersion = Assembly.GetEntryAssembly().GetName().Version;
-            _client.DefaultRequestHeaders.Add("User-Agent", 
-                $"Priceall/{appVersion} (Github.com/xyx0826/Priceall)");
-            // set request params
+            _userAgent = $"Priceall/{appVersion} (Github.com/xyx0826/Priceall)";
+            _client.DefaultRequestHeaders.Add("User-Agent", _userAgent);
             IsPersist = isPersist;
             MarketSystem = marketSystem;
         }
 
         /// <summary>
-        /// Updates the persist status of HttpClient.
+        /// Updates persistance of future Evepraisal queries.
         /// </summary>
-        void UpdatePersist()
+        static void UpdatePersist()
         {
             var queryParams = HttpUtility.ParseQueryString(_uriBuilder.Query);
             if (!IsPersist) queryParams["persist"] = "no";
@@ -70,9 +69,9 @@ namespace Priceall.Services
         }
 
         /// <summary>
-        /// Updates the target market system of HttpClient.
+        /// Updates the target market system of future Evepraisal queries.
         /// </summary>
-        void UpdateMarketSystem()
+        static void UpdateMarketSystem()
         {
             var queryParams = HttpUtility.ParseQueryString(_uriBuilder.Query);
             queryParams["market"] = MarketSystem;
@@ -83,7 +82,7 @@ namespace Priceall.Services
         /// Queries appraisal.
         /// </summary>
         /// <param name="clipboardContent">Content from clipboard to be parsed.</param>
-        public async Task<string> QueryAppraisal(string query)
+        public static async Task<string> QueryAppraisal(string query)
         {
             // if string is too long, do not proceed
             if (query.Length > Settings.Default.MaxStringLength)

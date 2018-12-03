@@ -23,7 +23,6 @@ namespace Priceall
         static readonly UiStyleBinding _styleBinding = new UiStyleBinding();
 
         // initialize helpers
-        static readonly AppraisalService _appraisal = new AppraisalService();
         static readonly ClipboardService _clipboard = new ClipboardService();
 
         static Window _settingsWindow = new SettingsWindow();
@@ -37,6 +36,7 @@ namespace Priceall
         {
             InitializeComponent();
             SettingsService.UpdateSettings();   // migrate settings over from older Priceall version
+            AppraisalService.Initialize();
             HotkeyHelper.Initialize();
             Task.Run(async () => { await FlagService.CheckAllFlags(); });   // update flag values in settings
 
@@ -59,7 +59,12 @@ namespace Priceall
             base.OnSourceInitialized(e);
             _settingsWindow.Owner = this;
 
-            HotkeyHelper.ActivateHotkeyFromSettings("QueryKey", OnHotKeyHandler);
+            if (!HotkeyHelper.ActivateHotkeyFromSettings("QueryKey", OnHotKeyHandler))
+            {
+                HotkeyHelper.CreateNewHotkey("QueryKey", 
+                    new Key[] { Key.LeftShift, Key.LeftCtrl, Key.C }, 
+                    OnHotKeyHandler);
+            }
 
             SetWindowOnTopDelegate();
             InitializeClipboard();
@@ -142,7 +147,7 @@ namespace Priceall
         }
 
         /// <summary>
-        /// Queries appraisal, triggered by 
+        /// Queries appraisal, triggered by clipboard event.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -167,7 +172,7 @@ namespace Priceall
                 _infoBinding.Price = "Hold on...";
                 _infoBinding.SetTypeIcon("searchmarket");
 
-                var appraisal = await _appraisal.QueryAppraisal(clipboardContent);
+                var appraisal = await AppraisalService.QueryAppraisal(clipboardContent);
                 var json = new Json(appraisal);
 
                 if (!String.IsNullOrEmpty(json.ErrorMessage))

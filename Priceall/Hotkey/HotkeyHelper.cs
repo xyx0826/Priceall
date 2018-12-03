@@ -16,7 +16,7 @@ namespace Priceall.Hotkey
         #region Constant (variables)
         private const int WH_KEYBOARD_LL = 13;
 
-        private static readonly Key[] MODIFIER_KEYS = {
+        private static readonly Key[] _modifierKeys = {
             Key.LeftCtrl, Key.RightCtrl,
             Key.LeftShift, Key.RightShift,
             Key.LeftAlt, Key.RightAlt,
@@ -108,19 +108,23 @@ namespace Priceall.Hotkey
         /// <returns></returns>
         public static bool ActivateHotkeyFromSettings(string name, Action action)
         {
-            foreach (var hotkey in SettingsService
-                    .GetSetting<StringCollection>("Hotkeys"))
+            var savedHotkeys = SettingsService
+                    .GetSetting<StringCollection>("Hotkeys");
+            if (savedHotkeys != null)
             {
-                var keyInfo = hotkey.Split(',');
-                if (keyInfo[0] == name)
+                // Saved hotkey list is not empty
+                foreach (var hotkey in savedHotkeys)
                 {
-                    // Found the hotkey by name in settings
-                    _hotkeys.Add(new Hotkey(keyInfo[0], keyInfo[1], action));
-                    return true;
+                    var keyInfo = hotkey.Split(',');
+                    if (keyInfo[0] == name)
+                    {
+                        // Found the hotkey by name in settings
+                        _hotkeys.Add(new Hotkey(keyInfo[0], keyInfo[1], action));
+                        return true;
+                    }
                 }
             }
-
-            // Hotkey of the same name is not found
+            // Hotkey list is empty or hotkey not found
             return false;
         }
 
@@ -187,23 +191,22 @@ namespace Priceall.Hotkey
                     // Key pressed event (fresh)
                     _pressedKeys.Add(key);
 
-                    if (_isRecording && !MODIFIER_KEYS.Contains(key))
+                    if (!_isRecording)
                     {
-                        // If recording, check for key combo completion
+                        // Not recording, check for hotkey hits
+                        foreach (var activeHotkey in _hotkeys)
+                        {
+                            if (activeHotkey.IsKeyHit(_pressedKeys.ToArray()))
+                            {
+                                activeHotkey.Invoke();
+                            }
+                        }
+                    }
+                    else if (!_modifierKeys.Contains(key))
+                    {
+                        // Recording, check for key combo completion
                         _isRecording = false;
                         _recordingCallback(_pressedKeys.ToArray());
-                    }
-                }
-
-                if (!_isRecording)
-                {
-                    // If not recording, check for hotkey hits
-                    foreach (var activeHotkey in _hotkeys)
-                    {
-                        if (activeHotkey.IsKeyHit(_pressedKeys.ToArray()))
-                        {
-                            activeHotkey.Invoke();
-                        }
                     }
                 }
             }

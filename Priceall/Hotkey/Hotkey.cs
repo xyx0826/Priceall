@@ -90,10 +90,8 @@ namespace Priceall.Hotkey
             var keyList = new List<Key>();
             foreach (var key in keys.Split(','))
             {
-                if (Int32.TryParse(key, out int keyCode))
-                {
-                    keyList.Add((Key)keyCode);
-                }
+                if (Enum.TryParse(key, out Key keyEnum))
+                    keyList.Add(keyEnum);
             }
             return keyList.ToArray();
         }

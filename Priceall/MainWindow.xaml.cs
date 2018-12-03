@@ -62,8 +62,9 @@ namespace Priceall
             if (!HotkeyHelper.ActivateHotkeyFromSettings("QueryKey", OnHotKeyHandler))
             {
                 HotkeyHelper.CreateNewHotkey("QueryKey", 
-                    new Key[] { Key.LeftShift, Key.LeftCtrl, Key.C }, 
+                    new Key[] { Key.LeftCtrl, Key.LeftShift, Key.C }, 
                     OnHotKeyHandler);
+                _infoBinding.Price = "Query hotkey: LCtrl + LShft + C.";
             }
 
             SetWindowOnTopDelegate();
@@ -128,7 +129,6 @@ namespace Priceall
         /// </summary>
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
-            HotkeyHelper.SaveActiveHotkeys();
             HotkeyHelper.Uninitialize();
             Settings.Default.Save();
             Application.Current.Shutdown();

@@ -28,8 +28,7 @@ namespace Priceall.Services
         public static T SetSetting<T>(string key, T newValue)
         {
             var oldSettings = Settings.Default[key];
-            if (oldSettings != null)
-                Settings.Default[key] = newValue;
+            Settings.Default[key] = newValue;
 
             Settings.Default.Save();
             return (T)oldSettings;

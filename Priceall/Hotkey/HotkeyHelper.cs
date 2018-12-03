@@ -33,7 +33,8 @@ namespace Priceall.Hotkey
 
         private static IntPtr _currentHook = IntPtr.Zero;
         private static bool _isRecording = false;
-        private static HotkeyRecorded _recordingCallback;
+        private static HotkeyRecorded _recordedCallback;
+        private static HotkeyPreview _previewCallback;
 
         #region P/Invoke functions and delegate methods
         // Initializes a global windows hook.
@@ -53,6 +54,9 @@ namespace Priceall.Hotkey
 
         // Delegate (callback) required for returning the new hotkey.
         public delegate void HotkeyRecorded(Key[] keyCombo);
+
+        // Delegate (callback) for previewing the hotkey.
+        public delegate void HotkeyPreview(Key[] keyCombo);
 
         // Instance of keyboard hook delegate to prevent it from being GC'd.
         private static KeyboardHookProc _callback;
@@ -76,6 +80,7 @@ namespace Priceall.Hotkey
         /// <returns>Whether the uninitialization is successful.</returns>
         public static bool Uninitialize()
         {
+            SaveActiveHotkeys();
             return UnhookWindowsHookEx(_currentHook);
         }
         #endregion
@@ -115,7 +120,8 @@ namespace Priceall.Hotkey
                 // Saved hotkey list is not empty
                 foreach (var hotkey in savedHotkeys)
                 {
-                    var keyInfo = hotkey.Split(',');
+                    var keyInfo = hotkey.Split(new char[] { ',' }, 2, 
+                        StringSplitOptions.RemoveEmptyEntries);
                     if (keyInfo[0] == name)
                     {
                         // Found the hotkey by name in settings
@@ -147,10 +153,12 @@ namespace Priceall.Hotkey
         /// </summary>
         /// <param name="callback">Callback method to be called 
         /// when the recording finishes.</param>
-        public static void StartRecording(HotkeyRecorded callback)
+        public static void StartRecording(
+            HotkeyRecorded recordedCallback, HotkeyPreview previewCallback)
         {
             _isRecording = true;
-            _recordingCallback = callback;
+            _recordedCallback = recordedCallback;
+            _previewCallback = previewCallback;
         }
         #endregion
         
@@ -202,11 +210,16 @@ namespace Priceall.Hotkey
                             }
                         }
                     }
-                    else if (!_modifierKeys.Contains(key))
+                    else if (_modifierKeys.Contains(key))
                     {
-                        // Recording, check for key combo completion
+                        // Recording but got a modifier key, combo is not finished
+                        _previewCallback(_pressedKeys.ToArray());
+                    }
+                    else
+                    {
+                        // Recording but got a common key, combo is complete
                         _isRecording = false;
-                        _recordingCallback(_pressedKeys.ToArray());
+                        _recordedCallback(_pressedKeys.ToArray());
                     }
                 }
             }

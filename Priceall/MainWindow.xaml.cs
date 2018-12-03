@@ -1,8 +1,9 @@
 ﻿using Priceall.Binding;
-using Priceall.Helper;
+using Priceall.Services;
 using Priceall.Hotkey;
 using Priceall.Properties;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -22,8 +23,8 @@ namespace Priceall
         static readonly UiStyleBinding _styleBinding = new UiStyleBinding();
 
         // initialize helpers
-        static readonly AppraisalHelper _appraisal = new AppraisalHelper();
-        static readonly ClipboardHelper _clipboard = new ClipboardHelper();
+        static readonly AppraisalService _appraisal = new AppraisalService();
+        static readonly ClipboardService _clipboard = new ClipboardService();
         static readonly HotkeyHelper _hotkey = new HotkeyHelper();
 
         static Window _settingsWindow = new SettingsWindow();
@@ -37,7 +38,7 @@ namespace Priceall
         {
             InitializeComponent();
             UpdateSettings();   // migrate settings over from older Priceall version
-            Task.Run(async () => { await FlagsHelper.CheckAllFlags(); });   // update flag values in settings
+            Task.Run(async () => { await FlagService.CheckAllFlags(); });   // update flag values in settings
 
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
@@ -46,7 +47,6 @@ namespace Priceall
             // subscribe settings events
             Instance.AutoRefreshToggled += ToggleAutoRefresh;
             Instance.PriceColorChanged += RefreshPriceColor;
-            Instance.QueryHotkeyUpdated += UpdateQueryHotkey;
             Instance.SettingsReset += ResetSettings;
         }
 
@@ -58,7 +58,15 @@ namespace Priceall
         {
             base.OnSourceInitialized(e);
             _settingsWindow.Owner = this;
-            _hotkey.LoadHotkeyFromSettings("QueryKey", OnHotKeyHandler);
+
+            if (_hotkey.TryLoadHotkey("QueryKey", OnHotKeyHandler))
+            {
+                Instance.UpdateQueryHotkey(
+                    new QueryHotkeyUpdatedEventArgs
+                    {
+                        KeyCombo = _hotkey.FindHotkeyByName("QueryKey").Keys
+                    });
+            }
 
             SetWindowOnTopDelegate();
             InitializeClipboard();
@@ -92,7 +100,7 @@ namespace Priceall
         /// <param name="virtKey">New virtual key.</param>
         public void UpdateQueryHotkey(object sender, QueryHotkeyUpdatedEventArgs e)
         {
-            _hotkey.RegisterNewHotkey("QueryKey", e.KeyCombo, OnHotKeyHandler);
+            _hotkey.CreateNewHotkey("QueryKey", e.KeyCombo, OnHotKeyHandler);
         }
 
         /// <summary>
@@ -114,7 +122,7 @@ namespace Priceall
         /// </summary>
         private void CheckForUpdates()
         {
-            var helper = new UpdateHelper();
+            var helper = new UpdateService();
             Task.Run(async () =>
             {
                 Settings.Default.UpdateAvailable = await helper.CheckForUpdates();
@@ -249,7 +257,13 @@ namespace Priceall
         /// <param name="keyCombo">Pass the keys!</param>
         private void HotkeyRecordedDelegate(Key[] keyCombo)
         {
-            throw new NotImplementedException();
+            Debug.Write($"New hotkey recorded: {String.Join(", ", keyCombo)}");
+            _hotkey.CreateNewHotkey("QueryKey", keyCombo, OnHotKeyHandler);
+            Instance.UpdateQueryHotkey(
+                new QueryHotkeyUpdatedEventArgs
+                    {
+                        KeyCombo = _hotkey.FindHotkeyByName("QueryKey").Keys
+                    });
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Priceall.Binding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -26,14 +27,24 @@ namespace Priceall
         static readonly Regex _numberRegex = new Regex("[^0-9]+");
         static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
 
-        static List<Key> _keys = new List<Key>();
-        static int _keysHeld = 0;
+        Key[] _keyCombo;
+        string KeyCombo
+        {
+            get
+            {
+                return String.Join(", ", _keyCombo);
+            }
+        }
 
         static SettingsBinding _settings;
 
         public SettingsWindow()
         {
             InitializeComponent();
+            Instance.QueryHotkeyUpdated += (object sender, QueryHotkeyUpdatedEventArgs e) =>
+            {
+                _keyCombo = e.KeyCombo;
+            };
 
             _settings = new SettingsBinding();
         }
@@ -76,54 +87,10 @@ namespace Priceall
             Instance.ResetSettings();
             OnPropertyChanged(null);
         }
-
-        private void EditingKeyDown(object sender, KeyEventArgs e)
+        
+        private void EditHotkey(object sender, RoutedEventArgs e)
         {
-            // clear key list and begin new recording
-            if (_keysHeld == 0)
-            {
-                Debug.WriteLine("Recording a new keycombo.");
-                _keys.Clear();
-            }
 
-            // prevent duplicates
-            if (!e.IsRepeat && !_keys.Contains(e.Key))
-            {
-                // annoying windows alt codes
-                var altDown = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
-
-                Debug.WriteLine($"Adding {(altDown ? e.SystemKey : e.Key)}");
-                _keysHeld++;
-                _keys.Add(altDown ? e.SystemKey : e.Key);
-            }
-        }
-
-        private void EditingKeyUp(object sender, KeyEventArgs e)
-        {
-            var altDown = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
-            _keysHeld--;
-
-            Debug.WriteLine($"Releasing {(altDown ? e.SystemKey : e.Key)}");
-
-            // no more keys down, recording complete
-            if (_keysHeld == 0)
-            {
-                Debug.WriteLine($"Recording complete. New keycombo with {_keys.Count} keys.");
-                return;
-
-                // key recording complete
-                // create event args and fire update event
-                var keyArgs = new QueryHotkeyUpdatedEventArgs
-                {
-                    KeyCombo = _keys.ToArray()
-                };
-                Instance.UpdateQueryHotkey(keyArgs);
-            }
-        }
-
-        private void BlockFilter(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = true;
         }
     }
 }

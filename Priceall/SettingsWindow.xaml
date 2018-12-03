@@ -41,11 +41,9 @@
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Grid.Row="3" Grid.Column="0" Content="Query hotkey:"
                        ToolTip="Hotkey used to trigger a query."/>
-                <TextBox Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="BlockFilter"
-                         PreviewKeyDown="EditingKeyDown"
-                         PreviewKeyUp="EditingKeyUp"
-                         Text="{Binding KeyCombo, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
+                        Click="EditHotkey"
+                        Content="{Binding KeyCombo, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Grid.Row="4" Grid.Column="0" Content="Use automatic refresh:"
                        ToolTip="When enabled, Priceall will refresh pricing everytime clipboard text changes."/>
                 <CheckBox Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Content="Yes"

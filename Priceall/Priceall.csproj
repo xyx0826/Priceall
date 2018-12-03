@@ -63,9 +63,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Binding\SettingsBinding.cs" />
+    <Compile Include="Events\HotkeyEvents.cs" />
     <Compile Include="Events\UiEvents.cs" />
-    <Compile Include="Helper\FlagsHelper.cs" />
-    <Compile Include="Helper\UpdateHelper.cs" />
+    <Compile Include="Services\FlagService.cs" />
+    <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Hotkey\Hotkey.cs" />
     <Compile Include="Binding\UiStyleBinding.cs" />
     <Compile Include="Binding\AppraisalInfoBinding.cs" />
@@ -96,7 +97,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helper\ClipboardHelper.cs" />
+    <Compile Include="Services\ClipboardService.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -116,7 +117,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper\AppraisalHelper.cs" />
+    <Compile Include="Services\AppraisalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

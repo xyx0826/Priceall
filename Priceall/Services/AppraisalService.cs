@@ -6,13 +6,13 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Priceall.Helper
+namespace Priceall.Services
 {
     /// <summary>
-    /// Helper class for interacting with Evepraisal.com.
+    /// Services class for interacting with Evepraisal.com.
     /// Provides persistance and market system customization.
     /// </summary>
-    class AppraisalHelper
+    class AppraisalService
     {
         #region Properties
         static readonly HttpClient _client = new HttpClient();
@@ -43,11 +43,11 @@ namespace Priceall.Helper
         #endregion
 
         /// <summary>
-        /// Instantiates an Evepraisal helper and set appropriate User-Agent and params.
+        /// Instantiates an Evepraisal service and set appropriate User-Agent and params.
         /// </summary>
         /// <param name="isPersist">Whether appraisal requests shall persist on serverside. Defaulted to no.</param>
         /// <param name="marketSystem">The system for price checking. Defaulted to Jita.</param>
-        public AppraisalHelper(bool isPersist = false, string marketSystem = "jita")
+        public AppraisalService(bool isPersist = false, string marketSystem = "jita")
         {
             // set request user-agent
             var appVersion = Assembly.GetEntryAssembly().GetName().Version;

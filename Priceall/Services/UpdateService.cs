@@ -4,9 +4,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Priceall.Helper
+namespace Priceall.Services
 {
-    class UpdateHelper
+    class UpdateService
     {
         static readonly string APPVEYOR_API_ROUTE = "https://ci.appveyor.com/api/projects/xyx0826/priceall/branch/master";
 

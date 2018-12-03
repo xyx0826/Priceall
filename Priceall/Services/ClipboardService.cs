@@ -3,13 +3,13 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace Priceall.Helper
+namespace Priceall.Services
 {
     /// <summary>
-    /// Helper class for clipboard interaction.
+    /// Services class for clipboard interaction.
     /// Provides text retrieval from clipboard or update event subscription.
     /// </summary>
-    class ClipboardHelper
+    class ClipboardService
     {
         IntPtr _hwndNextViewer = IntPtr.Zero;
         HwndSource _hwndSource;

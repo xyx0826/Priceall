@@ -1,10 +1,4 @@
-﻿using Priceall.Properties;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Priceall.Services
@@ -40,15 +34,14 @@ namespace Priceall.Services
                     {
                         var response = await client.GetAsync(_flagsDirectory + flag);
                         if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                            Settings.Default["FLAG_" + flag] = false;
-                        else Settings.Default["FLAG_" + flag] = true;
+                            SettingsService.SetSetting("FLAG_" + flag, false);
+                        else SettingsService.SetSetting("FLAG_" + flag, true);
                     }
                     catch (HttpRequestException)
                     {
-                        Settings.Default["FLAG_" + flag] = false;
+                        SettingsService.SetSetting("FLAG_" + flag, false);
                     }
                 }
-                Debug.WriteLine("Flags are checked.");
             }
         }
     }

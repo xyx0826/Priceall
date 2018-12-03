@@ -6,11 +6,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Priceall.Services
 {
-    class UpdateService
+    static class UpdateService
     {
         static readonly string APPVEYOR_API_ROUTE = "https://ci.appveyor.com/api/projects/xyx0826/priceall/branch/master";
 
-        public async Task<bool> CheckForUpdates()
+        public static async Task<bool> CheckForUpdates()
         {
             Version remoteVersion;
 
@@ -26,8 +26,8 @@ namespace Priceall.Services
                 }
                 catch (HttpRequestException) { return false; }
             }
-            return (Assembly.GetEntryAssembly().GetName().Version
-                .CompareTo(remoteVersion) < 0);
+            return Assembly.GetEntryAssembly().GetName().Version
+                .CompareTo(remoteVersion) < 0;
         }
     }
 }

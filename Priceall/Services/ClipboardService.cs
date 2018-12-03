@@ -14,8 +14,7 @@ namespace Priceall.Services
         IntPtr _hwndNextViewer = IntPtr.Zero;
         HwndSource _hwndSource;
         Action _clipboardAction;
-        bool _isViewing = false;
-
+        
         #region P/Invoke
         internal const int WM_DRAWCLIPBOARD = 0x0308;
 
@@ -62,7 +61,6 @@ namespace Priceall.Services
         {
             _hwndSource.AddHook(OnClipboardChanged);
             _hwndNextViewer = SetClipboardViewer(_hwndSource.Handle);
-            _isViewing = true;
         }
 
         /// <summary>
@@ -72,7 +70,6 @@ namespace Priceall.Services
         {
             _hwndSource.RemoveHook(OnClipboardChanged);
             ChangeClipboardChain(_hwndSource.Handle, _hwndNextViewer);
-            _isViewing = false;
         }
 
         /// <summary>

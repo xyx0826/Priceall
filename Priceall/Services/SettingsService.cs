@@ -1,9 +1,4 @@
 ﻿using Priceall.Properties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Priceall.Services
 {
@@ -16,7 +11,7 @@ namespace Priceall.Services
         /// <param name="key">The key of the setting to be found.</param>
         /// <returns>The value of the specified setting, 
         /// or null if the setting is not found.</returns>
-        public static T TryGetSetting<T>(string key)
+        public static T GetSetting<T>(string key)
         {
             var setting = Settings.Default[key];
             return (T)setting;
@@ -30,7 +25,7 @@ namespace Priceall.Services
         /// <param name="newValue">The new value for the specified setting.</param>
         /// <returns>The previous value of the specified settings,
         /// or null if the setting is not found.</returns>
-        public static T TryModifySettings<T>(string key, T newValue)
+        public static T SetSetting<T>(string key, T newValue)
         {
             var oldSettings = Settings.Default[key];
             if (oldSettings != null)

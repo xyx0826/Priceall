@@ -37,7 +37,7 @@ namespace Priceall
         public MainWindow()
         {
             InitializeComponent();
-            UpdateSettings();   // migrate settings over from older Priceall version
+            SettingsService.UpdateSettings();   // migrate settings over from older Priceall version
             Task.Run(async () => { await FlagService.CheckAllFlags(); });   // update flag values in settings
 
             DataContext = _styleBinding;
@@ -109,10 +109,9 @@ namespace Priceall
         /// </summary>
         private void CheckForUpdates()
         {
-            var helper = new UpdateService();
             Task.Run(async () =>
             {
-                Settings.Default.UpdateAvailable = await helper.CheckForUpdates();
+                Settings.Default.UpdateAvailable = await UpdateService.CheckForUpdates();
                 _controlsBinding.IsUpdateAvail = Settings.Default.UpdateAvailable;
             });
         }

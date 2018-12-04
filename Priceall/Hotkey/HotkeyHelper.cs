@@ -105,6 +105,17 @@ namespace Priceall.Hotkey
             _hotkeys.Add(new Hotkey(name, keys, action));
         }
 
+        public static void UpdateHotkey(string name, Key[] keys)
+        {
+            foreach (var hotkey in _hotkeys)
+            {
+                if (hotkey.Name == name)
+                {
+                    hotkey.UpdateKeyCombo(keys);
+                }
+            }
+        }
+
         /// <summary>
         /// Attempts to activate a hotkey with the given name from settings.
         /// </summary>
@@ -173,6 +184,11 @@ namespace Priceall.Hotkey
             _isRecording = true;
             _recordedCallback = recordedCallback;
             _previewCallback = previewCallback;
+        }
+
+        public static void StopRecording()
+        {
+            _isRecording = false;
         }
         #endregion
         

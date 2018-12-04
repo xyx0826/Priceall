@@ -25,7 +25,7 @@ namespace Priceall.Hotkey
         /// <summary>
         /// Action to invoke when this hotkey is pressed.
         /// </summary>
-        static Action Action;
+        public static Action Action;
 
         /// <summary>
         /// Creates a hotkey of the given keypresses.
@@ -57,6 +57,12 @@ namespace Priceall.Hotkey
             IsActive = isActive;
             Action = action;
             Array.Sort(Keys);
+        }
+
+        public void UpdateKeyCombo(Key[] keys)
+        {
+            Array.Sort(keys);
+            Keys = keys;
         }
 
         /// <summary>

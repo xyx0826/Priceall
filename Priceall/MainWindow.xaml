@@ -7,8 +7,12 @@
         WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize"
         Top="{Binding WindowTopPos, Mode=TwoWay}" Left="{Binding WindowLeftPos, Mode=TwoWay}"
         Width="{Binding WindowWidth, Mode=TwoWay}" Height="{Binding WindowHeight, Mode=TwoWay}"
-        Deactivated="SetWindowOnTop"
-        Background="{Binding BackgroundBrush}">
+        Deactivated="SetWindowOnTop">
+    <Window.Background>
+        <SolidColorBrush 
+            Color="{Binding BackgroundBrush.Color}" 
+            Opacity="{Binding WindowOpacity}"/>
+    </Window.Background>
     <!-- Main StackPanel -->
     <DockPanel x:Name="MainDockPanel" LastChildFill="True">
         <!-- Control: buttons etc -->

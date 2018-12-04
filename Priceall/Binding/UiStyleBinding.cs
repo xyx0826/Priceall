@@ -32,7 +32,7 @@ namespace Priceall.Binding
         /// <summary>
         /// Sets the window opacity between 100% and 20%.
         /// </summary>
-        public double WndOpacity
+        public double WindowOpacity
         {
             get { return Settings.Default.WindowOpacity; }
             set
@@ -41,7 +41,6 @@ namespace Priceall.Binding
                 if (value < 0.0) value = 0.0;
                 else if (value > 1.0) value = 1.0;
                 Settings.Default.WindowOpacity = value;
-                OnPropertyChanged("WndOpacity");
             }
         }
 

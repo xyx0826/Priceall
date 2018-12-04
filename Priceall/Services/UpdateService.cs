@@ -10,8 +10,9 @@ namespace Priceall.Services
     {
         static readonly string APPVEYOR_API_ROUTE = "https://ci.appveyor.com/api/projects/xyx0826/priceall/branch/master";
 
-        public static async Task<bool> CheckForUpdates()
+        public static async Task CheckForUpdates()
         {
+            SettingsService.SetSetting("UpdateAvailable", false);
             Version remoteVersion;
 
             using (var client = new HttpClient())
@@ -24,10 +25,11 @@ namespace Priceall.Services
                         (string)JObject.Parse(content)
                         .SelectToken("build.version"));
                 }
-                catch (HttpRequestException) { return false; }
+                catch (HttpRequestException) { return; }
             }
-            return Assembly.GetEntryAssembly().GetName().Version
-                .CompareTo(remoteVersion) < 0;
+            SettingsService.SetSetting("UpdateAvailable", 
+                Assembly.GetEntryAssembly().GetName().Version
+                .CompareTo(remoteVersion) < 0);
         }
     }
 }

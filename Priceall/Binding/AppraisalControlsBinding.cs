@@ -1,4 +1,5 @@
-﻿using Priceall.Properties;
+﻿using Priceall.Helpers;
+using Priceall.Properties;
 using Priceall.Services;
 using System.ComponentModel;
 using System.Windows.Media;
@@ -21,37 +22,22 @@ namespace Priceall.Binding
             Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
             {
                 OnPropertyChanged(e.PropertyName);
+
                 if (e.PropertyName == "IsDragEnabled")
-                    SetRectOpacityStyle(SettingsService
-                        .GetSetting<bool>("IsDragEnabled"));
+                    OnPropertyChanged("RectOpacity");
+
+                if (e.PropertyName == "UpdateAvailable")
+                    OnPropertyChanged("RectBackgroundBrush");
             };
-
-            SetRectOpacityStyle(Settings.Default.IsDragEnabled);
-            IsUpdateAvail = false;
         }
 
-        public double RectOpacity { get; set; }
-
-        /// <summary>
-        /// Sets drag drop button opacity based on its state.
-        /// </summary>
-        /// <param name="enabled">True for enabled, false for disabled.</param>
-        public void SetRectOpacityStyle(bool enabled)
+        public double RectOpacity
         {
-            if (enabled) RectOpacity = 1.0;
-            else RectOpacity = 0.4;
-            OnPropertyChanged("RectOpacity");
-        }
-
-        private bool _isUpdateAvail;
-
-        public bool IsUpdateAvail
-        {
-            get { return _isUpdateAvail; }
-            set
+            get
             {
-                _isUpdateAvail = value;
-                OnPropertyChanged("RectBackgroundBrush");
+                if (SettingsService
+                    .GetSetting<bool>("IsDragEnabled")) return 1.0;
+                else return 0.4;
             }
         }
 
@@ -59,11 +45,9 @@ namespace Priceall.Binding
         {
             get
             {
-                if (IsUpdateAvail || Settings.Default.FLAG_AUTO_REFRESH_OFF)
+                if (SettingsService.GetSetting<bool>("UpdateAvailable") || Settings.Default.FLAG_AUTO_REFRESH_OFF)
                 {
-                    return (SolidColorBrush)
-                        (new BrushConverter()
-                        .ConvertFrom("#FFA500"));
+                    return ColorHelper.ConvertHexToColorBrush("FFA500");
                 }
                 else return null;
             }

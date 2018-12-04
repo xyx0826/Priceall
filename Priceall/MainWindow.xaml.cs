@@ -109,8 +109,7 @@ namespace Priceall
         {
             Task.Run(async () =>
             {
-                Settings.Default.UpdateAvailable = await UpdateService.CheckForUpdates();
-                _controlsBinding.IsUpdateAvail = Settings.Default.UpdateAvailable;
+                await UpdateService.CheckForUpdates();
             });
         }
 
@@ -257,8 +256,8 @@ namespace Priceall
             }
             else
             {
-                if (e.Delta > 0) _styleBinding.WndOpacity += 0.05;
-                else _styleBinding.WndOpacity -= 0.05;
+                if (e.Delta > 0) _styleBinding.WindowOpacity += 0.05;
+                else _styleBinding.WindowOpacity -= 0.05;
             }
         }
 
@@ -276,9 +275,8 @@ namespace Priceall
         /// </summary>
         private void TogglePin(object sender, MouseButtonEventArgs e)
         {
-            var currentState = Settings.Default.IsDragEnabled;
-            Settings.Default.IsDragEnabled = !currentState;
-            _controlsBinding.SetRectOpacityStyle(!currentState);
+            var currentState = SettingsService.GetSetting<bool>("IsDragEnabled");
+            SettingsService.SetSetting("IsDragEnabled", !currentState);
         }
 
         /// <summary>

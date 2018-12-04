@@ -92,16 +92,6 @@ namespace Priceall
         }
 
         /// <summary>
-        /// Overwrites the current query hotkey.
-        /// </summary>
-        /// <param name="modKeys">New modifier key combo.</param>
-        /// <param name="virtKey">New virtual key.</param>
-        public void UpdateQueryHotkey(object sender, QueryHotkeyUpdatedEventArgs e)
-        {
-            HotkeyHelper.CreateNewHotkey("QueryKey", e.KeyCombo, OnHotKeyHandler);
-        }
-
-        /// <summary>
         /// Checks for update from AppVeyor in the background.
         /// If an update is found, the setting icon will become orange.
         /// </summary>

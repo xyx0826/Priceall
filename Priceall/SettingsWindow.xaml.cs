@@ -1,13 +1,11 @@
 ﻿using Priceall.Binding;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using static Priceall.Events.UiEvents;
 using Priceall.Services;
 using System.Windows.Controls;
 using Priceall.Hotkey;

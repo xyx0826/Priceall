@@ -34,19 +34,6 @@ namespace Priceall.Events
             OnAutoRefreshToggled(EventArgs.Empty);
         }
 
-        // Update query hotkey
-        public event EventHandler<QueryHotkeyUpdatedEventArgs> QueryHotkeyUpdated;
-
-        protected virtual void OnQueryHotkeyUpdated(QueryHotkeyUpdatedEventArgs e)
-        {
-            QueryHotkeyUpdated?.Invoke(this, e);
-        }
-
-        public void UpdateQueryHotkey(QueryHotkeyUpdatedEventArgs e)
-        {
-            OnQueryHotkeyUpdated(e);
-        }
-
         public class QueryHotkeyUpdatedEventArgs : EventArgs
         {
             public Key[] KeyCombo { get; set; }

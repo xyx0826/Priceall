@@ -1,4 +1,5 @@
-﻿using Priceall.Properties;
+﻿using Priceall.Helpers;
+using Priceall.Properties;
 using Priceall.Services;
 using System.ComponentModel;
 using System.Windows.Media;
@@ -88,9 +89,7 @@ namespace Priceall.Binding
             }
         }
 
-        public SolidColorBrush BackgroundBrush => (SolidColorBrush)
-                        new BrushConverter()
-                        .ConvertFrom("#" + SettingsService
-                            .GetSetting<string>("BackgroundColor"));
+        public SolidColorBrush BackgroundBrush
+            => ColorHelper.ConvertSettingToColorBrush("BackgroundColor");
     }
 }

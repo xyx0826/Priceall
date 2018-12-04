@@ -1,4 +1,5 @@
-﻿using Priceall.Properties;
+﻿using Priceall.Helpers;
+using Priceall.Properties;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -33,6 +34,15 @@ namespace Priceall.Binding
             Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
             {
                 OnPropertyChanged(e.PropertyName);
+
+                // Possible price tag color change: refresh the whole thing
+                if (e.PropertyName == "IsUsingConditionalColors"
+                || e.PropertyName == "PriceFontColor"
+                || e.PropertyName == "LowerColor"
+                || e.PropertyName == "UpperColor")
+                {
+                    OnPropertyChanged("PriceFontBrush");
+                }
             };
 
             Price = "Priceall";
@@ -55,24 +65,17 @@ namespace Priceall.Binding
         {
             get
             {
-                try
+                if (Settings.Default.IsUsingConditionalColors)
                 {
-                    if (Settings.Default.IsUsingConditionalColors)
-                    {
-                        if (PriceLowerOrHigher == true)
-                            return (SolidColorBrush)
-                             (new BrushConverter()
-                             .ConvertFrom("#" + Settings.Default.LowerColor));
-                        else if (PriceLowerOrHigher == false)
-                            return (SolidColorBrush)
-                             (new BrushConverter()
-                             .ConvertFrom("#" + Settings.Default.UpperColor));
-                    }
-                    return (SolidColorBrush)
-                        (new BrushConverter()
-                        .ConvertFrom("#" + Settings.Default.PriceColor));
+                    if (PriceLowerOrHigher == true)
+                        return ColorHelper
+                            .ConvertSettingToColorBrush("LowerColor");
+                    else if (PriceLowerOrHigher == false)
+                        return ColorHelper
+                            .ConvertSettingToColorBrush("UpperColor");
                 }
-                catch (FormatException) { return new SolidColorBrush(Colors.White); }
+                return ColorHelper
+                    .ConvertSettingToColorBrush("PriceColor");
             }
         }
 

@@ -64,6 +64,7 @@
     </ApplicationDefinition>
     <Compile Include="Binding\SettingsBinding.cs" />
     <Compile Include="Events\UiEvents.cs" />
+    <Compile Include="Helpers\ColorHelper.cs" />
     <Compile Include="Services\FlagService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\UpdateService.cs" />

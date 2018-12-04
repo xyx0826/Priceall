@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using static Priceall.Events.UiEvents;
+using Priceall.Services;
 
 namespace Priceall
 {
@@ -27,25 +29,11 @@ namespace Priceall
         static readonly Regex _numberRegex = new Regex("[^0-9]+");
         static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
 
-        Key[] _keyCombo;
-        string KeyCombo
-        {
-            get
-            {
-                return String.Join(", ", _keyCombo);
-            }
-        }
-
         static SettingsBinding _settings;
 
         public SettingsWindow()
         {
             InitializeComponent();
-            Instance.QueryHotkeyUpdated += (object sender, QueryHotkeyUpdatedEventArgs e) =>
-            {
-                _keyCombo = e.KeyCombo;
-            };
-
             _settings = new SettingsBinding();
         }
 
@@ -77,20 +65,17 @@ namespace Priceall
             e.Handled = _hexRegex.IsMatch(e.Text);
         }
 
-        private void OpenGithubPage(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        private void OpenLink(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
         }
 
         private void ResetSettings(object sender, RoutedEventArgs e)
         {
-            Instance.ResetSettings();
-            OnPropertyChanged(null);
-        }
-        
-        private void EditHotkey(object sender, RoutedEventArgs e)
-        {
-
+            // MainWindow has issue updating width and height together, 
+            // so let's just refresh twice...
+            SettingsService.ResetSettings();
+            SettingsService.ResetSettings();
         }
     }
 }

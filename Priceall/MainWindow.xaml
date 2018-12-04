@@ -5,15 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize"
-        Top="{Binding WndTopPos, Mode=TwoWay}" Left="{Binding WndLeftPos, Mode=TwoWay}"
-        Width="{Binding WndWidth, Mode=TwoWay}" Height="{Binding WndHeight, Mode=TwoWay}"
-        Deactivated="SetWindowOnTop">
-    <Window.Background>
-        <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" Opacity="{Binding WndOpacity}">
-            <GradientStop Color="#3b5f73" Offset="1"/>
-            <GradientStop Color="#175f79" Offset="0"/>
-        </LinearGradientBrush>
-    </Window.Background>
+        Top="{Binding WindowTopPos, Mode=TwoWay}" Left="{Binding WindowLeftPos, Mode=TwoWay}"
+        Width="{Binding WindowWidth, Mode=TwoWay}" Height="{Binding WindowHeight, Mode=TwoWay}"
+        Deactivated="SetWindowOnTop"
+        Background="{Binding BackgroundBrush}">
     <!-- Main StackPanel -->
     <DockPanel x:Name="MainDockPanel" LastChildFill="True">
         <!-- Control: buttons etc -->
@@ -71,7 +66,7 @@
                             <Label.Content>
                                 <Viewbox>
                                     <TextBlock FontFamily="{StaticResource EveSansNeue}" 
-                                               Foreground="{Binding PriceFontColor}"
+                                               Foreground="{Binding PriceFontBrush}"
                                                Text="{Binding Price}" 
                                                TextWrapping="Wrap"/>
                                 </Viewbox>

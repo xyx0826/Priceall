@@ -63,7 +63,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Binding\SettingsBinding.cs" />
-    <Compile Include="Events\HotkeyEvents.cs" />
     <Compile Include="Events\UiEvents.cs" />
     <Compile Include="Services\FlagService.cs" />
     <Compile Include="Services\SettingsService.cs" />

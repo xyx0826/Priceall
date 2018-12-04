@@ -22,8 +22,16 @@ namespace Priceall.Binding
         }
         #endregion
 
+        public SettingsBinding()
+        {
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            {
+                OnPropertyChanged(e.PropertyName);
+            };
+        }
+
         #region Appraisal settings
-        public int QueryLengthLimit
+        public int MaxStringLength
         {
             get { return Settings.Default.MaxStringLength; }
             set
@@ -40,7 +48,7 @@ namespace Priceall.Binding
             get { return Settings.Default.QueryCooldown; }
             set
             {
-                if (value != 0)
+                if (value > 0)
                 {
                     Settings.Default.QueryCooldown = value;
                 }
@@ -146,16 +154,6 @@ namespace Priceall.Binding
             set
             {
                 Settings.Default.UpperColor = value;
-            }
-        }
-
-        public string KeyCombo
-        {
-            get { return Settings.Default.KeyCombo; }
-            set
-            {
-                Settings.Default.KeyCombo = value;
-                OnPropertyChanged("KeyCombo");
             }
         }
 

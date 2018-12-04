@@ -3,7 +3,6 @@ using Priceall.Services;
 using Priceall.Hotkey;
 using Priceall.Properties;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -47,7 +46,6 @@ namespace Priceall
             // subscribe settings events
             Instance.AutoRefreshToggled += ToggleAutoRefresh;
             Instance.PriceColorChanged += RefreshPriceColor;
-            Instance.SettingsReset += ResetSettings;
         }
 
         #region Window loading and terminating
@@ -187,7 +185,7 @@ namespace Priceall
                     _infoBinding.SetTypeIcon(json.Kind);
 
                     var price = json.SellValue;
-                    if (json.SellValue < Settings.Default.LowerPrice)
+                    if (json.SellValue <= Settings.Default.LowerPrice)
                     {
                         _infoBinding.PriceLowerOrHigher = true;
                     }
@@ -248,13 +246,13 @@ namespace Priceall
             {
                 if (e.Delta > 0)
                 {
-                    _styleBinding.WndWidth += 12;
-                    _styleBinding.WndHeight += 4;
+                    _styleBinding.WindowWidth += 12;
+                    _styleBinding.WindowHeight += 4;
                 }
                 else
                 {
-                    _styleBinding.WndWidth -= 12;
-                    _styleBinding.WndHeight -= 4;
+                    _styleBinding.WindowWidth -= 12;
+                    _styleBinding.WindowHeight -= 4;
                 }
             }
             else
@@ -289,17 +287,6 @@ namespace Priceall
         public void RefreshPriceColor(object sender = null, EventArgs e = null)
         {
             _infoBinding.RefreshPriceColor();
-        }
-
-        /// <summary>
-        /// Resets all settings and their bounded displays.
-        /// </summary>
-        public void ResetSettings(object sender, EventArgs e)
-        {
-            Settings.Default.Reset();
-            _infoBinding.Refresh();
-            _controlsBinding.Refresh();
-            _styleBinding.Refresh();
         }
 
         /// <summary>

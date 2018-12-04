@@ -47,5 +47,13 @@ namespace Priceall.Services
                 Settings.Default.Save();
             }
         }
+
+        /// <summary>
+        /// Resets all settings to default (shipped) values.
+        /// </summary>
+        public static void ResetSettings()
+        {
+            Settings.Default.Reset();
+        }
     }
 }

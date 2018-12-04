@@ -1,30 +1,31 @@
 ﻿using Priceall.Properties;
+using Priceall.Services;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace Priceall.Binding
 {
     /// <summary>
     /// Handles window opacity and other style properties.
     /// </summary>
-    class UiStyleBinding : INotifyPropertyChanged
+    internal class UiStyleBinding : INotifyPropertyChanged
     {
         #region Binding
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string name)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
 
-        public void Refresh()
-        {
-            OnPropertyChanged(null);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
 
         public UiStyleBinding()
         {
-            OnPropertyChanged(null);
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            {
+                OnPropertyChanged(e.PropertyName);
+            };
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Priceall.Binding
             }
         }
 
-        public int WndWidth
+        public int WindowWidth
         {
             get { return Settings.Default.WindowWidth; }
             set
@@ -53,8 +54,8 @@ namespace Priceall.Binding
                 OnPropertyChanged("WndWidth");
             }
         }
-        
-        public int WndHeight
+
+        public int WindowHeight
         {
             get { return Settings.Default.WindowHeight; }
             set
@@ -65,7 +66,7 @@ namespace Priceall.Binding
             }
         }
 
-        public double WndTopPos
+        public double WindowTopPos
         {
             get { return Settings.Default.WindowTopPos; }
             set
@@ -76,7 +77,7 @@ namespace Priceall.Binding
             }
         }
 
-        public double WndLeftPos
+        public double WindowLeftPos
         {
             get { return Settings.Default.WindowLeftPos; }
             set
@@ -86,5 +87,10 @@ namespace Priceall.Binding
                 OnPropertyChanged("WndLeftPos");
             }
         }
+
+        public SolidColorBrush BackgroundBrush => (SolidColorBrush)
+                        new BrushConverter()
+                        .ConvertFrom("#" + SettingsService
+                            .GetSetting<string>("BackgroundColor"));
     }
 }

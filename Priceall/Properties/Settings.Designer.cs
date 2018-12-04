@@ -109,7 +109,7 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool IsUsingAutomaticRefresh {
             get {
                 return ((bool)(this["IsUsingAutomaticRefresh"]));
@@ -121,7 +121,7 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool IsUsingPrettyPrint {
             get {
                 return ((bool)(this["IsUsingPrettyPrint"]));
@@ -164,42 +164,6 @@ namespace Priceall.Properties {
             }
             set {
                 this["KeyTriggerDelay"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int ModifierKey1 {
-            get {
-                return ((int)(this["ModifierKey1"]));
-            }
-            set {
-                this["ModifierKey1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int ModifierKey2 {
-            get {
-                return ((int)(this["ModifierKey2"]));
-            }
-            set {
-                this["ModifierKey2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string VirtualKey {
-            get {
-                return ((string)(this["VirtualKey"]));
-            }
-            set {
-                this["VirtualKey"] = value;
             }
         }
         
@@ -331,6 +295,18 @@ namespace Priceall.Properties {
             }
             set {
                 this["Hotkeys"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3B5F73")]
+        public string BackgroundColor {
+            get {
+                return ((string)(this["BackgroundColor"]));
+            }
+            set {
+                this["BackgroundColor"] = value;
             }
         }
     }

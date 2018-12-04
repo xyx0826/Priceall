@@ -24,10 +24,10 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="IsUsingAutomaticRefresh" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="IsUsingPrettyPrint" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="MaxStringLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">65536</Value>
@@ -37,15 +37,6 @@
     </Setting>
     <Setting Name="KeyTriggerDelay" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">250</Value>
-    </Setting>
-    <Setting Name="ModifierKey1" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="ModifierKey2" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="VirtualKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="PriceColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">FFFFFF</Value>
@@ -79,6 +70,9 @@
     </Setting>
     <Setting Name="Hotkeys" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="BackgroundColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">3B5F73</Value>
     </Setting>
   </Settings>
 </SettingsFile>

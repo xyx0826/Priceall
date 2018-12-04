@@ -61,7 +61,7 @@ namespace Priceall.Hotkey
         // Instance of keyboard hook delegate to prevent it from being GC'd.
         private static KeyboardHookProc _callback;
         #endregion
-
+        
         #region Initialization/uninitialization
         /// <summary>
         /// Starts global hook to listen for keypresses.
@@ -132,6 +132,20 @@ namespace Priceall.Hotkey
             }
             // Hotkey list is empty or hotkey not found
             return false;
+        }
+
+        /// <summary>
+        /// Attempts to get an active hotkey by its name.
+        /// </summary>
+        /// <param name="name">Name (identifier) of the hotkey.</param>
+        /// <returns>The key combo of the first found hotkey.</returns>
+        public static Key[] GetHotkeyByName(string name)
+        {
+            var result =
+                from hotkey in _hotkeys
+                where hotkey.Name == name
+                select hotkey.Keys;
+            return result.FirstOrDefault();
         }
 
         /// <summary>

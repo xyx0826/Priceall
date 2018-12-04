@@ -24,12 +24,17 @@ namespace Priceall.Binding
 
         public void RefreshPriceColor()
         {
-            OnPropertyChanged("PriceFontColor");
+            OnPropertyChanged("PriceFontBrush");
         }
         #endregion
 
         public AppraisalInfoBinding()
         {
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            {
+                OnPropertyChanged(e.PropertyName);
+            };
+
             Price = "Priceall";
             SetTypeIcon("searchmarket");
         }
@@ -46,7 +51,7 @@ namespace Priceall.Binding
             }
         }
 
-        public Brush PriceFontColor
+        public SolidColorBrush PriceFontBrush
         {
             get
             {

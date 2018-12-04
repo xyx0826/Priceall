@@ -64,19 +64,6 @@ namespace Priceall.Events
         {
             OnPriceColorChanged(EventArgs.Empty);
         }
-
-        // Reset settings
-        public event EventHandler SettingsReset;
-
-        protected virtual void OnSettingsReset(EventArgs e)
-        {
-            SettingsReset?.Invoke(this, e);
-        }
-
-        public void ResetSettings()
-        {
-            OnSettingsReset(EventArgs.Empty);
-        }
         #endregion
     }
 }

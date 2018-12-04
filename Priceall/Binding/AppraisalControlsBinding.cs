@@ -1,4 +1,5 @@
 ﻿using Priceall.Properties;
+using Priceall.Services;
 using System.ComponentModel;
 using System.Windows.Media;
 
@@ -13,16 +14,18 @@ namespace Priceall.Binding
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
-        public void Refresh()
-        {
-            SetRectOpacityStyle(Settings.Default.IsDragEnabled);
-            OnPropertyChanged(null);
-        }
         #endregion
 
         public AppraisalControlsBinding()
         {
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            {
+                OnPropertyChanged(e.PropertyName);
+                if (e.PropertyName == "IsDragEnabled")
+                    SetRectOpacityStyle(SettingsService
+                        .GetSetting<bool>("IsDragEnabled"));
+            };
+
             SetRectOpacityStyle(Settings.Default.IsDragEnabled);
             IsUpdateAvail = false;
         }

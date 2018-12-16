@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hotkey="clr-namespace:Priceall.Hotkey.Controls"
         mc:Ignorable="d"
         Title="Settings"
         ResizeMode="NoResize"
@@ -188,9 +189,7 @@
                         <ColumnDefinition Width="0.7*"/>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Content="Query"/>
-                    <Button Name="QueryKey" Grid.Row="0" Grid.Column="2" 
-                            Content="{Binding QueryKeyExpression}" 
-                            Click="RecordHotkey"/>
+                    <hotkey:HotkeyEditor Grid.Column="2"/>
                     <Label Grid.Row="1" Grid.ColumnSpan="3" Content="To change a hotkey, click its button and press a key combo."/>
                 </Grid>
             </GroupBox>

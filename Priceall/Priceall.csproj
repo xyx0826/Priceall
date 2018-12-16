@@ -65,15 +65,22 @@
     <Compile Include="Binding\SettingsBinding.cs" />
     <Compile Include="Events\UiEvents.cs" />
     <Compile Include="Helpers\ColorHelper.cs" />
+    <Compile Include="Hotkey\Hotkey.cs" />
+    <Compile Include="Hotkey\Controls\HotkeyEditor.xaml.cs">
+      <DependentUpon>HotkeyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Hotkey\IHotkeyManager.cs" />
+    <Compile Include="Hotkey\KeyCombo.cs" />
+    <Compile Include="Hotkey\NonHook\HotkeyInterop.cs" />
+    <Compile Include="Hotkey\NonHook\HotkeyManager.cs" />
     <Compile Include="Services\FlagService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Hotkey\Hotkey.cs" />
     <Compile Include="Binding\UiStyleBinding.cs" />
     <Compile Include="Binding\AppraisalInfoBinding.cs" />
     <Compile Include="Binding\AppraisalControlsBinding.cs" />
-    <Compile Include="Hotkey\HotkeyEnums.cs" />
-    <Compile Include="Hotkey\HotkeyHelper.cs" />
+    <Compile Include="Hotkey\Hook\HotkeyEnums.cs" />
+    <Compile Include="Hotkey\Hook\HotkeyManager.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -82,6 +89,10 @@
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Hotkey\Controls\HotkeyEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resource\Fonts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

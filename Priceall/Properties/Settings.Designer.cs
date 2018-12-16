@@ -297,5 +297,17 @@ namespace Priceall.Properties {
                 this["BackgroundColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsUsingHook {
+            get {
+                return ((bool)(this["IsUsingHook"]));
+            }
+            set {
+                this["IsUsingHook"] = value;
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Priceall.Services;
 using System.Windows.Controls;
 using Priceall.Hotkey;
+using Priceall.Hotkey.Hook;
 
 namespace Priceall
 {
@@ -30,10 +31,6 @@ namespace Priceall
         static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
 
         static SettingsBinding _settings;
-
-        static bool _editingHotkey = false;
-        static Button _editingHotkeyButton;
-        static Key[] _oldKeyCombo;
 
         public SettingsWindow()
         {
@@ -80,39 +77,6 @@ namespace Priceall
             // so let's just refresh twice...
             SettingsService.ResetSettings();
             SettingsService.ResetSettings();
-        }
-
-        private void RecordHotkey(object sender, RoutedEventArgs e)
-        {
-            if (!_editingHotkey)
-            {
-                // No already editing hotkey
-                _editingHotkey = true;
-                _editingHotkeyButton = sender as Button;
-                Debug.WriteLine((sender as Button).Name + " - new hotkey change.");
-
-                _oldKeyCombo = HotkeyHelper.GetHotkeyByName(_editingHotkeyButton.Name);
-                HotkeyHelper.StartRecording(ReceiveHotkeyFinished, UpdateKeyComboString);
-            }
-            else
-            {
-                HotkeyHelper.StopRecording();
-                UpdateKeyComboString(_oldKeyCombo);
-                Debug.WriteLine((sender as Button).Name + " - conflicting hotkey change.");
-            }
-        }
-
-        public void UpdateKeyComboString(Key[] keys)
-        {
-            _editingHotkeyButton.Content = String.Join(" + ", keys);
-        }
-
-        public void ReceiveHotkeyFinished(Key[] keys)
-        {
-            _editingHotkey = false;
-            HotkeyHelper.UpdateHotkey(_editingHotkeyButton.Name, keys);
-            UpdateKeyComboString(keys);
-            Debug.WriteLine(_editingHotkeyButton.Name + " - hotkey changed.");
         }
     }
 }

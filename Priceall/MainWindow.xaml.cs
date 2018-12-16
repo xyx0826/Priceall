@@ -1,7 +1,7 @@
 ﻿using Priceall.Binding;
-using Priceall.Services;
 using Priceall.Hotkey;
 using Priceall.Properties;
+using Priceall.Services;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +23,7 @@ namespace Priceall
 
         // initialize helpers
         static readonly ClipboardService _clipboard = new ClipboardService();
+        static IHotkeyManager _manager;
 
         static Window _settingsWindow = new SettingsWindow();
         
@@ -36,7 +37,6 @@ namespace Priceall
             InitializeComponent();
             SettingsService.UpdateSettings();   // migrate settings over from older Priceall version
             AppraisalService.Initialize();
-            HotkeyHelper.Initialize();
             Task.Run(async () => { await FlagService.CheckAllFlags(); });   // update flag values in settings
 
             DataContext = _styleBinding;
@@ -57,12 +57,25 @@ namespace Priceall
             base.OnSourceInitialized(e);
             _settingsWindow.Owner = this;
 
-            if (!HotkeyHelper.ActivateHotkeyFromSettings("QueryKey", OnHotKeyHandler))
+            if (SettingsService.GetSetting<bool>("IsUsingHook"))
+                _manager = new Hotkey.Hook.HotkeyManager();
+            else
+                _manager = new Hotkey.NonHook.HotkeyManager();
+
+            if (!_manager.InitializeHook())
             {
-                HotkeyHelper.CreateNewHotkey("QueryKey", 
-                    new Key[] { Key.LeftCtrl, Key.LeftShift, Key.C }, 
-                    OnHotKeyHandler);
-                _infoBinding.Price = "Query hotkey: LCtrl + LShft + C.";
+                _infoBinding.Price = "Failed to initialize hotkey service.";
+            }
+            else
+            {
+                if (_manager.ActivateHotkey("QueryKey", OnHotKeyHandler))
+                {
+                    _infoBinding.Price = "Query hotkey activated.";
+                }
+                else
+                {
+                    _infoBinding.Price = "Query hotkey not found. Create one from settings.";
+                }
             }
 
             SetWindowOnTopDelegate();
@@ -116,7 +129,7 @@ namespace Priceall
         /// </summary>
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
-            HotkeyHelper.Uninitialize();
+            _manager.UninitializeHook();
             Settings.Default.Save();
             Application.Current.Shutdown();
         }

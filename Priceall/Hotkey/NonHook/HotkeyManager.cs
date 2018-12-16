@@ -139,8 +139,9 @@ namespace Priceall.Hotkey.NonHook
             var hotkeys = new StringCollection();
             foreach (var hotkey in _hotkeys.Values)
             {
-                hotkeys.Add(KeyComboUtils
-                    .ConvertToSettingValue(hotkey.KeyCombo));
+                if (hotkey.KeyCombo.AllKeys.Count != 0)
+                    hotkeys.Add(KeyComboUtils
+                        .ConvertToSettingValue(hotkey.KeyCombo));
             }
             SettingsService.SetSetting("Hotkeys", hotkeys);
         }

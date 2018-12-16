@@ -73,6 +73,14 @@ namespace Priceall.Hotkey
 
             return str.ToString();
         }
+
+        public static KeyCombo Empty
+        {
+            get
+            {
+                return new KeyCombo();
+            }
+        }
     }
 
     public static class KeyComboUtils
@@ -84,7 +92,14 @@ namespace Priceall.Hotkey
         
         public static KeyCombo ConvertFromSettingValue(string settingValue)
         {
-            return JsonConvert.DeserializeObject<KeyCombo>(settingValue);
+            try
+            {
+                return JsonConvert.DeserializeObject<KeyCombo>(settingValue);
+            }
+            catch (JsonReaderException)
+            {
+                return KeyCombo.Empty;
+            }
         }
     }
 }

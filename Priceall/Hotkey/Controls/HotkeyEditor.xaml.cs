@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -49,15 +50,16 @@ namespace Priceall.Hotkey.Controls
         
         void RaiseNewKeyComboEvent()
         {
-            RaiseEvent(
-                new NewKeyComboEventArgs(
-                    MyKeyCombo.Key, MyKeyCombo.ModifierKeys, 
-                    MyKeyCombo.AllKeys.ToArray()));
+            var newEvent = new NewKeyComboEventArgs(
+                MyKeyCombo.Key, MyKeyCombo.ModifierKeys, 
+                MyKeyCombo.AllKeys);
+            newEvent.RoutedEvent = NewKeyComboEvent;
+            RaiseEvent(newEvent);
         }
 
         private sealed class NewKeyComboEventArgs : RoutedEventArgs
         {
-            public NewKeyComboEventArgs(Key key, ModifierKeys modifierKeys, Key[] allKeys)
+            public NewKeyComboEventArgs(Key key, ModifierKeys modifierKeys, List<Key> allKeys)
             {
                 Key = key;
                 ModifierKeys = modifierKeys;
@@ -68,7 +70,7 @@ namespace Priceall.Hotkey.Controls
 
             public ModifierKeys ModifierKeys { get; }
 
-            public Key[] AllKeys { get; }
+            public List<Key> AllKeys { get; }
         }
         #endregion
 

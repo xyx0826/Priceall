@@ -74,6 +74,7 @@ namespace Priceall
                 }
                 else
                 {
+                    _manager.ActivateHotkey("QueryKey", KeyCombo.Empty, OnHotKeyHandler);
                     _infoBinding.Price = "Query hotkey not found. Create one from settings.";
                 }
             }

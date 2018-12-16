@@ -89,8 +89,20 @@ namespace Priceall.Hotkey.Hook
             var savedHotkeys = SettingsService
                     .GetSetting<StringCollection>("Hotkeys");
             if (savedHotkeys != null)
+            {
                 foreach (var hotkey in savedHotkeys)
-                    _keyCombos.Add(KeyComboUtils.ConvertFromSettingValue(hotkey));
+                {
+                    var keyCombo = KeyCombo.Empty;
+                    try
+                    {
+                        keyCombo = KeyComboUtils.ConvertFromSettingValue(hotkey);
+                    }
+                    finally
+                    {
+                        _keyCombos.Add(keyCombo);
+                    }
+                }
+            }
         }
         #endregion
 

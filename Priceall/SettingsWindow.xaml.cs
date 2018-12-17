@@ -1,5 +1,4 @@
 ﻿using Priceall.Binding;
-using System;
 using System.ComponentModel;
 using System.Windows.Navigation;
 using System.Diagnostics;
@@ -7,9 +6,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using Priceall.Services;
-using System.Windows.Controls;
-using Priceall.Hotkey;
-using Priceall.Hotkey.Hook;
+using static Priceall.Hotkey.Controls.HotkeyEditor;
+using Priceall.Hotkey.Controls;
 
 namespace Priceall
 {
@@ -77,6 +75,13 @@ namespace Priceall
             // so let's just refresh twice...
             SettingsService.ResetSettings();
             SettingsService.ResetSettings();
+        }
+        
+        public void HotkeyEditor_NewKeyCombo(object sender, RoutedEventArgs e)
+        {
+            var keyArgs = e as NewKeyComboEventArgs;
+            Debug.WriteLine($"New hotkey {(sender as HotkeyEditor).Tag}");
+            Debug.WriteLine($"{keyArgs.ModifierKeys} + {keyArgs.Key}");
         }
     }
 }

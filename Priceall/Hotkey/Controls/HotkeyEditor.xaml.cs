@@ -51,13 +51,15 @@ namespace Priceall.Hotkey.Controls
         void RaiseNewKeyComboEvent()
         {
             var newEvent = new NewKeyComboEventArgs(
-                MyKeyCombo.Key, MyKeyCombo.ModifierKeys, 
-                MyKeyCombo.AllKeys);
-            newEvent.RoutedEvent = NewKeyComboEvent;
+                MyKeyCombo.Key, MyKeyCombo.ModifierKeys,
+                MyKeyCombo.AllKeys)
+            {
+                RoutedEvent = NewKeyComboEvent
+            };
             RaiseEvent(newEvent);
         }
 
-        private sealed class NewKeyComboEventArgs : RoutedEventArgs
+        public sealed class NewKeyComboEventArgs : RoutedEventArgs
         {
             public NewKeyComboEventArgs(Key key, ModifierKeys modifierKeys, List<Key> allKeys)
             {
@@ -89,10 +91,12 @@ namespace Priceall.Hotkey.Controls
                 if (pressedKey == modKey) return;
 
             // A non-modifier key is pressed; set combo
-            var newCombo = new KeyCombo();
-            newCombo.Key = pressedKey;
-            newCombo.ModifierKeys = Keyboard.Modifiers;
-            
+            var newCombo = new KeyCombo
+            {
+                Key = pressedKey,
+                ModifierKeys = Keyboard.Modifiers
+            };
+
             foreach (Key modKey in PositionalModKeys)
                 if (Keyboard.IsKeyDown(modKey))
                     newCombo.AllKeys.Add(modKey);
@@ -106,7 +110,7 @@ namespace Priceall.Hotkey.Controls
         /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyKeyCombo = new KeyCombo();
+            MyKeyCombo = KeyCombo.Empty;
             RaiseNewKeyComboEvent();
         }
     }

@@ -80,8 +80,11 @@ namespace Priceall
         public void HotkeyEditor_NewKeyCombo(object sender, RoutedEventArgs e)
         {
             var keyArgs = e as NewKeyComboEventArgs;
+            var newKeyCombo = keyArgs.KeyCombo;
+            // Set appropriate name for this hotkey
+            newKeyCombo.Name = (string)(sender as HotkeyEditor).Tag;
             Debug.WriteLine($"New hotkey {(sender as HotkeyEditor).Tag}");
-            Debug.WriteLine($"{keyArgs.KeyCombo.ToString()}");
+            Debug.WriteLine($"{Hotkey.KeyComboUtils.ConvertToSettingValue(keyArgs.KeyCombo)}");
         }
     }
 }

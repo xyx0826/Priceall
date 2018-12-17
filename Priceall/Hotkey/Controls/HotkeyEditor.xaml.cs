@@ -83,11 +83,7 @@ namespace Priceall.Hotkey.Controls
                 if (pressedKey == modKey) return;
 
             // A non-modifier key is pressed; set combo
-            var newCombo = new KeyCombo
-            {
-                Key = pressedKey,
-                ModifierKeys = Keyboard.Modifiers
-            };
+            var newCombo = new KeyCombo(string.Empty, pressedKey, Keyboard.Modifiers);
 
             foreach (Key modKey in PositionalModKeys)
                 if (Keyboard.IsKeyDown(modKey))

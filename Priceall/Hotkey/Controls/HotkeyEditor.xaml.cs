@@ -50,9 +50,7 @@ namespace Priceall.Hotkey.Controls
         
         void RaiseNewKeyComboEvent()
         {
-            var newEvent = new NewKeyComboEventArgs(
-                MyKeyCombo.Key, MyKeyCombo.ModifierKeys,
-                MyKeyCombo.AllKeys)
+            var newEvent = new NewKeyComboEventArgs(MyKeyCombo)
             {
                 RoutedEvent = NewKeyComboEvent
             };
@@ -61,18 +59,12 @@ namespace Priceall.Hotkey.Controls
 
         public sealed class NewKeyComboEventArgs : RoutedEventArgs
         {
-            public NewKeyComboEventArgs(Key key, ModifierKeys modifierKeys, List<Key> allKeys)
+            public NewKeyComboEventArgs(KeyCombo keyCombo)
             {
-                Key = key;
-                ModifierKeys = modifierKeys;
-                AllKeys = allKeys;
+                KeyCombo = keyCombo;
             }
 
-            public Key Key { get; }
-
-            public ModifierKeys ModifierKeys { get; }
-
-            public List<Key> AllKeys { get; }
+            public KeyCombo KeyCombo { get; }
         }
         #endregion
 

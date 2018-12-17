@@ -81,7 +81,7 @@ namespace Priceall
         {
             var keyArgs = e as NewKeyComboEventArgs;
             Debug.WriteLine($"New hotkey {(sender as HotkeyEditor).Tag}");
-            Debug.WriteLine($"{keyArgs.ModifierKeys} + {keyArgs.Key}");
+            Debug.WriteLine($"{keyArgs.KeyCombo.ToString()}");
         }
     }
 }

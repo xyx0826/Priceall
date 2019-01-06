@@ -3,6 +3,7 @@ using Priceall.Hotkey;
 using Priceall.Properties;
 using Priceall.Services;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -110,6 +111,11 @@ namespace Priceall
         private async void OnHotKeyHandler()
         {
             await QueryAppraisalAsync();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            AppShutdown(sender, EventArgs.Empty as RoutedEventArgs);
         }
 
         /// <summary>

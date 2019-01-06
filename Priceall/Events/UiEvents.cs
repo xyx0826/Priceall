@@ -33,24 +33,6 @@ namespace Priceall.Events
         {
             OnAutoRefreshToggled(EventArgs.Empty);
         }
-
-        public class QueryHotkeyUpdatedEventArgs : EventArgs
-        {
-            public Key[] KeyCombo { get; set; }
-        }
-
-        // Change price color
-        public event EventHandler PriceColorChanged;
-
-        protected virtual void OnPriceColorChanged(EventArgs e)
-        {
-            PriceColorChanged?.Invoke(this, e);
-        }
-
-        public void ChangePriceColor()
-        {
-            OnPriceColorChanged(EventArgs.Empty);
-        }
         #endregion
     }
 }

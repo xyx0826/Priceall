@@ -117,7 +117,6 @@ namespace Priceall.Binding
             set
             {
                 Settings.Default.PriceColor = value;
-                UiEvents.Instance.ChangePriceColor();
             }
         }
 

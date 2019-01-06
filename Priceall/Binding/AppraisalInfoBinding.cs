@@ -37,7 +37,7 @@ namespace Priceall.Binding
 
                 // Possible price tag color change: refresh the whole thing
                 if (e.PropertyName == "IsUsingConditionalColors"
-                || e.PropertyName == "PriceFontColor"
+                || e.PropertyName == "PriceColor"
                 || e.PropertyName == "LowerColor"
                 || e.PropertyName == "UpperColor")
                 {
@@ -49,6 +49,7 @@ namespace Priceall.Binding
             SetTypeIcon("searchmarket");
         }
 
+        #region Price tag
         string _price;
 
         public string Price
@@ -58,6 +59,23 @@ namespace Priceall.Binding
             {
                 _price = value;
                 OnPropertyChanged("Price");
+            }
+        }
+        #endregion
+
+        #region Price font brush
+        bool? _priceLowerOrHigher;
+
+        public bool? PriceLowerOrHigher
+        {
+            get
+            {
+                return _priceLowerOrHigher;
+            }
+            set
+            {
+                _priceLowerOrHigher = value;
+                RefreshPriceColor();
             }
         }
 
@@ -78,9 +96,9 @@ namespace Priceall.Binding
                     .ConvertSettingToColorBrush("PriceColor");
             }
         }
+        #endregion
 
-        public bool? PriceLowerOrHigher { get; set; }
-
+        #region Type icon image
         public BitmapImage TypeIconImage { get; set; }
 
         public void SetTypeIcon(string type)
@@ -95,5 +113,6 @@ namespace Priceall.Binding
             }
             OnPropertyChanged("TypeIconImage");
         }
+        #endregion
     }
 }

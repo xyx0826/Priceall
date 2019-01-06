@@ -13,7 +13,7 @@ namespace Priceall.Hotkey
 
         private Action _action;
         
-        private readonly IntPtr _windowHandle = IntPtr.Zero;
+        private static IntPtr _windowHandle = IntPtr.Zero;
 
         public void SetAction(Action action) => _action = action;
 

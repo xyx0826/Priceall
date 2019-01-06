@@ -46,7 +46,6 @@ namespace Priceall
 
             // subscribe settings events
             Instance.AutoRefreshToggled += ToggleAutoRefresh;
-            Instance.PriceColorChanged += RefreshPriceColor;
         }
 
         #region Window loading and terminating
@@ -168,7 +167,6 @@ namespace Priceall
                 {
                     _infoBinding.SetTypeIcon("heuristic");
                     _infoBinding.PriceLowerOrHigher = null;
-                    RefreshPriceColor();
                     _infoBinding.Price = json.ErrorMessage;
                 }
                 else
@@ -185,8 +183,6 @@ namespace Priceall
                         _infoBinding.PriceLowerOrHigher = false;
                     }
                     else _infoBinding.PriceLowerOrHigher = null;
-
-                    RefreshPriceColor();
 
                     if (Settings.Default.IsUsingPrettyPrint)
                         _infoBinding.Price = json.PrettyPrintValue();
@@ -269,14 +265,6 @@ namespace Priceall
         {
             var currentState = SettingsService.GetSetting<bool>("IsDragEnabled");
             SettingsService.SetSetting("IsDragEnabled", !currentState);
-        }
-
-        /// <summary>
-        /// Triggers a price tag color refresh based on setting value.
-        /// </summary>
-        public void RefreshPriceColor(object sender = null, EventArgs e = null)
-        {
-            _infoBinding.RefreshPriceColor();
         }
 
         /// <summary>

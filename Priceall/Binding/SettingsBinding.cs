@@ -1,5 +1,4 @@
-﻿using Priceall.Events;
-using Priceall.Properties;
+﻿using Priceall.Properties;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
@@ -64,7 +63,6 @@ namespace Priceall.Binding
             set
             {
                 Settings.Default.IsUsingAutomaticRefresh = value;
-                UiEvents.Instance.ToggleAutoRefresh();
             }
         }
 

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using static Priceall.Events.UiEvents;
 
 namespace Priceall
 {
@@ -44,9 +43,6 @@ namespace Priceall
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
             AppraisalControls.DataContext = _controlsBinding;
-
-            // subscribe settings events
-            Instance.AutoRefreshToggled += ToggleAutoRefresh;
         }
 
         #region Window loading and terminating
@@ -82,7 +78,6 @@ namespace Priceall
 
             SetWindowOnTopDelegate();
             InitializeClipboard();
-            ToggleAutoRefresh();
         }
 
         /// <summary>
@@ -91,18 +86,8 @@ namespace Priceall
         private void InitializeClipboard()
         {
             var helper = new WindowInteropHelper(this);
-            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle));
+            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.EnsureHandle()));
             _clipboard.ClipboardChanged += QueryAppraisalAsync;
-        }
-
-        /// <summary>
-        /// Toggles auto refresh based on setting value.
-        /// </summary>
-        public void ToggleAutoRefresh(object sender = null, EventArgs e = null)
-        {
-            if (Settings.Default.IsUsingAutomaticRefresh)
-                _clipboard.StartListener();
-            else _clipboard.StopListener();
         }
 
         /// <summary>

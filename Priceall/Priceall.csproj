@@ -63,7 +63,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Binding\SettingsBinding.cs" />
-    <Compile Include="Events\UiEvents.cs" />
     <Compile Include="Helpers\ColorHelper.cs" />
     <Compile Include="Hotkey\Hotkey.cs" />
     <Compile Include="Hotkey\Controls\HotkeyEditor.xaml.cs">

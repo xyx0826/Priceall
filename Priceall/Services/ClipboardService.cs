@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Priceall.Properties;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -9,11 +10,11 @@ namespace Priceall.Services
     /// Services class for clipboard interaction.
     /// Provides text retrieval from clipboard or update event subscription.
     /// </summary>
-    class ClipboardService
+    internal class ClipboardService
     {
-        IntPtr _hwndNextViewer = IntPtr.Zero;
-        HwndSource _hwndSource;
-        
+        private IntPtr _hwndNextViewer = IntPtr.Zero;
+        private HwndSource _hwndSource;
+
         #region P/Invoke
         internal const int WM_DRAWCLIPBOARD = 0x0308;
 
@@ -46,24 +47,26 @@ namespace Priceall.Services
         public void InitializeListener(HwndSource hwndSource)
         {
             _hwndSource = hwndSource;
-        }
-        
-        /// <summary>
-        /// Starts processing clipboard messages by hooking up the specified window.
-        /// </summary>
-        public void StartListener()
-        {
-            _hwndSource.AddHook(OnClipboardChanged);
-            _hwndNextViewer = SetClipboardViewer(_hwndSource.Handle);
+            ToggleListener();
+            Settings.Default.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == "IsUsingAutomaticRefresh")
+                    ToggleListener();
+            };
         }
 
-        /// <summary>
-        /// Stops listening to clipboard messages and remove the app from queue.
-        /// </summary>
-        public void StopListener()
+        public void ToggleListener()
         {
-            _hwndSource.RemoveHook(OnClipboardChanged);
-            ChangeClipboardChain(_hwndSource.Handle, _hwndNextViewer);
+            if (SettingsService.GetSetting<bool>("IsUsingAutomaticRefresh"))
+            {
+                _hwndSource.AddHook(OnClipboardChanged);
+                _hwndNextViewer = SetClipboardViewer(_hwndSource.Handle);
+            }
+            else
+            {
+                _hwndSource.RemoveHook(OnClipboardChanged);
+                ChangeClipboardChain(_hwndSource.Handle, _hwndNextViewer);
+            }
         }
 
         /// <summary>

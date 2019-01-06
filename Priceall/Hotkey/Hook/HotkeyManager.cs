@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
@@ -71,7 +72,7 @@ namespace Priceall.Hotkey.Hook
         {
             _callback = OnHookCall;
             _currentHook = SetWindowsHookEx(WH_KEYBOARD_LL, _callback, IntPtr.Zero, 0);
-            return _currentHook == IntPtr.Zero;
+            return _currentHook != IntPtr.Zero;
         }
 
         /// <summary>
@@ -130,9 +131,14 @@ namespace Priceall.Hotkey.Hook
         public bool ActivateHotkey(string name, KeyCombo keyCombo, Action action)
         {
             // Remove all same-name hotkeys
-            var hotkeyDupes = _hotkeys.Where(hotkey => hotkey.KeyCombo.Name == name);
-            foreach (var hotkeyDupe in hotkeyDupes)
-                _hotkeys.Remove(hotkeyDupe);
+            for (int i = _hotkeys.Count - 1; i >= 0; i --)
+            {
+                if (_hotkeys[i].KeyCombo.Name == name)
+                {
+                    _hotkeys[i].Dispose();
+                    _hotkeys.RemoveAt(i);
+                }
+            }
             
             _hotkeys.Add(new Hotkey(keyCombo, action));
             return true;
@@ -143,14 +149,14 @@ namespace Priceall.Hotkey.Hook
         /// </summary>
         /// <param name="name">Name (identifier) of the hotkey.</param>
         /// <returns>The key combo of the first found hotkey.</returns>
-        public string GetHotkeyCombo(string name)
+        public KeyCombo GetHotkeyCombo(string name)
         {
-            foreach (var hotkey in _hotkeys)
+            foreach (var hotkey in _keyCombos)
             {
-                if (hotkey.KeyCombo.Name == name)
-                    return hotkey.KeyCombo.ToString();
+                if (hotkey.Name == name)
+                    return hotkey;
             }
-            return "N/A";
+            return KeyCombo.Empty;
         }
 
         public bool RemoveHotkey(string name)
@@ -215,6 +221,7 @@ namespace Priceall.Hotkey.Hook
                         // But the key isn't duplicate, it is not a modifier key
                         // The key combo is finished
                         _pressedKeys.Add(key);
+                        Debug.WriteLine($"New key added; now {String.Join(" + ", _pressedKeys)}");
                             // Not recording a combo, check for key hits
                             foreach (var activeHotkey in _hotkeys)
                             {
@@ -224,7 +231,7 @@ namespace Priceall.Hotkey.Hook
                                 }
                             }
                         // Wipe the now processed key combo
-                        _pressedKeys.Clear();
+                        // _pressedKeys.Clear();
                     }
                     else
                     {

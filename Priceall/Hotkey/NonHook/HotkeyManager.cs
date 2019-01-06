@@ -17,8 +17,6 @@ namespace Priceall.Hotkey.NonHook
 
         private static HwndSourceHook _sourceHook;
 
-        private static Dispatcher _delegateDispatcher;
-
         // List of KeyCombos stored in settings to be activated.
         private static List<KeyCombo> _keyCombos = new List<KeyCombo>();
 
@@ -37,13 +35,14 @@ namespace Priceall.Hotkey.NonHook
             var helper = new WindowInteropHelper(Application.Current.MainWindow);
             _windowHandle = helper.EnsureHandle();
             _sourceHook = new HwndSourceHook(HwndSourceHook);
-            _delegateDispatcher = Dispatcher.CurrentDispatcher;
             HwndSource.FromHwnd(_windowHandle).AddHook(_sourceHook);
             return true;
         }
 
         public bool UninitializeHook()
         {
+            SaveActiveHotkeys();
+            foreach (var hotkey in _hotkeys) hotkey.Value.UnregisterNonHook();
             HwndSource.FromHwnd(_windowHandle).RemoveHook(_sourceHook);
             return true;
         }
@@ -91,6 +90,7 @@ namespace Priceall.Hotkey.NonHook
                 if (keyCombo.Name == name)
                 {
                     var hotkey = new Hotkey(name, keyCombo, action, _windowHandle);
+                    hotkey.RegisterNonHook();
                     _hotkeys.Add(hotkey.Id, hotkey);
                     _keyCombos.Remove(keyCombo);
                     return true;
@@ -105,11 +105,18 @@ namespace Priceall.Hotkey.NonHook
         public bool ActivateHotkey(string name, KeyCombo keyCombo, Action action)
         {
             // Remove all same-name hotkeys
-            var hotkeyDupes = _hotkeys.Values.Where(hotkey => hotkey.KeyCombo.Name == name);
-            foreach (var hotkeyDupe in hotkeyDupes)
-                _hotkeys.Remove(hotkeyDupe.Id);
+            for (int i = _hotkeys.Count - 1; i >= 0; i--)
+            {
+                var hotkey = _hotkeys.ElementAt(i);
+                if (hotkey.Value.KeyCombo.Name == name)
+                {
+                    hotkey.Value.Dispose();
+                    _hotkeys.Remove(hotkey.Key);
+                }
+            }
 
             var newHotkey = new Hotkey(keyCombo, action);
+            newHotkey.RegisterNonHook();
             _hotkeys.Add(newHotkey.Id, newHotkey);
             return true;
         }
@@ -119,14 +126,14 @@ namespace Priceall.Hotkey.NonHook
         /// </summary>
         /// <param name="name">Name (identifier) of the hotkey.</param>
         /// <returns>The key combo of the first found hotkey.</returns>
-        public string GetHotkeyCombo(string name)
+        public KeyCombo GetHotkeyCombo(string name)
         {
-            foreach (var hotkey in _hotkeys.Values)
+            foreach (var hotkey in _keyCombos)
             {
-                if (hotkey.KeyCombo.Name == name)
-                    return hotkey.KeyCombo.ToString();
+                if (hotkey.Name == name)
+                    return hotkey;
             }
-            return "N/A";
+            return KeyCombo.Empty;
         }
 
         public bool RemoveHotkey(string name)
@@ -135,6 +142,7 @@ namespace Priceall.Hotkey.NonHook
             {
                 if (hotkey.KeyCombo.Name == name)
                 {
+                    hotkey.UnregisterNonHook();
                     _hotkeys.Remove(hotkey.Id);
                     return true;
                 }

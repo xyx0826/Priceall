@@ -189,7 +189,7 @@
                         <ColumnDefinition Width="0.7*"/>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Content="Query"/>
-                    <hotkey:HotkeyEditor Tag="QueryKey" Grid.Column="2" NewKeyCombo="HotkeyEditor_NewKeyCombo"/>
+                    <hotkey:HotkeyEditor x:Name="QueryKeyEditor" Tag="QueryKey" Grid.Column="2" NewKeyCombo="HotkeyEditor_NewKeyCombo"/>
                     <Label Grid.Row="1" Grid.ColumnSpan="3" Content="To change a hotkey, click its button and press a key combo."/>
                 </Grid>
             </GroupBox>

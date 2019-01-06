@@ -53,6 +53,7 @@ namespace Priceall.Services
             var appVersion = Assembly.GetEntryAssembly().GetName().Version;
             _userAgent = $"Priceall/{appVersion} (Github.com/xyx0826/Priceall)";
             _client.DefaultRequestHeaders.Add("User-Agent", _userAgent);
+            _client.Timeout = new TimeSpan(hours: 0, minutes: 0, seconds: 2);
             IsPersist = isPersist;
             MarketSystem = marketSystem;
         }
@@ -100,11 +101,20 @@ namespace Priceall.Services
                     new StringContent(query));
                 jsonResponse = await httpResponse.Content.ReadAsStringAsync();
             }
-            catch (HttpRequestException e) { Debug.WriteLine("HttpRequestException: " + e.Message); }
+            catch (HttpRequestException e)
+            {
+                Debug.WriteLine("HttpRequestException: " + e.Message);
+                return "{\"error_message\": \"Network request error.\"}";
+            }
+            catch (TaskCanceledException e)
+            {
+                Debug.WriteLine("Request timed out: " + e.Message);
+                return "{\"error_message\": \"Request timed out.\"}";
+            }
 
             // empty response is a network error
             if (String.IsNullOrEmpty(jsonResponse))
-                return "{\"error_message\": \"Network error.\"}";
+                return "{\"error_message\": \"Server response error.\"}";
 
             return jsonResponse;
         }

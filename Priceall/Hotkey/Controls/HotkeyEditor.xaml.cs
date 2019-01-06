@@ -48,9 +48,10 @@ namespace Priceall.Hotkey.Controls
             remove { RemoveHandler(NewKeyComboEvent, value); }
         }
         
-        void RaiseNewKeyComboEvent()
+        void RaiseNewKeyComboEvent(KeyCombo keyCombo = null)
         {
-            var newEvent = new NewKeyComboEventArgs(MyKeyCombo)
+            var newEvent = new NewKeyComboEventArgs
+                (keyCombo ?? MyKeyCombo)
             {
                 RoutedEvent = NewKeyComboEvent
             };
@@ -67,6 +68,11 @@ namespace Priceall.Hotkey.Controls
             public KeyCombo KeyCombo { get; }
         }
         #endregion
+
+        public void SetHotkeyManagerSource(IHotkeyManager hotkeyManager)
+        {
+            MyKeyCombo = hotkeyManager.GetHotkeyCombo((string)this.Tag);
+        }
 
         /// <summary>
         /// Handler when a key is pressed when editor has focus.

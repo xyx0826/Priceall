@@ -72,7 +72,7 @@
       <Value Profile="(Default)">3B5F73</Value>
     </Setting>
     <Setting Name="IsUsingHook" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

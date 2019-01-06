@@ -8,7 +8,7 @@ namespace Priceall.Hotkey
 
         bool ActivateHotkey(string name, KeyCombo keyCombo, Action action);
 
-        string GetHotkeyCombo(string name);
+        KeyCombo GetHotkeyCombo(string name);
 
         bool RemoveHotkey(string name);
 

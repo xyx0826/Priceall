@@ -8,6 +8,8 @@ using System.Windows.Input;
 using Priceall.Services;
 using static Priceall.Hotkey.Controls.HotkeyEditor;
 using Priceall.Hotkey.Controls;
+using System;
+using Priceall.Hotkey;
 
 namespace Priceall
 {
@@ -30,10 +32,15 @@ namespace Priceall
 
         static SettingsBinding _settings;
 
-        public SettingsWindow()
+        public delegate void HotkeyCallback(KeyCombo keyCombo);
+        static HotkeyCallback _hotkeyCallback;
+
+        public SettingsWindow(HotkeyCallback hotkeyCallback)
         {
             InitializeComponent();
             _settings = new SettingsBinding();
+            _hotkeyCallback = hotkeyCallback;
+            QueryKeyEditor.SetHotkeyManagerSource(MainWindow.HotkeyManager);
         }
 
         /// <summary>
@@ -83,8 +90,7 @@ namespace Priceall
             var newKeyCombo = keyArgs.KeyCombo;
             // Set appropriate name for this hotkey
             newKeyCombo.Name = (string)(sender as HotkeyEditor).Tag;
-            Debug.WriteLine($"New hotkey {(sender as HotkeyEditor).Tag}");
-            Debug.WriteLine($"{Hotkey.KeyComboUtils.ConvertToSettingValue(keyArgs.KeyCombo)}");
+            _hotkeyCallback(newKeyCombo);
         }
     }
 }

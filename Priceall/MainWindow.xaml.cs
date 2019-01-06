@@ -23,9 +23,9 @@ namespace Priceall
 
         // initialize helpers
         static readonly ClipboardService _clipboard = new ClipboardService();
-        static IHotkeyManager _manager;
+        public static IHotkeyManager HotkeyManager;
 
-        static Window _settingsWindow = new SettingsWindow();
+        static Window _settingsWindow;
         
         DateTime _lastQueryTime;
 
@@ -38,6 +38,7 @@ namespace Priceall
             SettingsService.UpdateSettings();   // migrate settings over from older Priceall version
             AppraisalService.Initialize();
             Task.Run(async () => { await FlagService.CheckAllFlags(); });   // update flag values in settings
+            Task.Run(async () => { await UpdateService.CheckForUpdates(); });
 
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
@@ -55,26 +56,26 @@ namespace Priceall
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-            _settingsWindow.Owner = this;
 
             if (SettingsService.GetSetting<bool>("IsUsingHook"))
-                _manager = new Hotkey.Hook.HotkeyManager();
+                HotkeyManager = new Hotkey.Hook.HotkeyManager();
             else
-                _manager = new Hotkey.NonHook.HotkeyManager();
+                HotkeyManager = new Hotkey.NonHook.HotkeyManager();
 
-            if (!_manager.InitializeHook())
+            _settingsWindow = new SettingsWindow(UpdateHotkey);
+
+            if (!HotkeyManager.InitializeHook())
             {
                 _infoBinding.Price = "Failed to initialize hotkey service.";
             }
             else
             {
-                if (_manager.ActivateHotkey("QueryKey", OnHotKeyHandler))
+                if (HotkeyManager.ActivateHotkey("QueryKey", OnHotKeyHandler))
                 {
                     _infoBinding.Price = "Query hotkey activated.";
                 }
                 else
                 {
-                    _manager.ActivateHotkey("QueryKey", KeyCombo.Empty, OnHotKeyHandler);
                     _infoBinding.Price = "Query hotkey not found. Create one from settings.";
                 }
             }
@@ -82,7 +83,6 @@ namespace Priceall
             SetWindowOnTopDelegate();
             InitializeClipboard();
             ToggleAutoRefresh();
-            CheckForUpdates();
         }
 
         /// <summary>
@@ -106,18 +106,6 @@ namespace Priceall
         }
 
         /// <summary>
-        /// Checks for update from AppVeyor in the background.
-        /// If an update is found, the setting icon will become orange.
-        /// </summary>
-        private void CheckForUpdates()
-        {
-            Task.Run(async () =>
-            {
-                await UpdateService.CheckForUpdates();
-            });
-        }
-
-        /// <summary>
         /// Checks for query cooldown and calls for appraisal query.
         /// </summary>
         private async void OnHotKeyHandler()
@@ -130,7 +118,7 @@ namespace Priceall
         /// </summary>
         private void AppShutdown(object sender, RoutedEventArgs e)
         {
-            _manager.UninitializeHook();
+            HotkeyManager.UninitializeHook();
             Settings.Default.Save();
             Application.Current.Shutdown();
         }
@@ -297,6 +285,20 @@ namespace Priceall
         private void ShowSettings(object sender, RoutedEventArgs e)
         {
             _settingsWindow.ShowDialog();
+        }
+        #endregion
+
+        #region Hotkey
+        public void UpdateHotkey(KeyCombo keyCombo)
+        {
+            switch (keyCombo.Name)
+            {
+                case "QueryKey":
+                    {
+                        HotkeyManager.ActivateHotkey(keyCombo.Name, keyCombo, OnHotKeyHandler);
+                        break;
+                    }
+            }
         }
         #endregion
     }

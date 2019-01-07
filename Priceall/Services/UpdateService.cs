@@ -12,7 +12,7 @@ namespace Priceall.Services
 
         public static async Task CheckForUpdates()
         {
-            SettingsService.SetSetting("UpdateAvailable", false);
+            SettingsService.Set("UpdateAvailable", false);
             Version remoteVersion;
 
             using (var client = new HttpClient())
@@ -27,7 +27,7 @@ namespace Priceall.Services
                 }
                 catch (HttpRequestException) { return; }
             }
-            SettingsService.SetSetting("UpdateAvailable", 
+            SettingsService.Set("UpdateAvailable", 
                 Assembly.GetEntryAssembly().GetName().Version
                 .CompareTo(remoteVersion) < 0);
         }

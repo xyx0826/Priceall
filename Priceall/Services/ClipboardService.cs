@@ -57,7 +57,7 @@ namespace Priceall.Services
 
         public void ToggleListener()
         {
-            if (SettingsService.GetSetting<bool>("IsUsingAutomaticRefresh"))
+            if (SettingsService.Get<bool>("IsUsingAutomaticRefresh"))
             {
                 _hwndSource.AddHook(OnClipboardChanged);
                 _hwndNextViewer = SetClipboardViewer(_hwndSource.Handle);

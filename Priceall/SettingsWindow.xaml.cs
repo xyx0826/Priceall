@@ -80,8 +80,8 @@ namespace Priceall
         {
             // MainWindow has issue updating width and height together, 
             // so let's just refresh twice...
-            SettingsService.ResetSettings();
-            SettingsService.ResetSettings();
+            SettingsService.Reset();
+            SettingsService.Reset();
         }
         
         public void HotkeyEditor_NewKeyCombo(object sender, RoutedEventArgs e)

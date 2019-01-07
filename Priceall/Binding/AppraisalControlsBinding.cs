@@ -36,7 +36,7 @@ namespace Priceall.Binding
             get
             {
                 if (SettingsService
-                    .GetSetting<bool>("IsDragEnabled")) return 1.0;
+                    .Get<bool>("IsDragEnabled")) return 1.0;
                 else return 0.4;
             }
         }
@@ -45,7 +45,7 @@ namespace Priceall.Binding
         {
             get
             {
-                if (SettingsService.GetSetting<bool>("UpdateAvailable") || Settings.Default.FLAG_AUTO_REFRESH_OFF)
+                if (SettingsService.Get<bool>("UpdateAvailable") || Settings.Default.FLAG_AUTO_REFRESH_OFF)
                 {
                     return ColorHelper.ConvertHexToColorBrush("FFA500");
                 }

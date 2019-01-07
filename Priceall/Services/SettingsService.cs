@@ -11,7 +11,7 @@ namespace Priceall.Services
         /// <param name="key">The key of the setting to be found.</param>
         /// <returns>The value of the specified setting, 
         /// or null if the setting is not found.</returns>
-        public static T GetSetting<T>(string key)
+        public static T Get<T>(string key)
         {
             var setting = Settings.Default[key];
             return (T)setting;
@@ -25,7 +25,7 @@ namespace Priceall.Services
         /// <param name="newValue">The new value for the specified setting.</param>
         /// <returns>The previous value of the specified settings,
         /// or null if the setting is not found.</returns>
-        public static T SetSetting<T>(string key, T newValue)
+        public static T Set<T>(string key, T newValue)
         {
             var oldSettings = Settings.Default[key];
             Settings.Default[key] = newValue;
@@ -38,7 +38,7 @@ namespace Priceall.Services
         /// Checks for settings of older Priceall versions
         /// and migrate them over.
         /// </summary>
-        public static void UpdateSettings()
+        public static void Upgrade()
         {
             if (Settings.Default.UpgradeRequired)
             {
@@ -51,7 +51,7 @@ namespace Priceall.Services
         /// <summary>
         /// Resets all settings to default (shipped) values.
         /// </summary>
-        public static void ResetSettings()
+        public static void Reset()
         {
             Settings.Default.Reset();
         }

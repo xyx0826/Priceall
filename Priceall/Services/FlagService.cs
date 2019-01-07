@@ -34,12 +34,12 @@ namespace Priceall.Services
                     {
                         var response = await client.GetAsync(_flagsDirectory + flag);
                         if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                            SettingsService.SetSetting("FLAG_" + flag, false);
-                        else SettingsService.SetSetting("FLAG_" + flag, true);
+                            SettingsService.Set("FLAG_" + flag, false);
+                        else SettingsService.Set("FLAG_" + flag, true);
                     }
                     catch (HttpRequestException)
                     {
-                        SettingsService.SetSetting("FLAG_" + flag, false);
+                        SettingsService.Set("FLAG_" + flag, false);
                     }
                 }
             }

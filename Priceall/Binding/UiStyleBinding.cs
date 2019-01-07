@@ -30,7 +30,7 @@ namespace Priceall.Binding
         }
 
         /// <summary>
-        /// Sets the window opacity between 100% and 20%.
+        /// Sets the window opacity between 100% and 0%.
         /// </summary>
         public double WindowOpacity
         {

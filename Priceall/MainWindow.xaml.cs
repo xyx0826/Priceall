@@ -35,7 +35,7 @@ namespace Priceall
         public MainWindow()
         {
             InitializeComponent();
-            SettingsService.UpdateSettings();   // migrate settings over from older Priceall version
+            SettingsService.Upgrade();   // migrate settings over from older Priceall version
             AppraisalService.Initialize();
             Task.Run(async () => { await FlagService.CheckAllFlags(); });   // update flag values in settings
             Task.Run(async () => { await UpdateService.CheckForUpdates(); });
@@ -53,12 +53,12 @@ namespace Priceall
         {
             base.OnSourceInitialized(e);
 
-            if (SettingsService.GetSetting<bool>("IsUsingHook"))
+            if (SettingsService.Get<bool>("IsUsingHook"))
                 HotkeyManager = new Hotkey.Hook.HotkeyManager();
             else
                 HotkeyManager = new Hotkey.NonHook.HotkeyManager();
 
-            _settingsWindow = new SettingsWindow(UpdateHotkey);
+            _settingsWindow = new SettingsWindow(OnHotkeyUpdated);
 
             if (!HotkeyManager.InitializeHook())
             {
@@ -75,8 +75,6 @@ namespace Priceall
                     _infoBinding.Price = "Query hotkey not found. Create one from settings.";
                 }
             }
-
-            SetWindowOnTopDelegate();
             InitializeClipboard();
         }
 
@@ -142,8 +140,6 @@ namespace Priceall
         /// <param name="clipboardContent">Content in clipboard to be price checked.</param>
         private async void QueryAppraisalAsync(string clipboardContent)
         {
-            SetWindowOnTopDelegate();
-
             var queryElapsed = (DateTime.Now - _lastQueryTime).TotalMilliseconds;
             if (queryElapsed >= Settings.Default.QueryCooldown)
             {
@@ -196,22 +192,9 @@ namespace Priceall
         /// <summary>
         /// Sets the window to be topmost (overlay).
         /// </summary>
-        private void SetWindowOnTop(object sender = null, EventArgs e = null)
+        private void Window_Deactivated(object sender, EventArgs e)
         {
             Topmost = true;
-        }
-
-        /// <summary>
-        /// Sets the window to be topmost (overlay).
-        /// Executed on MainWindow's delegate (UI thread).
-        /// </summary>
-        private void SetWindowOnTopDelegate()
-        {
-            Dispatcher.BeginInvoke(
-                new Action(() =>  
-                {
-                    SetWindowOnTop();
-                }));
         }
 
         /// <summary>
@@ -254,8 +237,8 @@ namespace Priceall
         /// </summary>
         private void TogglePin(object sender, MouseButtonEventArgs e)
         {
-            var currentState = SettingsService.GetSetting<bool>("IsDragEnabled");
-            SettingsService.SetSetting("IsDragEnabled", !currentState);
+            var currentState = SettingsService.Get<bool>("IsDragEnabled");
+            SettingsService.Set("IsDragEnabled", !currentState);
         }
 
         /// <summary>
@@ -268,7 +251,7 @@ namespace Priceall
         #endregion
 
         #region Hotkey
-        public void UpdateHotkey(KeyCombo keyCombo)
+        public void OnHotkeyUpdated(KeyCombo keyCombo)
         {
             switch (keyCombo.Name)
             {

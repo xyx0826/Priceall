@@ -7,7 +7,8 @@
         WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize"
         Top="{Binding WindowTopPos, Mode=TwoWay}" Left="{Binding WindowLeftPos, Mode=TwoWay}"
         Width="{Binding WindowWidth, Mode=TwoWay}" Height="{Binding WindowHeight, Mode=TwoWay}"
-        Deactivated="SetWindowOnTop"
+        Topmost="True"
+        Deactivated="Window_Deactivated"
         Closing="Window_Closing">
     <Window.Background>
         <SolidColorBrush 

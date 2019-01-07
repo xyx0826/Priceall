@@ -88,7 +88,7 @@ namespace Priceall.Hotkey.Hook
         public void LoadKeyCombosFromSettings()
         {
             var savedHotkeys = SettingsService
-                    .GetSetting<StringCollection>("Hotkeys");
+                    .Get<StringCollection>("Hotkeys");
             if (savedHotkeys != null)
             {
                 foreach (var hotkey in savedHotkeys)
@@ -185,7 +185,7 @@ namespace Priceall.Hotkey.Hook
                     hotkeys.Add(KeyComboUtils
                         .ConvertToSettingValue(hotkey.KeyCombo));
             }
-            SettingsService.SetSetting("Hotkeys", hotkeys);
+            SettingsService.Set("Hotkeys", hotkeys);
         }
         #endregion
         

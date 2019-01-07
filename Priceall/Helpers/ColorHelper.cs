@@ -36,7 +36,7 @@ namespace Priceall.Helpers
         public static SolidColorBrush ConvertSettingToColorBrush(string settingKey)
         {
             return ConvertHexToColorBrush(
-                SettingsService.GetSetting<string>(settingKey));
+                SettingsService.Get<string>(settingKey));
         }
     }
 }

@@ -1,5 +1,5 @@
 # Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall) 
-<img src="https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/Priceall.png" width="128" height="128" />
+<img src="Readme/Images/Priceall.png" width="128" height="128" />
 
 Priceall 是 EVE Online 的快速估价工具。
 
@@ -21,27 +21,27 @@ Priceall 可以让你**飞速查询**物品列表的估价，无需把目光移开游戏画面。
 
 **新功能：自动刷新！** 复制到剪贴板后无需按快捷键。Priceall 会自动刷新估价。
 
-![操作](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-01-basic.gif)
+![操作](Readme/Images/priceall-gif-01-basic.gif)
 
 在设置里，你可以选择显示**精确**价格或**简略**价格。
 
-![格式](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-02-format.gif)
+![格式](Readme/Images/priceall-gif-02-format.gif)
 
 你也可以自定义**字体颜色**。可以试试谷歌的[取色器](https://www.google.com/search?q=color%20picker)哦！
 
-![颜色](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-03-color.gif)
+![颜色](Readme/Images/priceall-gif-03-color.gif)
 
 窗口可被**拖拽**到任意位置，然后右击**锁定**。
 
-![拖拽](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-04-drag.gif)
+![拖拽](Readme/Images/priceall-gif-04-drag.gif)
 
 使用鼠标滚轮来调整背景**透明度**。搭配 `Ctrl` 键滚动可以更改窗口**大小**。
 
-![缩放](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-05-resize.gif)
+![缩放](Readme/Images/priceall-gif-05-resize.gif)
 
 如果背景被调为**完全透明**，便可以点击窗口背后的内容。（点击穿透）
 
-![穿透](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-06-clickthrough.gif)
+![穿透](Readme/Images/priceall-gif-06-clickthrough.gif)
 
 **使用须知：**
 - Priceall 是一个置顶小窗口——它不是像 Steam 或 Discord 的那种”覆盖层“（Overlay）。所以它可能不兼容全屏游戏。

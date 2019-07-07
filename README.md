@@ -1,5 +1,5 @@
 # Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall) 
-<img src="https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/Priceall.png" width="128" height="128" />
+<img src="Readme/Images/Priceall.png" width="128" height="128" />
 
 Priceall is an app for quick EVE Online price-checking.
 
@@ -19,27 +19,27 @@ Priceall is designed for checking item list prices **as quick as possible**, wit
 
 **Experimental:** you can now enable auto refresh. When clipboard content changes, Priceall will automatically do a price-checking for you.
 
-![Basic](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-01-basic.gif)
+![Basic](Readme/Images/priceall-gif-01-basic.gif)
 
 From settings, you can choose to show **numeric** price or **formatted** price.
 
-![Format](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-02-format.gif)
+![Format](Readme/Images/priceall-gif-02-format.gif)
 
 And you can also customize the price tag **color**. Google [color picker](https://www.google.com/search?q=color%20picker) will come in handy!
 
-![Color](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-03-color.gif)
+![Color](Readme/Images/priceall-gif-03-color.gif)
 
 **Drag** the widget to anywhere you want and **pin** it down.
 
-![Drag](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-04-drag.gif)
+![Drag](Readme/Images/priceall-gif-04-drag.gif)
 
 Use mouse scroll to change background **transparency**, or hold `Ctrl` and scroll to change widget **size**.
 
-![Resize](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-05-resize.gif)
+![Resize](Readme/Images/priceall-gif-05-resize.gif)
 
 If you make the widget **fully transparent**, it can support **click-through**.
 
-![Clickthrough](https://raw.githubusercontent.com/xyx0826/Priceall/master/Readme/Images/priceall-gif-06-clickthrough.gif)
+![Clickthrough](Readme/Images/priceall-gif-06-clickthrough.gif)
 
 **Things to know:**
 - Priceall works as an always-on-top window - it's not an actual "overlay" like the one Steam or Discord have. Therefore it might not work for fullscreen game.

@@ -62,6 +62,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Appraisal\AppraisalMarket.cs" />
+    <Compile Include="Appraisal\AppraisalResult.cs" />
+    <Compile Include="Appraisal\AppraisalSettings.cs" />
+    <Compile Include="Appraisal\Services\EvepraisalAppraisalService.cs" />
+    <Compile Include="Appraisal\Services\IAppraisalService.cs" />
+    <Compile Include="Appraisal\Services\JaniceAppraisalService.cs" />
     <Compile Include="Binding\SettingsBinding.cs" />
     <Compile Include="Helpers\ColorHelper.cs" />
     <Compile Include="Hotkey\Hotkey.cs" />
@@ -72,6 +78,9 @@
     <Compile Include="Hotkey\KeyCombo.cs" />
     <Compile Include="Hotkey\NonHook\HotkeyInterop.cs" />
     <Compile Include="Hotkey\NonHook\HotkeyManager.cs" />
+    <Compile Include="Http\ServiceResponse.cs" />
+    <Compile Include="Http\HttpUtilities.cs" />
+    <Compile Include="Http\PriceallClient.cs" />
     <Compile Include="Services\FlagService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\UpdateService.cs" />

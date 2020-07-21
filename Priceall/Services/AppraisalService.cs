@@ -1,6 +1,5 @@
-﻿using Priceall.Properties;
+﻿using Priceall.Http;
 using System;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -85,38 +84,16 @@ namespace Priceall.Services
         /// <param name="clipboardContent">Content from clipboard to be parsed.</param>
         public static async Task<string> QueryAppraisal(string query)
         {
-            // if string is too long, do not proceed
-            if (query.Length > Settings.Default.MaxStringLength)
-                return "{\"error_message\": \"Clipboard text too long.\"}";
-            // if no string in clipboard, do not proceed
-            if (String.IsNullOrEmpty(query))
-                return "{\"error_message\": \"No text found on clipboard.\"}";
-
-            // initial checks passed, ask server for response
-            var jsonResponse = String.Empty;
-
-            try
+            var res = await PriceallClient.PostAsync(_uriBuilder.ToString(), null, query);
+            switch (res.Status)
             {
-                var httpResponse = await _client.PostAsync(_uriBuilder.ToString(),
-                    new StringContent(query));
-                jsonResponse = await httpResponse.Content.ReadAsStringAsync();
+                case ServiceStatus.ContentError:
+                    return "{\"error_message\": \"Text too long or empty.\"}";
+                case ServiceStatus.NetworkError:
+                    return "{\"error_message\": \"Network request error.\"}";
+                default:
+                    return res.Response;
             }
-            catch (HttpRequestException e)
-            {
-                Debug.WriteLine("HttpRequestException: " + e.Message);
-                return "{\"error_message\": \"Network request error.\"}";
-            }
-            catch (TaskCanceledException e)
-            {
-                Debug.WriteLine("Request timed out: " + e.Message);
-                return "{\"error_message\": \"Request timed out.\"}";
-            }
-
-            // empty response is a network error
-            if (String.IsNullOrEmpty(jsonResponse))
-                return "{\"error_message\": \"Server response error.\"}";
-
-            return jsonResponse;
         }
     }
 }

@@ -5,10 +5,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resource/Fonts.xaml"/>
-                <ResourceDictionary Source="Resource/Styles.xaml"/>
-                <ResourceDictionary Source="Resource/TypeIcons.xaml"/>
-                <ResourceDictionary Source="Resource/UiIcons.xaml"/>
+                <ResourceDictionary Source="Resources/Fonts.xaml"/>
+                <ResourceDictionary Source="Resources/Styles.xaml"/>
+                <ResourceDictionary Source="Resources/TypeIcons.xaml"/>
+                <ResourceDictionary Source="Resources/UiIcons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

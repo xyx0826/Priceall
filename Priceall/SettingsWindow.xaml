@@ -15,54 +15,42 @@
         <!-- StackPanel for settings -->
         <StackPanel Orientation="Vertical" Margin="0,0,8,0">
             <GroupBox Header="Appraisal settings" Height="Auto">
-                <Grid Margin="8" Height="Auto">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="Maximum query length">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Data source:"/>
+                    <ComboBox ItemsSource="{Binding DataSources}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                              SelectedValue="{Binding SelectedDataSource}"/>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Maximum query length:">
                         <Label.ToolTip>
                             Prevents accidentally sending unrelated bulk text to Evepraisal.
                         </Label.ToolTip>
                     </Label>
-                    <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                    <DockPanel LastChildFill="True">
+                        <Label Grid.Row="0" Grid.Column="2" DockPanel.Dock="Right" Content="characters"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="NumberFilter"
                          Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Grid.Row="0" Grid.Column="2" Content="chars"/>
-                    <Label Grid.Row="1" Grid.Column="0" Content="Cooldown between queries">
+                    </DockPanel>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Cooldown between queries:">
                         <Label.ToolTip>
-                            Prevents (un)intentionally spamming Evepraisal server.
+                            Prevents (un)intentionally spamming appraisal service.
                         </Label.ToolTip>
                     </Label>
-                    <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                    <DockPanel LastChildFill="True">
+                        <Label Grid.Row="1" Grid.Column="2" DockPanel.Dock="Right" Content="milliseconds"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="NumberFilter"
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Grid.Row="1" Grid.Column="2" Content="ms"/>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Use automatic refresh">
-                        <Label.ToolTip>
-                            Auto refreshes when something new is copied to clipboard.
-                        </Label.ToolTip>
-                    </Label>
-                    <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"
-                          IsChecked="{Binding IsUsingAutomaticRefresh}"/>
-                    <Label Grid.Row="2" Grid.Column="2" Content="enabled"/>
-                    <Label Grid.Row="3" Grid.ColumnSpan="3" Visibility="{Binding AutoRefreshTagVisibility}"
-                       Foreground="Red"
-                       FontStyle="Italic">
-                        <TextBlock>
-                            Sorry - please turn auto refresh off.
-                            <LineBreak/>
-                            There's too much stress on servers.
-                        </TextBlock>
-                    </Label>
-                </Grid>
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Grid.Row="2" Grid.Column="0" Content="Use automatic refresh:">
+                            <Label.ToolTip>
+                                Auto refreshes when something new is copied to clipboard.
+                            </Label.ToolTip>
+                        </Label>
+                        <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"
+                                  IsChecked="{Binding IsUsingAutomaticRefresh}"/>
+                    </StackPanel>
+                </StackPanel>
             </GroupBox>
             <GroupBox Header="Styles" Height="Auto">
                 <Grid Margin="8" Height="Auto">
@@ -190,7 +178,6 @@
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Content="Query"/>
                     <hotkey:HotkeyEditor x:Name="QueryKeyEditor" Tag="QueryKey" Grid.Column="2" NewKeyCombo="HotkeyEditor_NewKeyCombo"/>
-                    <Label Grid.Row="1" Grid.ColumnSpan="3" Content="To change a hotkey, click its button and press a key combo."/>
                 </Grid>
             </GroupBox>
         </StackPanel>

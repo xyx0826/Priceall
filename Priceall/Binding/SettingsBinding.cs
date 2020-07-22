@@ -1,5 +1,9 @@
-﻿using Priceall.Properties;
+﻿using Priceall.Appraisal;
+using Priceall.Properties;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 
@@ -29,7 +33,42 @@ namespace Priceall.Binding
             };
         }
 
+        /// <summary>
+        /// Available appraisal service names and their implementations.
+        /// </summary>
+        static readonly Dictionary<string, Type> _appraisalServices
+            = new Dictionary<string, Type>()
+            {
+                { "Evepraisal", typeof(EvepraisalAppraisalService) },
+                { "Janice", typeof(JaniceAppraisalService) },
+                { "ceve-market", typeof(CeveMarketAppraisalService) }
+            };
+
         #region Appraisal settings
+        public Dictionary<string, Type> DataSources => _appraisalServices;
+
+        public Type SelectedDataSource
+        {
+            get
+            {
+                foreach (var service in _appraisalServices.Values)
+                {
+                    if (service.Name == Settings.Default.DataSource)
+                    {
+                        return service;
+                    }
+                }
+                return _appraisalServices.Values.FirstOrDefault();
+            }
+            set
+            {
+                if (value != null)
+                {
+                    Settings.Default.DataSource = value.Name;
+                }
+            }
+        }
+
         public int MaxStringLength
         {
             get { return Settings.Default.MaxStringLength; }

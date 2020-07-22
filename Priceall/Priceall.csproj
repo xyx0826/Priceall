@@ -65,6 +65,7 @@
     <Compile Include="Appraisal\AppraisalMarket.cs" />
     <Compile Include="Appraisal\AppraisalResult.cs" />
     <Compile Include="Appraisal\AppraisalSettings.cs" />
+    <Compile Include="Appraisal\Services\CeveMarketAppraisalService.cs" />
     <Compile Include="Appraisal\Services\EvepraisalAppraisalService.cs" />
     <Compile Include="Appraisal\Services\IAppraisalService.cs" />
     <Compile Include="Appraisal\Services\JaniceAppraisalService.cs" />
@@ -94,6 +95,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

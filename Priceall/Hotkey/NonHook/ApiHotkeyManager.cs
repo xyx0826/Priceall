@@ -126,6 +126,7 @@ namespace Priceall.Hotkey.NonHook
                 var hotkey = _hotkeys.ElementAt(i);
                 if (hotkey.Value.KeyCombo.Name == name)
                 {
+                    UnregisterHotkey(hotkey.Value);
                     hotkey.Value.Dispose();
                     _hotkeys.Remove(hotkey.Key);
                 }

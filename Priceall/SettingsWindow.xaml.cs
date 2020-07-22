@@ -8,8 +8,9 @@ using System.Windows.Input;
 using Priceall.Services;
 using static Priceall.Hotkey.Controls.HotkeyEditor;
 using Priceall.Hotkey.Controls;
-using System;
 using Priceall.Hotkey;
+using System.Collections.Generic;
+using Priceall.Appraisal;
 
 namespace Priceall
 {

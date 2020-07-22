@@ -1,31 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Priceall.Appraisal
 {
-    class JaniceAppraisalService : IAppraisalService
+    class CeveMarketAppraisalService : IAppraisalService
     {
         public Task<AppraisalResult> AppraiseAsync(string content)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public AppraisalMarket GetAvailableMarkets()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public IReadOnlyCollection<AppraisalSettings> GetCustomSettings()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         public void SetCurrentMarket(AppraisalMarket market)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
     }
 }

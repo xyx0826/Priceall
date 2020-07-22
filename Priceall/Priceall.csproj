@@ -77,7 +77,7 @@
     <Compile Include="Hotkey\IHotkeyManager.cs" />
     <Compile Include="Hotkey\KeyCombo.cs" />
     <Compile Include="Hotkey\NonHook\HotkeyInterop.cs" />
-    <Compile Include="Hotkey\NonHook\HotkeyManager.cs" />
+    <Compile Include="Hotkey\NonHook\ApiHotkeyManager.cs" />
     <Compile Include="Http\ServiceResponse.cs" />
     <Compile Include="Http\HttpUtilities.cs" />
     <Compile Include="Http\PriceallClient.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="Binding\AppraisalInfoBinding.cs" />
     <Compile Include="Binding\AppraisalControlsBinding.cs" />
     <Compile Include="Hotkey\Hook\HotkeyEnums.cs" />
-    <Compile Include="Hotkey\Hook\HotkeyManager.cs" />
+    <Compile Include="Hotkey\Hook\LowLevelHotkeyManager.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -101,11 +101,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\Fonts.xaml">
+    <Page Include="Resources\Fonts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\UiIcons.xaml">
+    <Page Include="Resources\UiIcons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -123,11 +123,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Resource\Styles.xaml">
+    <Page Include="Resources\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\TypeIcons.xaml">
+    <Page Include="Resources\TypeIcons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -153,26 +153,26 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resource\Icons\assets.png" />
-    <Resource Include="Resource\Icons\cargo.png" />
-    <Resource Include="Resource\Icons\cargocontainer.png" />
-    <Resource Include="Resource\Icons\cargoscan.png" />
-    <Resource Include="Resource\Icons\combatlog.png" />
-    <Resource Include="Resource\Icons\comparetool.png" />
-    <Resource Include="Resource\Icons\contractauction.png" />
-    <Resource Include="Resource\Icons\fitting.png" />
-    <Resource Include="Resource\Icons\Industry.png" />
-    <Resource Include="Resource\Icons\log.png" />
-    <Resource Include="Resource\Icons\miningLedger.png" />
-    <Resource Include="Resource\Icons\planets.png" />
-    <Resource Include="Resource\Icons\question.png" />
-    <Resource Include="Resource\Icons\satellite.png" />
-    <Resource Include="Resource\Icons\shipscan.png" />
-    <Resource Include="Resource\Icons\wallet.png" />
-    <Resource Include="Resource\Icons\warreport.png" />
+    <Resource Include="Resources\Icons\assets.png" />
+    <Resource Include="Resources\Icons\cargo.png" />
+    <Resource Include="Resources\Icons\cargocontainer.png" />
+    <Resource Include="Resources\Icons\cargoscan.png" />
+    <Resource Include="Resources\Icons\combatlog.png" />
+    <Resource Include="Resources\Icons\comparetool.png" />
+    <Resource Include="Resources\Icons\contractauction.png" />
+    <Resource Include="Resources\Icons\fitting.png" />
+    <Resource Include="Resources\Icons\Industry.png" />
+    <Resource Include="Resources\Icons\log.png" />
+    <Resource Include="Resources\Icons\miningLedger.png" />
+    <Resource Include="Resources\Icons\planets.png" />
+    <Resource Include="Resources\Icons\question.png" />
+    <Resource Include="Resources\Icons\satellite.png" />
+    <Resource Include="Resources\Icons\shipscan.png" />
+    <Resource Include="Resources\Icons\wallet.png" />
+    <Resource Include="Resources\Icons\warreport.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resource\Icons\searchmarket.png" />
+    <Resource Include="Resources\Icons\searchmarket.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Priceall.ico" />

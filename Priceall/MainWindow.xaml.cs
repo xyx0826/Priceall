@@ -54,9 +54,9 @@ namespace Priceall
             base.OnSourceInitialized(e);
 
             if (SettingsService.Get<bool>("IsUsingHook"))
-                HotkeyManager = new Hotkey.Hook.HotkeyManager();
+                HotkeyManager = new Hotkey.Hook.LowLevelHotkeyManager();
             else
-                HotkeyManager = new Hotkey.NonHook.HotkeyManager();
+                HotkeyManager = new Hotkey.NonHook.ApiHotkeyManager();
 
             _settingsWindow = new SettingsWindow(OnHotkeyUpdated);
 

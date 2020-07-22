@@ -1,25 +1,30 @@
 ﻿using Priceall.Hotkey.NonHook;
 using System;
-using System.Collections.Generic;
-using System.Windows.Input;
 
 namespace Priceall.Hotkey
 {
+    /// <summary>
+    /// A hotkey combo and its corresponding action.
+    /// </summary>
     public class Hotkey : IDisposable
     {
+        /// <summary>
+        /// The random unique ID of the hotkey.
+        /// </summary>
         public readonly int Id;
 
+        /// <summary>
+        /// The key combo of the hotkey.
+        /// </summary>
         public KeyCombo KeyCombo;
 
+        /// <summary>
+        /// The action fired by this hotkey.
+        /// </summary>
         private Action _action;
-        
-        private static IntPtr _windowHandle = IntPtr.Zero;
 
-        public void SetAction(Action action) => _action = action;
+        private bool _disposed;
 
-        public void Invoke() => _action.Invoke();
-
-        #region Constructors
         /// <summary>
         /// Creates hotkey for hooked mode.
         /// </summary>
@@ -33,50 +38,41 @@ namespace Priceall.Hotkey
         /// <summary>
         /// Creates hotkey for non-hooked mode.
         /// </summary>
-        public Hotkey(string name, KeyCombo keyCombo, Action action, IntPtr windowHandle)
+        public Hotkey(string name, KeyCombo keyCombo, Action action)
             : this (keyCombo, action)
         {
             KeyCombo.Name = name;
-            _windowHandle = windowHandle;
-            RegisterNonHook();
-        }
-        #endregion
-
-        #region Hook mode
-        public bool KeysEqual(List<Key> pressedKeys) => KeyCombo.KeysEqual(pressedKeys);
-        #endregion
-
-        #region Non-hook (RegisterHotkey) mode
-        /// <summary>
-        /// In non-keyboard hook mode, register this hotkey.
-        /// </summary>
-        /// <returns>Whether the registration is successful.</returns>
-        public bool RegisterNonHook()
-        {
-            return HotkeyInterop.RegisterHotKey(_windowHandle, Id,
-                KeyCombo.ModifierKeys, KeyInterop.VirtualKeyFromKey(KeyCombo.Key));
         }
 
-        /// <summary>
-        /// In non-keyboard hook mode, unregister this hotkey.
-        /// </summary>
-        /// <returns>Whether the unregistration is successful.</returns>
-        public bool UnregisterNonHook()
-        {
-            return HotkeyInterop.UnregisterHotKey(_windowHandle, Id);
-        }
-        #endregion
+        public void SetAction(Action action) => _action = action;
 
-        #region Overrides and impls
+        public void Invoke() => _action.Invoke();
+
         public override string ToString()
         {
-            return $"<{KeyCombo.Name} ({KeyCombo.ToString()})>";
+            return $"<{KeyCombo.Name} ({KeyCombo})>";
         }
 
+        #region IDisposable
         public void Dispose()
         {
-            UnregisterNonHook();
-            HotkeyInterop.DeleteAtom((uint)Id);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                HotkeyInterop.DeleteAtom((uint)Id);
+            }
+
+            _disposed = true;
         }
         #endregion
     }

@@ -10,9 +10,9 @@ using System.Windows.Input;
 namespace Priceall.Hotkey.Hook
 {
     /// <summary>
-    /// Class for managing multiple hotkeys, or record new hotkeys.
+    /// A manager for low-level hotkeys.
     /// </summary>
-    internal class HotkeyManager : IHotkeyManager
+    class LowLevelHotkeyManager : IHotkeyManager
     {
         #region Constant (variables)
         private const int WH_KEYBOARD_LL = 13;
@@ -56,10 +56,10 @@ namespace Priceall.Hotkey.Hook
         // Instance of keyboard hook delegate to prevent it from being GC'd.
         private static KeyboardHookProc _callback;
         #endregion
-        
+
         #region Initialization/uninitialization
 
-        public HotkeyManager()
+        public LowLevelHotkeyManager()
         {
             LoadKeyCombosFromSettings();
         }
@@ -84,7 +84,7 @@ namespace Priceall.Hotkey.Hook
             SaveActiveHotkeys();
             return UnhookWindowsHookEx(_currentHook);
         }
-        
+
         public void LoadKeyCombosFromSettings()
         {
             var savedHotkeys = SettingsService
@@ -131,7 +131,7 @@ namespace Priceall.Hotkey.Hook
         public bool ActivateHotkey(string name, KeyCombo keyCombo, Action action)
         {
             // Remove all same-name hotkeys
-            for (int i = _hotkeys.Count - 1; i >= 0; i --)
+            for (int i = _hotkeys.Count - 1; i >= 0; i--)
             {
                 if (_hotkeys[i].KeyCombo.Name == name)
                 {
@@ -139,7 +139,7 @@ namespace Priceall.Hotkey.Hook
                     _hotkeys.RemoveAt(i);
                 }
             }
-            
+
             _hotkeys.Add(new Hotkey(keyCombo, action));
             return true;
         }
@@ -188,7 +188,7 @@ namespace Priceall.Hotkey.Hook
             SettingsService.Set("Hotkeys", hotkeys);
         }
         #endregion
-        
+
         /// <summary>
         /// Callback fired every time a key is pressed.
         /// </summary>
@@ -214,22 +214,23 @@ namespace Priceall.Hotkey.Hook
                 {
                     // A key is pressed
                     if (_pressedKeys.Contains(key))
+                    {
                         // But the key is duplicate, so throw it out
                         return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
+                    }
                     else if (!_modifierKeys.Contains(key))
                     {
                         // But the key isn't duplicate, it is not a modifier key
                         // The key combo is finished
                         _pressedKeys.Add(key);
-                        Debug.WriteLine($"New key added; now {String.Join(" + ", _pressedKeys)}");
-                            // Not recording a combo, check for key hits
-                            foreach (var activeHotkey in _hotkeys)
+                        // Not recording a combo, check for key hits
+                        foreach (var activeHotkey in _hotkeys)
+                        {
+                            if (activeHotkey.KeyCombo.KeysEqual(_pressedKeys))
                             {
-                                if (activeHotkey.KeysEqual(_pressedKeys))
-                                {
-                                    activeHotkey.Invoke();
-                                }
+                                activeHotkey.Invoke();
                             }
+                        }
                         // Wipe the now processed key combo
                         // _pressedKeys.Clear();
                     }
@@ -239,10 +240,9 @@ namespace Priceall.Hotkey.Hook
                         _pressedKeys.Add(key);
                     }
                 }
-                // A key is released, try to remove it
+                // A key is released, remove it
                 else _pressedKeys.Remove(key);
             }
-
             // Pass messages to next hook listener.
             return CallNextHookEx(IntPtr.Zero, code, wParam, ref lParam);
         }

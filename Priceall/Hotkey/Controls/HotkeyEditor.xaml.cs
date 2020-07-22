@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Priceall.Hotkey.Controls
 {
     /// <summary>
-    /// HotkeyEditor.xaml 的交互逻辑
+    /// A hotkey editor user control for setting and clearing hotkeys.
     /// </summary>
     public partial class HotkeyEditor : UserControl
     {
@@ -23,7 +22,7 @@ namespace Priceall.Hotkey.Controls
             MyKeyCombo = new KeyCombo();
         }
 
-        #region Dependency Injection
+        #region Dependency property
         public static readonly DependencyProperty HotkeyProperty
             = DependencyProperty.Register(
                 nameof(MyKeyCombo), typeof(KeyCombo), typeof(HotkeyEditor), 
@@ -71,11 +70,11 @@ namespace Priceall.Hotkey.Controls
 
         public void SetHotkeyManagerSource(IHotkeyManager hotkeyManager)
         {
-            MyKeyCombo = hotkeyManager.GetHotkeyCombo((string)this.Tag);
+            MyKeyCombo = hotkeyManager.GetHotkeyCombo((string)Tag);
         }
 
         /// <summary>
-        /// Handler when a key is pressed when editor has focus.
+        /// Handler for when a key is pressed when editor has focus.
         /// </summary>
         private void HotkeyTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -100,7 +99,7 @@ namespace Priceall.Hotkey.Controls
         }
 
         /// <summary>
-        /// Handler when the clear combo button is pressed.
+        /// Handler for when the clear combo button is pressed.
         /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {

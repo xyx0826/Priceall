@@ -2,14 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace Priceall.Hotkey.NonHook
 {
-    class HotkeyManager : IHotkeyManager
+    /// <summary>
+    /// A manager for hotkeys implemented through RegisterHotkey API.
+    /// </summary>
+    class ApiHotkeyManager : IHotkeyManager
     {
         private const uint WM_HOTKEY = 0x0312;
 
@@ -25,7 +29,7 @@ namespace Priceall.Hotkey.NonHook
             = new Dictionary<int, Hotkey>();
 
         #region Initialization/uninitialization
-        public HotkeyManager()
+        public ApiHotkeyManager()
         {
             LoadKeyCombosFromSettings();
         }
@@ -42,7 +46,14 @@ namespace Priceall.Hotkey.NonHook
         public bool UninitializeHook()
         {
             SaveActiveHotkeys();
-            foreach (var hotkey in _hotkeys) hotkey.Value.UnregisterNonHook();
+            foreach (var hotkey in _hotkeys.Values)
+            {
+                if (!UnregisterHotkey(hotkey))
+                {
+                    Debug.WriteLine($"Error unregistering hotkey {hotkey}.");
+                    return false;
+                }
+            }
             HwndSource.FromHwnd(_windowHandle).RemoveHook(_sourceHook);
             return true;
         }
@@ -89,11 +100,16 @@ namespace Priceall.Hotkey.NonHook
             {
                 if (keyCombo.Name == name)
                 {
-                    var hotkey = new Hotkey(name, keyCombo, action, _windowHandle);
-                    hotkey.RegisterNonHook();
-                    _hotkeys.Add(hotkey.Id, hotkey);
-                    _keyCombos.Remove(keyCombo);
-                    return true;
+                    // Register the hotkey
+                    var hotkey = new Hotkey(name, keyCombo, action);
+                    if (RegisterHotkey(hotkey))
+                    {
+                        // Registration successful, add to list
+                        _hotkeys.Add(hotkey.Id, hotkey);
+                        _keyCombos.Remove(keyCombo);
+                        return true;
+                    }
+                    break;
                 }
             }
             return false;
@@ -116,9 +132,12 @@ namespace Priceall.Hotkey.NonHook
             }
 
             var newHotkey = new Hotkey(keyCombo, action);
-            newHotkey.RegisterNonHook();
-            _hotkeys.Add(newHotkey.Id, newHotkey);
-            return true;
+            if (RegisterHotkey(newHotkey))
+            {
+                _hotkeys.Add(newHotkey.Id, newHotkey);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -142,7 +161,7 @@ namespace Priceall.Hotkey.NonHook
             {
                 if (hotkey.KeyCombo.Name == name)
                 {
-                    hotkey.UnregisterNonHook();
+                    UnregisterHotkey(hotkey);
                     _hotkeys.Remove(hotkey.Id);
                     return true;
                 }
@@ -151,19 +170,44 @@ namespace Priceall.Hotkey.NonHook
         }
 
         /// <summary>
+        /// Registers a hotkey to Windows hotkey table.
+        /// </summary>
+        /// <param name="hk">The hotkey to register.</param>
+        /// <returns>Whether the registration is successful.</returns>
+        private static bool RegisterHotkey(Hotkey hk)
+        {
+            if (_windowHandle == IntPtr.Zero)
+            {
+                throw new InvalidOperationException("The window handle is not initialized.");
+            }
+
+            return HotkeyInterop.RegisterHotKey(_windowHandle, hk.Id, hk.KeyCombo.ModifierKeys,
+                KeyInterop.VirtualKeyFromKey(hk.KeyCombo.Key));
+        }
+
+        /// <summary>
+        /// Removes a hotkey from Windows hotkey table.
+        /// </summary>
+        /// <param name="hk">The hotkey to unregister.</param>
+        /// <returns>Whether the unregistration is successful.</returns>
+        private static bool UnregisterHotkey(Hotkey hk)
+        {
+            return HotkeyInterop.UnregisterHotKey(_windowHandle, hk.Id);
+        }
+
+        /// <summary>
         /// Converts every active hotkey definition 
         /// into its string form and stores to settings.
         /// </summary>
         public static void SaveActiveHotkeys()
         {
-            var hotkeys = new StringCollection();
+            var store = new StringCollection();
             foreach (var hotkey in _hotkeys.Values)
             {
                 if (hotkey.KeyCombo.AllKeys.Count != 0)
-                    hotkeys.Add(KeyComboUtils
-                        .ConvertToSettingValue(hotkey.KeyCombo));
+                    store.Add(KeyComboUtils.ConvertToSettingValue(hotkey.KeyCombo));
             }
-            SettingsService.Set("Hotkeys", hotkeys);
+            SettingsService.Set("Hotkeys", store);
         }
     }
 }

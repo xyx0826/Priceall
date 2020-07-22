@@ -18,7 +18,7 @@ namespace Priceall.Hotkey
 
         public Key ToKey()
         {
-            return ((Key)CsCode);
+            return (Key)CsCode;
         }
 
         public override string ToString()

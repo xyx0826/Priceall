@@ -25,6 +25,42 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpgradeRequired {
+            get {
+                return ((bool)(this["UpgradeRequired"]));
+            }
+            set {
+                this["UpgradeRequired"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UpdateAvailable {
+            get {
+                return ((bool)(this["UpdateAvailable"]));
+            }
+            set {
+                this["UpdateAvailable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FLAG_AUTO_REFRESH_OFF {
+            get {
+                return ((bool)(this["FLAG_AUTO_REFRESH_OFF"]));
+            }
+            set {
+                this["FLAG_AUTO_REFRESH_OFF"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double WindowTopPos {
             get {
@@ -85,13 +121,13 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int PriceFontColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("3B5F73")]
+        public string BackgroundColor {
             get {
-                return ((int)(this["PriceFontColor"]));
+                return ((string)(this["BackgroundColor"]));
             }
             set {
-                this["PriceFontColor"] = value;
+                this["BackgroundColor"] = value;
             }
         }
         
@@ -181,18 +217,6 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UpgradeRequired {
-            get {
-                return ((bool)(this["UpgradeRequired"]));
-            }
-            set {
-                this["UpgradeRequired"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool IsUsingConditionalColors {
             get {
@@ -253,30 +277,6 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool FLAG_AUTO_REFRESH_OFF {
-            get {
-                return ((bool)(this["FLAG_AUTO_REFRESH_OFF"]));
-            }
-            set {
-                this["FLAG_AUTO_REFRESH_OFF"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UpdateAvailable {
-            get {
-                return ((bool)(this["UpdateAvailable"]));
-            }
-            set {
-                this["UpdateAvailable"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public global::System.Collections.Specialized.StringCollection Hotkeys {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["Hotkeys"]));
@@ -288,25 +288,13 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3B5F73")]
-        public string BackgroundColor {
-            get {
-                return ((string)(this["BackgroundColor"]));
-            }
-            set {
-                this["BackgroundColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsUsingHook {
+        public bool UseLowLevelHotkey {
             get {
-                return ((bool)(this["IsUsingHook"]));
+                return ((bool)(this["UseLowLevelHotkey"]));
             }
             set {
-                this["IsUsingHook"] = value;
+                this["UseLowLevelHotkey"] = value;
             }
         }
         

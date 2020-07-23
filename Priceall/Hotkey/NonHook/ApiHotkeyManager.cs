@@ -148,10 +148,10 @@ namespace Priceall.Hotkey.NonHook
         /// <returns>The key combo of the first found hotkey.</returns>
         public KeyCombo GetHotkeyCombo(string name)
         {
-            foreach (var hotkey in _keyCombos)
+            foreach (var hk in _hotkeys.Values)
             {
-                if (hotkey.Name == name)
-                    return hotkey;
+                if (hk.KeyCombo.Name == name)
+                    return hk.KeyCombo;
             }
             return KeyCombo.Empty;
         }

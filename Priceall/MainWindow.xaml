@@ -30,8 +30,8 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Margin="4,0,0,2"
                     ToolTip="Hold to drag. Right click to pin/unpin."
-                    PreviewMouseDown="StartDragMoving" 
-                    PreviewMouseRightButtonUp="TogglePin">
+                    PreviewMouseDown="DragButton_PreviewMouseDown" 
+                    PreviewMouseRightButtonUp="DragButton_PreviewMouseRightButtonUp">
                 <Button.Template>
                     <ControlTemplate>
                         <Rectangle Style="{StaticResource ResourceKey=MoveGlyph}" 
@@ -40,7 +40,7 @@
                 </Button.Template>
             </Button>
             <Grid Background="{Binding RectBackgroundBrush}" Grid.Column="1"  Margin="4,0,0,2">
-                <Button Click="ShowSettings">
+                <Button Click="SettingsButton_Click">
                     <Button.Template>
                         <ControlTemplate>
                             <Rectangle Style="{StaticResource ResourceKey=Settings}"/>
@@ -51,7 +51,7 @@
             </Grid>
             <Button Grid.Column="2"  Margin="4,0,0,2"
                     ToolTip="Left click to quit."
-                    Click="AppShutdown">
+                    Click="QuickButton_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Rectangle Style="{StaticResource ResourceKey=Close}"/>
@@ -62,7 +62,7 @@
         <!-- Display: icons, labels, etc -->
         <Grid x:Name="AppraisalInfo"
               Margin="0,0,5,0"
-              MouseWheel="TweakWindowTransparency">
+              MouseWheel="AppraisalInfoGrid_MouseWheel">
             <Button Style="{StaticResource ResourceKey=ClearButton}">
                 <Button.Content>
                     <DockPanel Width="{Binding ActualWidth, ElementName=AppraisalInfo}" 

@@ -71,6 +71,7 @@
     <Compile Include="Appraisal\Services\JaniceAppraisalService.cs" />
     <Compile Include="Binding\SettingsBinding.cs" />
     <Compile Include="Helpers\ColorHelper.cs" />
+    <Compile Include="Helpers\ValueHelper.cs" />
     <Compile Include="Hotkey\Hotkey.cs" />
     <Compile Include="Hotkey\Controls\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
@@ -95,7 +96,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -120,7 +120,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Services\ClipboardService.cs" />
-    <Compile Include="Json.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -139,7 +138,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Services\AppraisalService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

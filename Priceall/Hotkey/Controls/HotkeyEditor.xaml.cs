@@ -70,6 +70,7 @@ namespace Priceall.Hotkey.Controls
 
         public void SetHotkeyManagerSource(IHotkeyManager hotkeyManager)
         {
+            // TODO: this is called before hotkeys are registered, but unregistered hotkeys dont live in _hotkeys
             MyKeyCombo = hotkeyManager.GetHotkeyCombo((string)Tag);
         }
 

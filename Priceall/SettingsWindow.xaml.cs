@@ -6,11 +6,9 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using Priceall.Services;
-using static Priceall.Hotkey.Controls.HotkeyEditor;
 using Priceall.Hotkey.Controls;
 using Priceall.Hotkey;
-using System.Collections.Generic;
-using Priceall.Appraisal;
+using static Priceall.Hotkey.Controls.HotkeyEditor;
 
 namespace Priceall
 {

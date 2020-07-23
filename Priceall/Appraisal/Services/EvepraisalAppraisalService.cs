@@ -12,10 +12,9 @@ namespace Priceall.Appraisal
     {
         public const string Endpoint = "https://evepraisal.com/appraisal.json";
 
-        private AppraisalSettings[] _customSettings => new AppraisalSettings[]
-        {
-            new AppraisalSettings<bool>("Persist", (isPersist) => { _isPersist = isPersist; })
-        };
+        private AppraisalSettings<bool> _persistSetting;
+
+        private AppraisalSettings[] _customSettings;
 
         private AppraisalMarket _market = AppraisalMarket.Jita;
 
@@ -25,6 +24,10 @@ namespace Priceall.Appraisal
 
         public EvepraisalAppraisalService()
         {
+            _persistSetting = new AppraisalSettings<bool>(
+                "Persist", (isPersist) => { _isPersist = isPersist; });
+            _customSettings = new AppraisalSettings[] { _persistSetting };
+
             _uriBuilder = new UriBuilder("https://evepraisal.com/appraisal.json");
         }
 

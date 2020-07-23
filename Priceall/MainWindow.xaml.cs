@@ -1,5 +1,5 @@
 ﻿using Priceall.Appraisal;
-using Priceall.Binding;
+using Priceall.Bindings;
 using Priceall.Hotkey;
 using Priceall.Hotkey.Hook;
 using Priceall.Hotkey.NonHook;

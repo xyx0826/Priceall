@@ -1,10 +1,9 @@
 ﻿using Priceall.Helpers;
 using Priceall.Properties;
-using Priceall.Services;
 using System.ComponentModel;
 using System.Windows.Media;
 
-namespace Priceall.Binding
+namespace Priceall.Bindings
 {
     /// <summary>
     /// Handles window opacity and other style properties.

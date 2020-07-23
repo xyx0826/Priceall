@@ -5,7 +5,7 @@ namespace Priceall.Appraisal
 {
     abstract class AppraisalSettings
     {
-
+        public string Name { get; protected set; }
     }
 
     /// <summary>
@@ -14,7 +14,6 @@ namespace Priceall.Appraisal
     /// <typeparam name="T">The type of the settings value.</typeparam>
     class AppraisalSettings<T> : AppraisalSettings, INotifyPropertyChanged where T : struct
     {
-        public string Name { get; }
 
         private T _value;
 
@@ -33,9 +32,9 @@ namespace Priceall.Appraisal
 
         public AppraisalSettings(string name, Action<T> onSet, T value = default)
         {
+            _onSet = onSet;
             Name = name;
             Value = value;
-            _onSet = onSet;
         }
 
         #region Binding

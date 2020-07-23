@@ -4,7 +4,7 @@ using Priceall.Services;
 using System.ComponentModel;
 using System.Windows.Media;
 
-namespace Priceall.Binding
+namespace Priceall.Bindings
 {
     class AppraisalControlsBinding : INotifyPropertyChanged
     {

@@ -1,12 +1,11 @@
 ﻿using Priceall.Helpers;
 using Priceall.Properties;
-using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Priceall.Binding
+namespace Priceall.Bindings
 {
     class AppraisalInfoBinding : INotifyPropertyChanged
     {

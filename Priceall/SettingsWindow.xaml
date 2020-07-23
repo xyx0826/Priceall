@@ -27,7 +27,7 @@
                     <DockPanel LastChildFill="True">
                         <Label Grid.Row="0" Grid.Column="2" DockPanel.Dock="Right" Content="characters"/>
                         <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
                          Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <Label Grid.Row="1" Grid.Column="0" Content="Cooldown between queries:">
@@ -38,7 +38,7 @@
                     <DockPanel LastChildFill="True">
                         <Label Grid.Row="1" Grid.Column="2" DockPanel.Dock="Right" Content="milliseconds"/>
                         <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <StackPanel Orientation="Horizontal">
@@ -82,7 +82,7 @@
                     </Label>
                     <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
                          MaxLength="6"
-                         PreviewTextInput="ColorFilter"
+                         PreviewTextInput="ColorTextBox_PreviewTextInput"
                          Text="{Binding PriceColor, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Grid.Row="3" Grid.Column="0" Content="Conditional price tag color"
                        ToolTip="When enabled, price tag color will change according to price value."/>
@@ -105,28 +105,29 @@
                         <Label Grid.Row="0" Grid.Column="0" Content="When (Price &lt;="
                        ToolTip="The price threshold for applying the lower color."/>
                         <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
                          Text="{Binding LowerPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N}}"/>
                         <Label Grid.Row="0" Grid.Column="2" Content="ISK)"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Use color" HorizontalContentAlignment="Right"
                        ToolTip="The lower color."/>
                         <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="ColorFilter"
+                         PreviewTextInput="ColorTextBox_PreviewTextInput"
                          Text="{Binding LowerColor, UpdateSourceTrigger=PropertyChanged}"/>
                         <Label Grid.Row="2" Grid.Column="0" Content="When (Price &gt;"
                        ToolTip="The price threshold for applying the upper color."/>
                         <TextBox Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
                          Text="{Binding UpperPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N}}"/>
                         <Label Grid.Row="2" Grid.Column="2" Content="ISK)"/>
                         <Label Grid.Row="3" Grid.Column="0" Content="Use color" HorizontalContentAlignment="Right"
                        ToolTip="The upper color."/>
                         <TextBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="ColorFilter"
+                         PreviewTextInput="ColorTextBox_PreviewTextInput"
                          Text="{Binding UpperColor, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                     <TextBlock Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="2">
-                        <Hyperlink NavigateUri="https://www.google.com/search?q=Color+Picker" RequestNavigate="OpenLink">
+                        <Hyperlink NavigateUri="https://www.google.com/search?q=Color+Picker"
+                                   RequestNavigate="ColorPickerHyperlink_RequestNavigate">
                             Google Color Picker
                         </Hyperlink>
                     </TextBlock>
@@ -150,7 +151,8 @@
                     <Label Grid.Row="1" Grid.Column="0" Content="Updates and help:"
                        ToolTip="Link to Priceall's code repository."/>
                     <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
-                    <Hyperlink NavigateUri="https://github.com/xyx0826/Priceall" RequestNavigate="OpenLink">
+                    <Hyperlink NavigateUri="https://github.com/xyx0826/Priceall"
+                               RequestNavigate="ColorPickerHyperlink_RequestNavigate">
                         GitHub
                     </Hyperlink>
                     </TextBlock>
@@ -161,10 +163,13 @@
                 </Grid>
             </GroupBox>
             <Separator/>
-            <Button Foreground="Red" Content="Reset all settings" Click="ResetSettings"/>
+            <Button Foreground="Red" Content="Reset all settings" Click="ResetSettingsButton_Click"/>
         </StackPanel>
-        <!-- StackPanel for hotkeys -->
+        <!-- StackPanel for hotkeys and service-specific settings -->
         <StackPanel Orientation="Vertical">
+            <GroupBox x:Name="AppraisalServiceSettingsGroupBox" Header="Appraisal service settings">
+                <StackPanel Name="AppraisalServiceSettingsPanel" Orientation="Vertical"/>
+            </GroupBox>
             <GroupBox Header="Hotkeys">
                 <Grid>
                     <Grid.RowDefinitions>

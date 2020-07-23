@@ -69,7 +69,7 @@
     <Compile Include="Appraisal\Services\EvepraisalAppraisalService.cs" />
     <Compile Include="Appraisal\Services\IAppraisalService.cs" />
     <Compile Include="Appraisal\Services\JaniceAppraisalService.cs" />
-    <Compile Include="Binding\SettingsBinding.cs" />
+    <Compile Include="Bindings\SettingsBinding.cs" />
     <Compile Include="Helpers\ColorHelper.cs" />
     <Compile Include="Helpers\ValueHelper.cs" />
     <Compile Include="Hotkey\Hotkey.cs" />
@@ -86,9 +86,9 @@
     <Compile Include="Services\FlagService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Binding\UiStyleBinding.cs" />
-    <Compile Include="Binding\AppraisalInfoBinding.cs" />
-    <Compile Include="Binding\AppraisalControlsBinding.cs" />
+    <Compile Include="Bindings\UiStyleBinding.cs" />
+    <Compile Include="Bindings\AppraisalInfoBinding.cs" />
+    <Compile Include="Bindings\AppraisalControlsBinding.cs" />
     <Compile Include="Hotkey\Hook\HotkeyEnums.cs" />
     <Compile Include="Hotkey\Hook\LowLevelHotkeyManager.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

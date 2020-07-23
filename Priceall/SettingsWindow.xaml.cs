@@ -1,5 +1,4 @@
-﻿using Priceall.Binding;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -9,6 +8,12 @@ using Priceall.Services;
 using Priceall.Hotkey.Controls;
 using Priceall.Hotkey;
 using static Priceall.Hotkey.Controls.HotkeyEditor;
+using Priceall.Properties;
+using System.Windows.Controls;
+using Priceall.Appraisal;
+using System;
+using System.Windows.Data;
+using Priceall.Bindings;
 
 namespace Priceall
 {
@@ -40,6 +45,48 @@ namespace Priceall
             _settings = new SettingsBinding();
             _hotkeyCallback = hotkeyCallback;
             QueryKeyEditor.SetHotkeyManagerSource(MainWindow.HotkeyManager);
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "DataSource")
+            {
+                var serv = MainWindow.AppraisalService;
+                var ui = AppraisalServiceSettingsPanel.Children;
+                ui.Clear();
+
+                foreach (var settings in serv.GetCustomSettings())
+                {
+                    var settingsPanel = new DockPanel();
+                    settingsPanel.LastChildFill = true;
+
+                    var nameLabel = new Label();
+                    nameLabel.Content = settings.Name;
+
+                    ContentControl input = null;
+                    Binding binding;
+                    if (settings is AppraisalSettings<bool> sb)
+                    {
+                        input = new CheckBox();
+                        binding = new Binding("Value");
+                        binding.Source = sb;
+                        input.SetBinding(CheckBox.IsCheckedProperty, binding);
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    settingsPanel.Children.Add(nameLabel);
+                    settingsPanel.Children.Add(input);
+                    DockPanel.SetDock(nameLabel, Dock.Left);
+                    DockPanel.SetDock(input, Dock.Right);
+                    ui.Add(settingsPanel);
+                }
+
+                AppraisalServiceSettingsGroupBox.Visibility = ui.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         /// <summary>
@@ -60,22 +107,34 @@ namespace Priceall
             Hide();
         }
 
-        private void NumberFilter(object sender, TextCompositionEventArgs e)
+        /// <summary>
+        /// Filters entered number digit.
+        /// </summary>
+        private void NumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = _numberRegex.IsMatch(e.Text);
         }
 
-        private void ColorFilter(object sender, TextCompositionEventArgs e)
+        /// <summary>
+        /// Filters entered color value.
+        /// </summary>
+        private void ColorTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = _hexRegex.IsMatch(e.Text);
         }
 
-        private void OpenLink(object sender, RequestNavigateEventArgs e)
+        /// <summary>
+        /// Navigates to Google color picker.
+        /// </summary>
+        private void ColorPickerHyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
         }
 
-        private void ResetSettings(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Resets all settings.
+        /// </summary>
+        private void ResetSettingsButton_Click(object sender, RoutedEventArgs e)
         {
             // MainWindow has issue updating width and height together, 
             // so let's just refresh twice...

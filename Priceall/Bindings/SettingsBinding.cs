@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 
-namespace Priceall.Binding
+namespace Priceall.Bindings
 {
     class SettingsBinding : INotifyPropertyChanged
     {

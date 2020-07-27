@@ -19,35 +19,35 @@
                     <Label Content="Data source:"/>
                     <ComboBox ItemsSource="{Binding DataSources}" DisplayMemberPath="Key" SelectedValuePath="Value"
                               SelectedValue="{Binding SelectedDataSource}"/>
-                    <Label Grid.Row="0" Grid.Column="0" Content="Maximum query length:">
+                    <Label Content="Maximum query length:">
                         <Label.ToolTip>
                             Prevents accidentally sending unrelated bulk text to Evepraisal.
                         </Label.ToolTip>
                     </Label>
                     <DockPanel LastChildFill="True">
-                        <Label Grid.Row="0" Grid.Column="2" DockPanel.Dock="Right" Content="characters"/>
-                        <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                        <Label DockPanel.Dock="Right" Content="characters"/>
+                        <TextBox VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="NumberTextBox_PreviewTextInput"
                          Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
-                    <Label Grid.Row="1" Grid.Column="0" Content="Cooldown between queries:">
+                    <Label Content="Cooldown between queries:">
                         <Label.ToolTip>
                             Prevents (un)intentionally spamming appraisal service.
                         </Label.ToolTip>
                     </Label>
                     <DockPanel LastChildFill="True">
-                        <Label Grid.Row="1" Grid.Column="2" DockPanel.Dock="Right" Content="milliseconds"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                        <Label DockPanel.Dock="Right" Content="milliseconds"/>
+                        <TextBox VerticalContentAlignment="Center" Padding="5"
                          PreviewTextInput="NumberTextBox_PreviewTextInput"
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Label Grid.Row="2" Grid.Column="0" Content="Use automatic refresh:">
+                        <Label Content="Use automatic refresh:">
                             <Label.ToolTip>
                                 Auto refreshes when something new is copied to clipboard.
                             </Label.ToolTip>
                         </Label>
-                        <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"
+                        <CheckBox VerticalAlignment="Center"
                                   IsChecked="{Binding IsUsingAutomaticRefresh}"/>
                     </StackPanel>
                 </StackPanel>

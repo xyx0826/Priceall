@@ -309,5 +309,17 @@ namespace Priceall.Properties {
                 this["DataSource"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SelectedMarket {
+            get {
+                return ((int)(this["SelectedMarket"]));
+            }
+            set {
+                this["SelectedMarket"] = value;
+            }
+        }
     }
 }

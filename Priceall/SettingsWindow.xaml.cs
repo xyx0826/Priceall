@@ -46,6 +46,8 @@ namespace Priceall
             _hotkeyCallback = hotkeyCallback;
             QueryKeyEditor.SetHotkeyManagerSource(MainWindow.HotkeyManager);
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
+            _settings.MarketFlags = MainWindow.AppraisalService.GetAvailableMarkets();
+            MainWindow.AppraisalService.SetCurrentMarket(_settings.SelectedMarket);
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -53,6 +55,7 @@ namespace Priceall
             if (e.PropertyName == "DataSource")
             {
                 var serv = MainWindow.AppraisalService;
+                _settings.MarketFlags = serv.GetAvailableMarkets();
                 var ui = AppraisalServiceSettingsPanel.Children;
                 ui.Clear();
 
@@ -63,9 +66,9 @@ namespace Priceall
 
                     var nameLabel = new Label();
                     nameLabel.Content = settings.Name;
-
-                    ContentControl input = null;
                     Binding binding;
+
+                    ContentControl input;
                     if (settings is AppraisalSettings<bool> sb)
                     {
                         input = new CheckBox();
@@ -75,6 +78,7 @@ namespace Priceall
                     }
                     else
                     {
+                        // TODO: support for other kinds of settings
                         break;
                     }
 
@@ -86,6 +90,10 @@ namespace Priceall
                 }
 
                 AppraisalServiceSettingsGroupBox.Visibility = ui.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else if (e.PropertyName == "SelectedMarket")
+            {
+                MainWindow.AppraisalService.SetCurrentMarket(_settings.SelectedMarket);
             }
         }
 

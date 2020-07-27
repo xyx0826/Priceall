@@ -1,5 +1,6 @@
 ﻿using Priceall.Appraisal;
 using Priceall.Properties;
+using Priceall.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -66,6 +67,54 @@ namespace Priceall.Bindings
                 {
                     Settings.Default.DataSource = value.Name;
                 }
+            }
+        }
+
+        private AppraisalMarket _marketFlags;
+
+        public AppraisalMarket MarketFlags
+        {
+            set
+            {
+                _marketFlags = value;
+                OnPropertyChanged(nameof(Markets));
+            }
+        }
+
+        public List<AppraisalMarket> Markets
+        {
+            get
+            {
+                var list = new List<AppraisalMarket>();
+                foreach (var m in Enum.GetValues(typeof(AppraisalMarket)))
+                {
+                    if (_marketFlags.HasFlag((AppraisalMarket)m))
+                    {
+                        list.Add((AppraisalMarket)m);
+                    }
+                }
+                return list;
+            }
+        }
+
+        public AppraisalMarket SelectedMarket
+        {
+            get
+            {
+                var mkt = (AppraisalMarket)SettingsService.Get<int>("SelectedMarket");
+                if (_marketFlags != 0 && !_marketFlags.HasFlag(mkt))
+                {
+                    // Currently selected market is illegal, reset to Jita
+                    mkt = AppraisalMarket.Jita;
+                    SettingsService.Set("SelectedMarket", (int)mkt);
+                }
+
+                return mkt;
+            }
+            set
+            {
+                SettingsService.Set("SelectedMarket", (int)value);
+                OnPropertyChanged(nameof(SelectedMarket));
             }
         }
 

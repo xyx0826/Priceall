@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Priceall.Appraisal
 {
@@ -33,15 +34,13 @@ namespace Priceall.Appraisal
 
         private void BuildUrl()
         {
-            var queryParams = new NameValueCollection(2)
-            {
-                { "market", _market.ToString().ToLower() }
-            };
+            var qs = HttpUtility.ParseQueryString(String.Empty);
+            qs["market"] = _market.ToString().ToLower();
             if (!_isPersist)
             {
-                queryParams.Add("persist", "no");
+                qs["persist"] = "no";
             }
-            _uriBuilder.Query = queryParams.ToString();
+            _uriBuilder.Query = qs.ToString();
         }
 
         public async Task<AppraisalResult> AppraiseAsync(string content)

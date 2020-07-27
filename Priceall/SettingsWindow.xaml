@@ -19,6 +19,8 @@
                     <Label Content="Data source:"/>
                     <ComboBox ItemsSource="{Binding DataSources}" DisplayMemberPath="Key" SelectedValuePath="Value"
                               SelectedValue="{Binding SelectedDataSource}"/>
+                    <Label Content="Market:"/>
+                    <ComboBox ItemsSource="{Binding Markets}" SelectedValue="{Binding SelectedMarket}"/>
                     <Label Content="Maximum query length:">
                         <Label.ToolTip>
                             Prevents accidentally sending unrelated bulk text to Evepraisal.

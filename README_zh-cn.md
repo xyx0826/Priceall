@@ -1,6 +1,6 @@
 # Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall)
 
-![Priceall logo](/Readme/Images/Priceall.png =128x128)
+<img src="Readme/Images/Priceall.png" width="128" height="128"/>
 
 Priceall 专为 EVE Online 快速物品估价而生。
 
@@ -9,7 +9,7 @@ Priceall 专为 EVE Online 快速物品估价而生。
 
 # 兼容服务
 
-![Evepraisal](/Readme/Images/evepraisal-logo.png =60x) ![Janice](/Readme/Images/janice-logo.png =60x)
+<img src="Readme/Images/evepraisal-logo.png" width="300"/> <img src="Readme/Images/janice-logo.png" width="300"/>
 
 # 目录
 

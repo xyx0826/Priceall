@@ -1,6 +1,6 @@
 # Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall)
 
-![Priceall logo](/Readme/Images/Priceall.png =128x128)
+<img src="Readme/Images/Priceall.png" width="128" height="128"/>
 
 Priceall is an app for quick EVE Online price-checking.
 
@@ -10,7 +10,8 @@ this app will help you to get an appraisal on a list of items
 
 # Works with
 
-![Evepraisal](/Readme/Images/evepraisal-logo.png =60x) ![Janice](/Readme/Images/janice-logo.png =60x)
+
+<img src="Readme/Images/evepraisal-logo.png" width="300"/> <img src="Readme/Images/janice-logo.png" width="300"/>
 
 # Table of Contents
 
@@ -58,7 +59,7 @@ The `master` branch contains stable code. The AppVeyor badge and download link a
 
 Priceall's development now happens on the `dev` branch that may contain unfinished or unstable features. Please direct all pull requests to the `dev` branch.
 
-My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if you wish!
+~~My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if you wish!~~ ive stepped away
 
 # Changelog
 

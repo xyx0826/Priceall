@@ -1,5 +1,6 @@
 ﻿using Priceall.Helpers;
 using Priceall.Properties;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
@@ -106,9 +107,9 @@ namespace Priceall.Bindings
             {
                 TypeIconImage = (BitmapImage)Application.Current.FindResource(type);
             }
-            catch (ResourceReferenceKeyNotFoundException)
+            catch (Exception)   // ResourceReferenceKeyNotFoundException
             {
-                TypeIconImage = (BitmapImage)Application.Current.FindResource("default");
+                TypeIconImage = (BitmapImage)Application.Current.FindResource("searchmarket");
             }
             OnPropertyChanged("TypeIconImage");
         }

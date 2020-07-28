@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using Priceall.Http;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -13,33 +12,33 @@ namespace Priceall.Appraisal
     {
         public const string Endpoint = "https://evepraisal.com/appraisal.json";
 
-        private AppraisalSettings<bool> _persistSetting;
+        // private AppraisalSettings<bool> _persistSetting;
 
-        private AppraisalSettings[] _customSettings;
+        // private AppraisalSettings[] _customSettings;
 
-        private AppraisalMarket _market = AppraisalMarket.Jita;
+        private AppraisalMarket _market/* = AppraisalMarket.Jita*/;
 
-        private bool _isPersist;
+        // private bool _isPersist;
 
         private readonly UriBuilder _uriBuilder;
 
         public EvepraisalAppraisalService()
         {
-            _persistSetting = new AppraisalSettings<bool>(
-                "Persist", (isPersist) => { _isPersist = isPersist; });
-            _customSettings = new AppraisalSettings[] { _persistSetting };
+            // _persistSetting = new AppraisalSettings<bool>(
+            //     "Persist", (isPersist) => { _isPersist = isPersist; });
+            // _customSettings = new AppraisalSettings[] { _persistSetting };
 
-            _uriBuilder = new UriBuilder("https://evepraisal.com/appraisal.json");
+            _uriBuilder = new UriBuilder(Endpoint);
         }
 
         private void BuildUrl()
         {
             var qs = HttpUtility.ParseQueryString(String.Empty);
             qs["market"] = _market.ToString().ToLower();
-            if (!_isPersist)
-            {
-                qs["persist"] = "no";
-            }
+            //if (!_isPersist)
+            //{
+            //    qs["persist"] = "no";
+            //}
             _uriBuilder.Query = qs.ToString();
         }
 
@@ -98,7 +97,8 @@ namespace Priceall.Appraisal
 
         public IReadOnlyCollection<AppraisalSettings> GetCustomSettings()
         {
-            return _customSettings;
+            return Array.Empty<AppraisalSettings>();
+            // return _customSettings;
         }
 
         public void SetCurrentMarket(AppraisalMarket market)

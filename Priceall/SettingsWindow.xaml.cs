@@ -11,7 +11,6 @@ using static Priceall.Hotkey.Controls.HotkeyEditor;
 using Priceall.Properties;
 using System.Windows.Controls;
 using Priceall.Appraisal;
-using System;
 using System.Windows.Data;
 using Priceall.Bindings;
 

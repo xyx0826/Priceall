@@ -27,7 +27,7 @@ namespace Priceall.Http
 
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Add("User-Agent", HttpUtilities.UserAgent);
-            _client.Timeout = new TimeSpan(hours: 0, minutes: 0, seconds: 2);
+            _client.Timeout = new TimeSpan(hours: 0, minutes: 0, seconds: 5);
             _initialized = true;
         }
 

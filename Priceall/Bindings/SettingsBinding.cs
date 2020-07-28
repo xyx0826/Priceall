@@ -42,7 +42,7 @@ namespace Priceall.Bindings
             {
                 { "Evepraisal", typeof(EvepraisalAppraisalService) },
                 { "Janice", typeof(JaniceAppraisalService) },
-                { "ceve-market", typeof(CeveMarketAppraisalService) }
+                // { "ceve-market", typeof(CeveMarketAppraisalService) }
             };
 
         #region Appraisal settings
@@ -66,6 +66,8 @@ namespace Priceall.Bindings
                 if (value != null)
                 {
                     Settings.Default.DataSource = value.Name;
+                    // Force update selected market
+                    OnPropertyChanged(nameof(SelectedMarket));
                 }
             }
         }

@@ -300,7 +300,7 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("EvepraisalAppraisalService")]
         public string DataSource {
             get {
                 return ((string)(this["DataSource"]));

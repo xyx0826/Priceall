@@ -133,7 +133,7 @@ namespace Priceall
                 if (service.GetType().Name == dataSource)
                 {
                     AppraisalService = service;
-                    break;
+                    return;
                 }
             }
         }

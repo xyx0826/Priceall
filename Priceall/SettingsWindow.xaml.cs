@@ -55,6 +55,7 @@ namespace Priceall
             {
                 var serv = MainWindow.AppraisalService;
                 _settings.MarketFlags = serv.GetAvailableMarkets();
+                serv.SetCurrentMarket(_settings.SelectedMarket);
                 var ui = AppraisalServiceSettingsPanel.Children;
                 ui.Clear();
 

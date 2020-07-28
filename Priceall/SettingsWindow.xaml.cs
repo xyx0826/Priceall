@@ -1,10 +1,18 @@
-﻿using Priceall.Binding;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using static Priceall.Events.UiEvents;
+using Priceall.Services;
+using Priceall.Hotkey.Controls;
+using Priceall.Hotkey;
+using static Priceall.Hotkey.Controls.HotkeyEditor;
+using Priceall.Properties;
+using System.Windows.Controls;
+using Priceall.Appraisal;
+using System.Windows.Data;
+using Priceall.Bindings;
 
 namespace Priceall
 {
@@ -25,18 +33,68 @@ namespace Priceall
         static readonly Regex _numberRegex = new Regex("[^0-9]+");
         static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
 
-        static ModifierKeys _modifierKey;
-        static Key _virtualKey;
-
-        static bool _keyRecording = false;
-
         static SettingsBinding _settings;
 
-        public SettingsWindow()
+        public delegate void HotkeyCallback(KeyCombo keyCombo);
+        static HotkeyCallback _hotkeyCallback;
+
+        public SettingsWindow(HotkeyCallback hotkeyCallback)
         {
             InitializeComponent();
-
             _settings = new SettingsBinding();
+            _hotkeyCallback = hotkeyCallback;
+            QueryKeyEditor.SetHotkeyManagerSource(MainWindow.HotkeyManager);
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
+            _settings.MarketFlags = MainWindow.AppraisalService.GetAvailableMarkets();
+            MainWindow.AppraisalService.SetCurrentMarket(_settings.SelectedMarket);
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "DataSource")
+            {
+                var serv = MainWindow.AppraisalService;
+                _settings.MarketFlags = serv.GetAvailableMarkets();
+                serv.SetCurrentMarket(_settings.SelectedMarket);
+                var ui = AppraisalServiceSettingsPanel.Children;
+                ui.Clear();
+
+                foreach (var settings in serv.GetCustomSettings())
+                {
+                    var settingsPanel = new DockPanel();
+                    settingsPanel.LastChildFill = true;
+
+                    var nameLabel = new Label();
+                    nameLabel.Content = settings.Name;
+                    Binding binding;
+
+                    ContentControl input;
+                    if (settings is AppraisalSettings<bool> sb)
+                    {
+                        input = new CheckBox();
+                        binding = new Binding("Value");
+                        binding.Source = sb;
+                        input.SetBinding(CheckBox.IsCheckedProperty, binding);
+                    }
+                    else
+                    {
+                        // TODO: support for other kinds of settings
+                        break;
+                    }
+
+                    settingsPanel.Children.Add(nameLabel);
+                    settingsPanel.Children.Add(input);
+                    DockPanel.SetDock(nameLabel, Dock.Left);
+                    DockPanel.SetDock(input, Dock.Right);
+                    ui.Add(settingsPanel);
+                }
+
+                AppraisalServiceSettingsGroupBox.Visibility = ui.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else if (e.PropertyName == "SelectedMarket")
+            {
+                MainWindow.AppraisalService.SetCurrentMarket(_settings.SelectedMarket);
+            }
         }
 
         /// <summary>
@@ -57,78 +115,48 @@ namespace Priceall
             Hide();
         }
 
-        private void NumberFilter(object sender, TextCompositionEventArgs e)
+        /// <summary>
+        /// Filters entered number digit.
+        /// </summary>
+        private void NumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = _numberRegex.IsMatch(e.Text);
         }
 
-        private void ColorFilter(object sender, TextCompositionEventArgs e)
+        /// <summary>
+        /// Filters entered color value.
+        /// </summary>
+        private void ColorTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = _hexRegex.IsMatch(e.Text);
         }
 
-        private void OpenGithubPage(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        /// <summary>
+        /// Navigates to Google color picker.
+        /// </summary>
+        private void ColorPickerHyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
         }
 
-        private void ResetSettings(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Resets all settings.
+        /// </summary>
+        private void ResetSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            Instance.ResetSettings();
-            OnPropertyChanged(null);
+            // MainWindow has issue updating width and height together, 
+            // so let's just refresh twice...
+            SettingsService.Reset();
+            SettingsService.Reset();
         }
-
-        private void EditHotkey(object sender, KeyEventArgs e)
+        
+        public void HotkeyEditor_NewKeyCombo(object sender, RoutedEventArgs e)
         {
-            if (!_keyRecording)
-            {
-                _settings.KeyCombo = "";
-                _modifierKey = 0;
-                _virtualKey = 0;
-                _keyRecording = true;
-            }
-
-            Debug.WriteLine($"Key state: {e.Key}");
-
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
-            {
-                _modifierKey = _modifierKey | ModifierKeys.Shift;
-                _settings.KeyCombo += "Shift ";
-            }
-
-            else if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-            {
-                _modifierKey = _modifierKey | ModifierKeys.Control;
-                _settings.KeyCombo += "Ctrl ";
-            }
-
-            else if (e.Key == Key.LeftAlt || e.Key == Key.RightAlt)
-            {
-                _modifierKey = _modifierKey | ModifierKeys.Alt;
-                _settings.KeyCombo += "Alt ";
-            }
-
-            else
-            {
-                // key recording complete
-                _virtualKey = e.Key;
-                _settings.KeyCombo += e.Key;
-                _keyRecording = false;
-                // create event args and fire update event
-                var keyArgs = new QueryHotkeyUpdatedEventArgs
-                {
-                    ModKeys = _modifierKey,
-                    VirtKey = _virtualKey
-                };
-                Instance.UpdateQueryHotkey(keyArgs);
-            }
-
-            Debug.WriteLine($"Modkeys is now {(uint)_modifierKey}; Virtkey is now {(uint)_virtualKey}");
-        }
-
-        private void BlockFilter(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = true;
+            var keyArgs = e as NewKeyComboEventArgs;
+            var newKeyCombo = keyArgs.KeyCombo;
+            // Set appropriate name for this hotkey
+            newKeyCombo.Name = (string)(sender as HotkeyEditor).Tag;
+            _hotkeyCallback(newKeyCombo);
         }
     }
 }

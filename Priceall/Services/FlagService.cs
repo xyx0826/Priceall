@@ -1,20 +1,14 @@
-﻿using Priceall.Properties;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Priceall.Helper
+namespace Priceall.Services
 {
     /// <summary>
-    /// Helper class for managing application flags.
+    /// Service class for managing application flags.
     /// Flags are "marker files" in Priceall's code repository.
     /// They are sometimes used to show advice or information regarding Priceall's features.
     /// </summary>
-    static class FlagsHelper
+    static class FlagService
     {
         static readonly string _flagsDirectory = "https://raw.githubusercontent.com/xyx0826/Priceall/master/Flags/";
 
@@ -40,15 +34,14 @@ namespace Priceall.Helper
                     {
                         var response = await client.GetAsync(_flagsDirectory + flag);
                         if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                            Settings.Default["FLAG_" + flag] = false;
-                        else Settings.Default["FLAG_" + flag] = true;
+                            SettingsService.Set("FLAG_" + flag, false);
+                        else SettingsService.Set("FLAG_" + flag, true);
                     }
                     catch (HttpRequestException)
                     {
-                        Settings.Default["FLAG_" + flag] = false;
+                        SettingsService.Set("FLAG_" + flag, false);
                     }
                 }
-                Debug.WriteLine("Flags are checked.");
             }
         }
     }

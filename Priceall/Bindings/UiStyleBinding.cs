@@ -1,36 +1,37 @@
-﻿using Priceall.Properties;
+﻿using Priceall.Helpers;
+using Priceall.Properties;
 using System.ComponentModel;
+using System.Windows.Media;
 
-namespace Priceall.Binding
+namespace Priceall.Bindings
 {
     /// <summary>
     /// Handles window opacity and other style properties.
     /// </summary>
-    class UiStyleBinding : INotifyPropertyChanged
+    internal class UiStyleBinding : INotifyPropertyChanged
     {
         #region Binding
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string name)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
 
-        public void Refresh()
-        {
-            OnPropertyChanged(null);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
 
         public UiStyleBinding()
         {
-            OnPropertyChanged(null);
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            {
+                OnPropertyChanged(e.PropertyName);
+            };
         }
 
         /// <summary>
-        /// Sets the window opacity between 100% and 20%.
+        /// Sets the window opacity between 100% and 0%.
         /// </summary>
-        public double WndOpacity
+        public double WindowOpacity
         {
             get { return Settings.Default.WindowOpacity; }
             set
@@ -39,11 +40,10 @@ namespace Priceall.Binding
                 if (value < 0.0) value = 0.0;
                 else if (value > 1.0) value = 1.0;
                 Settings.Default.WindowOpacity = value;
-                OnPropertyChanged("WndOpacity");
             }
         }
 
-        public int WndWidth
+        public int WindowWidth
         {
             get { return Settings.Default.WindowWidth; }
             set
@@ -53,8 +53,8 @@ namespace Priceall.Binding
                 OnPropertyChanged("WndWidth");
             }
         }
-        
-        public int WndHeight
+
+        public int WindowHeight
         {
             get { return Settings.Default.WindowHeight; }
             set
@@ -65,7 +65,7 @@ namespace Priceall.Binding
             }
         }
 
-        public double WndTopPos
+        public double WindowTopPos
         {
             get { return Settings.Default.WindowTopPos; }
             set
@@ -76,7 +76,7 @@ namespace Priceall.Binding
             }
         }
 
-        public double WndLeftPos
+        public double WindowLeftPos
         {
             get { return Settings.Default.WindowLeftPos; }
             set
@@ -86,5 +86,8 @@ namespace Priceall.Binding
                 OnPropertyChanged("WndLeftPos");
             }
         }
+
+        public SolidColorBrush BackgroundBrush
+            => ColorHelper.ConvertSettingToColorBrush("BackgroundColor");
     }
 }

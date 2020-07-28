@@ -1,10 +1,14 @@
-﻿using Priceall.Events;
+﻿using Priceall.Appraisal;
 using Priceall.Properties;
+using Priceall.Services;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 
-namespace Priceall.Binding
+namespace Priceall.Bindings
 {
     class SettingsBinding : INotifyPropertyChanged
     {
@@ -22,8 +26,101 @@ namespace Priceall.Binding
         }
         #endregion
 
+        public SettingsBinding()
+        {
+            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            {
+                OnPropertyChanged(e.PropertyName);
+            };
+        }
+
+        /// <summary>
+        /// Available appraisal service names and their implementations.
+        /// </summary>
+        static readonly Dictionary<string, Type> _appraisalServices
+            = new Dictionary<string, Type>()
+            {
+                { "Evepraisal", typeof(EvepraisalAppraisalService) },
+                { "Janice", typeof(JaniceAppraisalService) },
+                // { "ceve-market", typeof(CeveMarketAppraisalService) }
+            };
+
         #region Appraisal settings
-        public int QueryLengthLimit
+        public Dictionary<string, Type> DataSources => _appraisalServices;
+
+        public Type SelectedDataSource
+        {
+            get
+            {
+                foreach (var service in _appraisalServices.Values)
+                {
+                    if (service.Name == Settings.Default.DataSource)
+                    {
+                        return service;
+                    }
+                }
+                return _appraisalServices.Values.FirstOrDefault();
+            }
+            set
+            {
+                if (value != null)
+                {
+                    Settings.Default.DataSource = value.Name;
+                    // Force update selected market
+                    OnPropertyChanged(nameof(SelectedMarket));
+                }
+            }
+        }
+
+        private AppraisalMarket _marketFlags;
+
+        public AppraisalMarket MarketFlags
+        {
+            set
+            {
+                _marketFlags = value;
+                OnPropertyChanged(nameof(Markets));
+            }
+        }
+
+        public List<AppraisalMarket> Markets
+        {
+            get
+            {
+                var list = new List<AppraisalMarket>();
+                foreach (var m in Enum.GetValues(typeof(AppraisalMarket)))
+                {
+                    if (_marketFlags.HasFlag((AppraisalMarket)m))
+                    {
+                        list.Add((AppraisalMarket)m);
+                    }
+                }
+                return list;
+            }
+        }
+
+        public AppraisalMarket SelectedMarket
+        {
+            get
+            {
+                var mkt = (AppraisalMarket)SettingsService.Get<int>("SelectedMarket");
+                if (_marketFlags != 0 && !_marketFlags.HasFlag(mkt))
+                {
+                    // Currently selected market is illegal, reset to Jita
+                    mkt = AppraisalMarket.Jita;
+                    SettingsService.Set("SelectedMarket", (int)mkt);
+                }
+
+                return mkt;
+            }
+            set
+            {
+                SettingsService.Set("SelectedMarket", (int)value);
+                OnPropertyChanged(nameof(SelectedMarket));
+            }
+        }
+
+        public int MaxStringLength
         {
             get { return Settings.Default.MaxStringLength; }
             set
@@ -40,7 +137,7 @@ namespace Priceall.Binding
             get { return Settings.Default.QueryCooldown; }
             set
             {
-                if (value != 0)
+                if (value > 0)
                 {
                     Settings.Default.QueryCooldown = value;
                 }
@@ -56,7 +153,6 @@ namespace Priceall.Binding
             set
             {
                 Settings.Default.IsUsingAutomaticRefresh = value;
-                UiEvents.Instance.ToggleAutoRefresh();
             }
         }
 
@@ -109,7 +205,6 @@ namespace Priceall.Binding
             set
             {
                 Settings.Default.PriceColor = value;
-                UiEvents.Instance.ChangePriceColor();
             }
         }
 
@@ -146,16 +241,6 @@ namespace Priceall.Binding
             set
             {
                 Settings.Default.UpperColor = value;
-            }
-        }
-
-        public string KeyCombo
-        {
-            get { return Settings.Default.KeyCombo; }
-            set
-            {
-                Settings.Default.KeyCombo = value;
-                OnPropertyChanged("KeyCombo");
             }
         }
 

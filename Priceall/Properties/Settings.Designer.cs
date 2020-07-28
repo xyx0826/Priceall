@@ -12,7 +12,7 @@ namespace Priceall.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -20,6 +20,42 @@ namespace Priceall.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpgradeRequired {
+            get {
+                return ((bool)(this["UpgradeRequired"]));
+            }
+            set {
+                this["UpgradeRequired"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UpdateAvailable {
+            get {
+                return ((bool)(this["UpdateAvailable"]));
+            }
+            set {
+                this["UpdateAvailable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FLAG_AUTO_REFRESH_OFF {
+            get {
+                return ((bool)(this["FLAG_AUTO_REFRESH_OFF"]));
+            }
+            set {
+                this["FLAG_AUTO_REFRESH_OFF"] = value;
             }
         }
         
@@ -85,13 +121,13 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int PriceFontColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("3B5F73")]
+        public string BackgroundColor {
             get {
-                return ((int)(this["PriceFontColor"]));
+                return ((string)(this["BackgroundColor"]));
             }
             set {
-                this["PriceFontColor"] = value;
+                this["BackgroundColor"] = value;
             }
         }
         
@@ -109,7 +145,7 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool IsUsingAutomaticRefresh {
             get {
                 return ((bool)(this["IsUsingAutomaticRefresh"]));
@@ -121,7 +157,7 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool IsUsingPrettyPrint {
             get {
                 return ((bool)(this["IsUsingPrettyPrint"]));
@@ -169,42 +205,6 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int ModifierKey1 {
-            get {
-                return ((int)(this["ModifierKey1"]));
-            }
-            set {
-                this["ModifierKey1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int ModifierKey2 {
-            get {
-                return ((int)(this["ModifierKey2"]));
-            }
-            set {
-                this["ModifierKey2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string VirtualKey {
-            get {
-                return ((string)(this["VirtualKey"]));
-            }
-            set {
-                this["VirtualKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("FFFFFF")]
         public string PriceColor {
             get {
@@ -212,18 +212,6 @@ namespace Priceall.Properties {
             }
             set {
                 this["PriceColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UpgradeRequired {
-            get {
-                return ((bool)(this["UpgradeRequired"]));
-            }
-            set {
-                this["UpgradeRequired"] = value;
             }
         }
         
@@ -289,9 +277,6 @@ namespace Priceall.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>QueryKey,6,46</string>\r\n</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection Hotkeys {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["Hotkeys"]));
@@ -304,36 +289,36 @@ namespace Priceall.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool FLAG_AUTO_REFRESH_OFF {
+        public bool UseLowLevelHotkey {
             get {
-                return ((bool)(this["FLAG_AUTO_REFRESH_OFF"]));
+                return ((bool)(this["UseLowLevelHotkey"]));
             }
             set {
-                this["FLAG_AUTO_REFRESH_OFF"] = value;
+                this["UseLowLevelHotkey"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string KeyCombo {
+        [global::System.Configuration.DefaultSettingValueAttribute("EvepraisalAppraisalService")]
+        public string DataSource {
             get {
-                return ((string)(this["KeyCombo"]));
+                return ((string)(this["DataSource"]));
             }
             set {
-                this["KeyCombo"] = value;
+                this["DataSource"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UpdateAvailable {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SelectedMarket {
             get {
-                return ((bool)(this["UpdateAvailable"]));
+                return ((int)(this["SelectedMarket"]));
             }
             set {
-                this["UpdateAvailable"] = value;
+                this["SelectedMarket"] = value;
             }
         }
     }

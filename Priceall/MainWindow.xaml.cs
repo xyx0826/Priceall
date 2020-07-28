@@ -1,34 +1,47 @@
-﻿using Priceall.Binding;
-using Priceall.Helper;
+﻿using Priceall.Appraisal;
+using Priceall.Bindings;
 using Priceall.Hotkey;
+using Priceall.Hotkey.Hook;
+using Priceall.Hotkey.NonHook;
 using Priceall.Properties;
+using Priceall.Services;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using static Priceall.Events.UiEvents;
 
 namespace Priceall
 {
     /// <summary>
     /// Priceall widget window.
     /// </summary>
-    public partial class MainWindow : Window
+    partial class MainWindow : Window
     {
+        // constants
+        static readonly IAppraisalService[] _appraisalServices = new IAppraisalService[]
+        {
+            new EvepraisalAppraisalService(),
+            new JaniceAppraisalService(),
+            new CeveMarketAppraisalService()
+        };
+
         // initialize binding sources
         static readonly AppraisalInfoBinding _infoBinding = new AppraisalInfoBinding();
         static readonly AppraisalControlsBinding _controlsBinding = new AppraisalControlsBinding();
         static readonly UiStyleBinding _styleBinding = new UiStyleBinding();
 
         // initialize helpers
-        static readonly AppraisalHelper _appraisal = new AppraisalHelper();
-        static readonly ClipboardHelper _clipboard = new ClipboardHelper();
-        static readonly HotkeyHelper _hotkey = new HotkeyHelper();
+        static readonly ClipboardService _clipboard = new ClipboardService();
 
-        static Window _settingsWindow = new SettingsWindow();
+        internal static IAppraisalService AppraisalService;
+
+        internal static IHotkeyManager HotkeyManager;
+
+        private static Window _settingsWindow;
         
-        DateTime _lastQueryTime;
+        private DateTime _lastQueryTime;
 
         /// <summary>
         /// Binds data contexts ASAP to prevent flickering.
@@ -36,18 +49,17 @@ namespace Priceall
         public MainWindow()
         {
             InitializeComponent();
-            UpdateSettings();   // migrate settings over from older Priceall version
-            Task.Run(async () => { await FlagsHelper.CheckAllFlags(); });   // update flag values in settings
 
+            SettingsService.Upgrade();
+
+            // Network tasks
+            Task.Run(async () => { await FlagService.CheckAllFlags(); });
+            Task.Run(async () => { await UpdateService.CheckForUpdates(); });
+
+            // Bind data contexts
             DataContext = _styleBinding;
             AppraisalInfo.DataContext = _infoBinding;
             AppraisalControls.DataContext = _controlsBinding;
-
-            // subscribe settings events
-            Instance.AutoRefreshToggled += ToggleAutoRefresh;
-            Instance.PriceColorChanged += RefreshPriceColor;
-            Instance.QueryHotkeyUpdated += UpdateQueryHotkey;
-            Instance.SettingsReset += ResetSettings;
         }
 
         #region Window loading and terminating
@@ -57,13 +69,28 @@ namespace Priceall
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-            _settingsWindow.Owner = this;
-            _hotkey.RegisterHotkeyFromSettings("QueryKey", OnHotKeyHandler);
 
-            SetWindowOnTopDelegate();
+            UpdateAppraisalService(SettingsService.Get<string>("DataSource"));
+            UpdateHotkeyService(SettingsService.Get<bool>("UseLowLevelHotkey"));
+
+            if (!HotkeyManager.InitializeHook())
+            {
+                _infoBinding.Price = "Hotkey service error.";
+            }
+            else
+            {
+                if (HotkeyManager.ActivateHotkey("QueryKey", OnHotKeyHandler))
+                {
+                    _infoBinding.Price = $"Press {HotkeyManager.GetHotkeyCombo("QueryKey")} to query.";
+                }
+                else
+                {
+                    _infoBinding.Price = "Priceall";
+                }
+            }
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
+            _settingsWindow = new SettingsWindow(OnHotkeyUpdated);
             InitializeClipboard();
-            ToggleAutoRefresh();
-            CheckForUpdates();
         }
 
         /// <summary>
@@ -72,54 +99,8 @@ namespace Priceall
         private void InitializeClipboard()
         {
             var helper = new WindowInteropHelper(this);
-            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.Handle), OnHotKeyHandler);
-        }
-
-        /// <summary>
-        /// Toggles auto refresh based on setting value.
-        /// </summary>
-        public void ToggleAutoRefresh(object sender = null, EventArgs e = null)
-        {
-            if (Settings.Default.IsUsingAutomaticRefresh)
-                _clipboard.StartListener();
-            else _clipboard.StopListener();
-        }
-
-        /// <summary>
-        /// Overwrites the current query hotkey.
-        /// </summary>
-        /// <param name="modKeys">New modifier key combo.</param>
-        /// <param name="virtKey">New virtual key.</param>
-        public void UpdateQueryHotkey(object sender, QueryHotkeyUpdatedEventArgs e)
-        {
-            _hotkey.RegisterNewHotkey("QueryKey", e.ModKeys, e.VirtKey, OnHotKeyHandler);
-        }
-
-        /// <summary>
-        /// Checks for older Priceall settings and migrate them over.
-        /// </summary>
-        private void UpdateSettings()
-        {
-            if (Settings.Default.UpgradeRequired)
-            {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
-            }
-        }
-
-        /// <summary>
-        /// Checks for update from AppVeyor in the background.
-        /// If an update is found, the setting icon will become orange.
-        /// </summary>
-        private void CheckForUpdates()
-        {
-            var helper = new UpdateHelper();
-            Task.Run(async () =>
-            {
-                Settings.Default.UpdateAvailable = await helper.CheckForUpdates();
-                _controlsBinding.IsUpdateAvail = Settings.Default.UpdateAvailable;
-            });
+            _clipboard.InitializeListener(HwndSource.FromHwnd(helper.EnsureHandle()));
+            _clipboard.ClipboardChanged += QueryAppraisalAsync;
         }
 
         /// <summary>
@@ -127,18 +108,41 @@ namespace Priceall
         /// </summary>
         private async void OnHotKeyHandler()
         {
-            await QueryAppraisal();
+            await QueryAppraisalAsync();
+        }
+        #endregion
+
+        #region Settings listener
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "DataSource":
+                    UpdateAppraisalService(SettingsService.Get<string>(e.PropertyName));
+                    break;
+                case "UseLowLevelHotkey":
+                    UpdateHotkeyService(SettingsService.Get<bool>(e.PropertyName));
+                    break;
+            }
         }
 
-        /// <summary>
-        /// Saves config and shuts down the app.
-        /// </summary>
-        private void AppShutdown(object sender, RoutedEventArgs e)
+        private void UpdateAppraisalService(string dataSource)
         {
-            _hotkey.SaveHotkeys();
-            _hotkey.UnregisterAllHotkeys();
-            Settings.Default.Save();
-            Application.Current.Shutdown();
+            foreach (var service in _appraisalServices)
+            {
+                if (service.GetType().Name == dataSource)
+                {
+                    AppraisalService = service;
+                    return;
+                }
+            }
+        }
+
+        private void UpdateHotkeyService(bool useLowLevelHotkey)
+        {
+            HotkeyManager = useLowLevelHotkey
+                ? new LowLevelHotkeyManager()
+                : (IHotkeyManager)new ApiHotkeyManager();
         }
         #endregion
 
@@ -147,132 +151,134 @@ namespace Priceall
         /// Queries appraisal, triggered by hotkey.
         /// </summary>
         /// <returns></returns>
-        private async Task QueryAppraisal()
+        private async Task QueryAppraisalAsync()
         {
             var clipboardContent = _clipboard.ReadClipboardText();
-            await Task.Run(() => { QueryAppraisal(clipboardContent); });
+            await Task.Run(() => { QueryAppraisalAsync(clipboardContent); });
         }
 
         /// <summary>
-        /// Queries appraisal, triggered by button.
+        /// Queries appraisal, triggered by clipboard event.
         /// </summary>
-        private async void QueryAppraisal(object sender, RoutedEventArgs e)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void QueryAppraisalAsync(object sender, EventArgs e)
         {
             var clipboardContent = _clipboard.ReadClipboardText();
-            await Task.Run(() => { QueryAppraisal(clipboardContent); });
+            await Task.Run(() => { QueryAppraisalAsync(clipboardContent); });
         }
 
         /// <summary>
         /// Universal entry for triggering a price check.
         /// </summary>
         /// <param name="clipboardContent">Content in clipboard to be price checked.</param>
-        private async void QueryAppraisal(string clipboardContent)
+        private async void QueryAppraisalAsync(string clipboardContent)
         {
-            SetWindowOnTopDelegate();
-
+            // Check cooldown
             var queryElapsed = (DateTime.Now - _lastQueryTime).TotalMilliseconds;
-            if (queryElapsed >= Settings.Default.QueryCooldown)
+            if (queryElapsed < SettingsService.Get<int>("QueryCooldown"))
             {
-                _lastQueryTime = DateTime.Now;
-                _infoBinding.Price = "Hold on...";
-                _infoBinding.SetTypeIcon("searchmarket");
+                // Still in cooldown
+                return;
+            }
 
-                var appraisal = await _appraisal.QueryAppraisal(clipboardContent);
-                var json = new Json(appraisal);
+            // Do it
+            _lastQueryTime = DateTime.Now;
+            _infoBinding.Price = "Hold on...";
+            _infoBinding.SetTypeIcon("searchmarket");
 
-                if (!String.IsNullOrEmpty(json.ErrorMessage))
+            var appraisal = await AppraisalService.AppraiseAsync(clipboardContent);
+            if (appraisal.Status == AppraisalStatus.Successful)
+            {
+                // Return OK
+                // Color
+                _infoBinding.SetTypeIcon(appraisal.Kind);
+                if (appraisal.SellValue <= Settings.Default.LowerPrice)
                 {
-                    _infoBinding.SetTypeIcon("heuristic");
-                    _infoBinding.PriceLowerOrHigher = null;
-                    RefreshPriceColor();
-                    _infoBinding.Price = json.ErrorMessage;
+                    _infoBinding.PriceLowerOrHigher = true;
+                }
+                else if (appraisal.SellValue > Settings.Default.UpperPrice)
+                {
+                    _infoBinding.PriceLowerOrHigher = false;
+                }
+                else _infoBinding.PriceLowerOrHigher = null;
+                // Prettyprint
+                if (SettingsService.Get<bool>("IsUsingPrettyPrint"))
+                {
+                    _infoBinding.Price = appraisal.FormattedSellValue;
                 }
                 else
                 {
-                    _infoBinding.SetTypeIcon(json.Kind);
-
-                    var price = json.SellValue;
-                    if (json.SellValue < Settings.Default.LowerPrice)
-                    {
-                        _infoBinding.PriceLowerOrHigher = true;
-                    }
-                    else if (json.SellValue > Settings.Default.UpperPrice)
-                    {
-                        _infoBinding.PriceLowerOrHigher = false;
-                    }
-                    else _infoBinding.PriceLowerOrHigher = null;
-
-                    RefreshPriceColor();
-
-                    if (Settings.Default.IsUsingPrettyPrint)
-                        _infoBinding.Price = json.PrettyPrintValue();
-                    else _infoBinding.Price = String.Format("{0:N}", json.SellValue);
+                    _infoBinding.Price = String.Format("{0:N}", appraisal.SellValue);
                 }
             }
-        }
-
-        /// <summary>
-        /// Reads clipboard on main thread for COM compliance.
-        /// </summary>
-        /// <returns>Clipboard content, or empty string if clipboard does not have text.</returns>
-        private string ReadClipboardOnMainThread()
-        {
-            return _clipboard.ReadClipboardText();
+            else
+            {
+                // Return error
+                _infoBinding.SetTypeIcon("heuristic");
+                _infoBinding.PriceLowerOrHigher = null;
+                _infoBinding.Price = appraisal.Message;
+            }
         }
         #endregion
 
-        #region Control utilities
+        #region UI handlers
+        /// <summary>
+        /// Shuts down the app.
+        /// </summary>
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            QuickButton_Click(sender, e);
+        }
+
         /// <summary>
         /// Sets the window to be topmost (overlay).
         /// </summary>
-        private void SetWindowOnTop(object sender = null, EventArgs e = null)
+        private void Window_Deactivated(object sender, EventArgs e)
         {
             Topmost = true;
         }
 
         /// <summary>
-        /// Sets the window to be topmost (overlay).
-        /// Executed on MainWindow's delegate (UI thread).
+        /// Saves config and shuts down the app.
         /// </summary>
-        private void SetWindowOnTopDelegate()
+        private void QuickButton_Click(object sender, EventArgs e)
         {
-            Dispatcher.BeginInvoke(
-                new Action(() =>  
-                {
-                    SetWindowOnTop();
-                }));
+            HotkeyManager.UninitializeHook();
+            Settings.Default.Save();
+            Application.Current.Shutdown();
         }
 
         /// <summary>
         /// Changes window background transparency when scrolls on it.
         /// </summary>
-        private void TweakWindowTransparency(object sender, MouseWheelEventArgs e)
+        private void AppraisalInfoGrid_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             bool isZooming = (Keyboard.Modifiers & ModifierKeys.Control) > 0;
             if (isZooming)
             {
                 if (e.Delta > 0)
                 {
-                    _styleBinding.WndWidth += 12;
-                    _styleBinding.WndHeight += 4;
+                    _styleBinding.WindowWidth += 12;
+                    _styleBinding.WindowHeight += 4;
                 }
                 else
                 {
-                    _styleBinding.WndWidth -= 12;
-                    _styleBinding.WndHeight -= 4;
+                    _styleBinding.WindowWidth -= 12;
+                    _styleBinding.WindowHeight -= 4;
                 }
             }
             else
             {
-                if (e.Delta > 0) _styleBinding.WndOpacity += 0.05;
-                else _styleBinding.WndOpacity -= 0.05;
+                if (e.Delta > 0) _styleBinding.WindowOpacity += 0.05;
+                else _styleBinding.WindowOpacity -= 0.05;
             }
         }
 
         /// <summary>
         /// Starts window drag move when button is held.
         /// </summary>
-        private void StartDragMoving(object sender, MouseButtonEventArgs e)
+        private void DragButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (Settings.Default.IsDragEnabled &&
                 e.LeftButton == MouseButtonState.Pressed) DragMove();
@@ -281,38 +287,32 @@ namespace Priceall
         /// <summary>
         /// Toggles response of drag drop button and save to settings.
         /// </summary>
-        private void TogglePin(object sender, MouseButtonEventArgs e)
+        private void DragButton_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var currentState = Settings.Default.IsDragEnabled;
-            Settings.Default.IsDragEnabled = !currentState;
-            _controlsBinding.SetRectOpacityStyle(!currentState);
-        }
-
-        /// <summary>
-        /// Triggers a price tag color refresh based on setting value.
-        /// </summary>
-        public void RefreshPriceColor(object sender = null, EventArgs e = null)
-        {
-            _infoBinding.RefreshPriceColor();
-        }
-
-        /// <summary>
-        /// Resets all settings and their bounded displays.
-        /// </summary>
-        public void ResetSettings(object sender, EventArgs e)
-        {
-            Settings.Default.Reset();
-            _infoBinding.Refresh();
-            _controlsBinding.Refresh();
-            _styleBinding.Refresh();
+            var currentState = SettingsService.Get<bool>("IsDragEnabled");
+            SettingsService.Set("IsDragEnabled", !currentState);
         }
 
         /// <summary>
         /// Shows the settings window.
         /// </summary>
-        private void ShowSettings(object sender, RoutedEventArgs e)
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             _settingsWindow.ShowDialog();
+        }
+        #endregion
+
+        #region Hotkey
+        public void OnHotkeyUpdated(KeyCombo keyCombo)
+        {
+            switch (keyCombo.Name)
+            {
+                case "QueryKey":
+                    {
+                        HotkeyManager.ActivateHotkey(keyCombo.Name, keyCombo, OnHotKeyHandler);
+                        break;
+                    }
+            }
         }
         #endregion
     }

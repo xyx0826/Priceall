@@ -1,90 +1,79 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Windows.Input;
-using System.Windows.Interop;
+﻿using Priceall.Hotkey.NonHook;
+using System;
 
 namespace Priceall.Hotkey
 {
     /// <summary>
-    /// Class representing a hotkey registration.
+    /// A hotkey combo and its corresponding action.
     /// </summary>
-    public class Hotkey
+    public class Hotkey : IDisposable
     {
-        #region P/Invoke
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vlc);
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-        #endregion
-
-        const int WM_HOTKEY = 0x0312;
-
-        public string Name;
-        public int KeyId;
-        public ModifierKeys ModifierKeyCombo;
-        public Key VirtualKey;
-
-        static Action _keyAction;
-        
         /// <summary>
-        /// Creates and registers a hotkey of the given keypresses.
+        /// The random unique ID of the hotkey.
         /// </summary>
-        /// <param name="modifierKey">A combination of modifier keys.</param>
-        /// <param name="virtualkey">A single virtual key.</param>
-        /// <param name="action">The action to be executed on hotkey press.</param>
-        public Hotkey(string name, ModifierKeys modifierKey, Key virtualkey, Action action)
-        {
-            Name = name;
-            ModifierKeyCombo = modifierKey;
-            VirtualKey = virtualkey;
-            _keyAction = action;
+        public readonly int Id;
 
-            if (Register() != true)
-            {
-                throw new InvalidOperationException("Hotkey registration failed.");
-            }
-        }
-        
         /// <summary>
-        /// Registers the hotkey.
+        /// The key combo of the hotkey.
         /// </summary>
-        /// <returns>Whether the registration is successful.</returns>
-        public bool Register()
-        {
-            var virtualKeyCode = KeyInterop.VirtualKeyFromKey(VirtualKey);
-            KeyId = virtualKeyCode + ((int)ModifierKeyCombo * 0x10000);
-            
-            ComponentDispatcher.ThreadFilterMessage += (ref MSG msg, ref bool handled) =>
-            {
-                if (msg.message == WM_HOTKEY && !handled)
-                {
-                    _keyAction.Invoke();
-                    handled = true;
-                }
-            };
+        public KeyCombo KeyCombo;
 
-            // key params to pass: hotkey combo and its unique keyId
-            return RegisterHotKey(IntPtr.Zero, KeyId, 
-                (uint)ModifierKeyCombo, (uint)virtualKeyCode);
+        /// <summary>
+        /// The action fired by this hotkey.
+        /// </summary>
+        private Action _action;
+
+        private bool _disposed;
+
+        /// <summary>
+        /// Creates hotkey for hooked mode.
+        /// </summary>
+        public Hotkey(KeyCombo keyCombo, Action action)
+        {
+            KeyCombo = keyCombo;
+            _action = action;
+            Id = (int)HotkeyInterop.AddAtom(Guid.NewGuid().ToString());
         }
 
         /// <summary>
-        /// Unregisters the hotkey.
+        /// Creates hotkey for non-hooked mode.
         /// </summary>
-        public void Unregister()
+        public Hotkey(string name, KeyCombo keyCombo, Action action)
+            : this (keyCombo, action)
         {
-            UnregisterHotKey(IntPtr.Zero, KeyId);
+            KeyCombo.Name = name;
+        }
+
+        public void SetAction(Action action) => _action = action;
+
+        public void Invoke() => _action.Invoke();
+
+        public override string ToString()
+        {
+            return $"<{KeyCombo.Name} ({KeyCombo})>";
+        }
+
+        #region IDisposable
+        public void Dispose()
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Converts the key definition of this hotkey to comma-separated form.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        protected virtual void Dispose(bool disposing)
         {
-            return $"{Name},{(int)ModifierKeyCombo},{(int)VirtualKey}";
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                HotkeyInterop.DeleteAtom((uint)Id);
+            }
+
+            _disposed = true;
         }
+        #endregion
     }
 }

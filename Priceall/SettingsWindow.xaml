@@ -3,91 +3,141 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hotkey="clr-namespace:Priceall.Hotkey.Controls"
         mc:Ignorable="d"
         Title="Settings"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         Loaded="Window_Loaded"
         Closing="Window_Closing">
-    <StackPanel Orientation="Vertical" Margin="8">
-        <Label Content="Hover over setting names to see its description." FontWeight="Bold"/>
-        <GroupBox Header="Appraisal settings" Height="Auto">
-            <Grid Margin="8" Height="Auto">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Data source:"
-                       ToolTip="Data source for appraisal prices. Currently only Evepraisal is available."/>
-                <Label Grid.Row="0" Grid.Column="2" Content="Evepraisal.com"/>
-                <Label Grid.Row="1" Grid.Column="0" Content="Query length limit:"
-                       ToolTip="The maximum length of clipboard text to send to Evepraisal."/>
-                <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
-                         Text="{Binding QueryLengthLimit, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Grid.Row="2" Grid.Column="0" Content="Query cooldown:"
-                       ToolTip="Minimum time in milliseconds between two Evepraisal queries. Please do not spam requests."/>
-                <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
+    <!-- Main StackPanel, contains settings and hotkey editors -->
+    <StackPanel Orientation="Horizontal" Margin="8">
+        <!-- StackPanel for settings -->
+        <StackPanel Orientation="Vertical" Margin="0,0,8,0">
+            <GroupBox Header="Appraisal settings" Height="Auto">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Data source:"/>
+                    <ComboBox ItemsSource="{Binding DataSources}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                              SelectedValue="{Binding SelectedDataSource}"/>
+                    <Label Content="Market:"/>
+                    <ComboBox ItemsSource="{Binding Markets}" SelectedValue="{Binding SelectedMarket}"/>
+                    <Label Content="Maximum query length:">
+                        <Label.ToolTip>
+                            Prevents accidentally sending unrelated bulk text to Evepraisal.
+                        </Label.ToolTip>
+                    </Label>
+                    <DockPanel LastChildFill="True">
+                        <Label DockPanel.Dock="Right" Content="characters"/>
+                        <TextBox VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
+                         Text="{Binding MaxStringLength, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DockPanel>
+                    <Label Content="Cooldown between queries:">
+                        <Label.ToolTip>
+                            Prevents (un)intentionally spamming appraisal service.
+                        </Label.ToolTip>
+                    </Label>
+                    <DockPanel LastChildFill="True">
+                        <Label DockPanel.Dock="Right" Content="milliseconds"/>
+                        <TextBox VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
                          Text="{Binding QueryCooldown, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Grid.Row="3" Grid.Column="0" Content="Query hotkey:"
-                       ToolTip="Hotkey used to trigger a query."/>
-                <TextBox Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="BlockFilter"
-                         PreviewKeyDown="EditHotkey"
-                         Text="{Binding KeyCombo, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Grid.Row="4" Grid.Column="0" Content="Use automatic refresh:"
-                       ToolTip="When enabled, Priceall will refresh pricing everytime clipboard text changes."/>
-                <CheckBox Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
-                          IsChecked="{Binding IsUsingAutomaticRefresh}"/>
-                <Label Grid.Row="5" Grid.ColumnSpan="3" Visibility="{Binding AutoRefreshTagVisibility}"
-                       Content="Sorry - please turn auto refresh off. There's too much stress on servers."
-                       Foreground="Red"
-                       FontStyle="Italic"/>
-            </Grid>
-        </GroupBox>
-        <GroupBox Header="Styles" Height="Auto">
-            <Grid Margin="8" Height="Auto">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Use formatted values:"
-                       ToolTip="When checked, show value in thousands, millions and billions."/>
-                <CheckBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
-                          IsChecked="{Binding IsUsingPrettyPrint}"/>
-                <Label Grid.Row="1" Grid.Column="0" Content="Default price tag color:"
-                       ToolTip="Default price tag color. Can be overriden by conditional colors."/>
-                <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         MaxLength="6"
-                         PreviewTextInput="ColorFilter"
-                         Text="{Binding PriceColor, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Grid.Row="2" Grid.Column="0" Content="Use conditional colors:"
-                       ToolTip="When enabled, price tag color will change according to price value."/>
-                <CheckBox Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Content="Yes"
-                          IsChecked="{Binding IsUsingConditionalColors}"/>
-                <Grid Grid.Row="3" Grid.ColumnSpan="3" IsEnabled="{Binding IsUsingConditionalColors}">
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Use automatic refresh:">
+                            <Label.ToolTip>
+                                Auto refreshes when something new is copied to clipboard.
+                            </Label.ToolTip>
+                        </Label>
+                        <CheckBox VerticalAlignment="Center"
+                                  IsChecked="{Binding IsUsingAutomaticRefresh}"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Styles" Height="Auto">
+                <Grid Margin="8" Height="Auto">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Format price tag">
+                        <Label.ToolTip>
+                            Replaces 12,000,000 with "12 Mil".
+                        </Label.ToolTip>
+                    </Label>
+                    <CheckBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                          IsChecked="{Binding IsUsingPrettyPrint}"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="enabled"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Default price tag color">
+                        <Label.ToolTip>
+                            Sets default price tag color.
+                        </Label.ToolTip>
+                    </Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                         MaxLength="6"
+                         PreviewTextInput="ColorTextBox_PreviewTextInput"
+                         Text="{Binding PriceColor, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Grid.Row="3" Grid.Column="0" Content="Conditional price tag color"
+                       ToolTip="When enabled, price tag color will change according to price value."/>
+                    <CheckBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
+                          IsChecked="{Binding IsUsingConditionalColors}"/>
+                    <Label Grid.Row="3" Grid.Column="2" Content="enabled"/>
+                    <Grid Grid.Row="4" Grid.ColumnSpan="3" IsEnabled="{Binding IsUsingConditionalColors}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="When (Price &lt;="
+                       ToolTip="The price threshold for applying the lower color."/>
+                        <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
+                         Text="{Binding LowerPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N}}"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="ISK)"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Use color" HorizontalContentAlignment="Right"
+                       ToolTip="The lower color."/>
+                        <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="ColorTextBox_PreviewTextInput"
+                         Text="{Binding LowerColor, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="When (Price &gt;"
+                       ToolTip="The price threshold for applying the upper color."/>
+                        <TextBox Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="NumberTextBox_PreviewTextInput"
+                         Text="{Binding UpperPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N}}"/>
+                        <Label Grid.Row="2" Grid.Column="2" Content="ISK)"/>
+                        <Label Grid.Row="3" Grid.Column="0" Content="Use color" HorizontalContentAlignment="Right"
+                       ToolTip="The upper color."/>
+                        <TextBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center" Padding="5"
+                         PreviewTextInput="ColorTextBox_PreviewTextInput"
+                         Text="{Binding UpperColor, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                    <TextBlock Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="2">
+                        <Hyperlink NavigateUri="https://www.google.com/search?q=Color+Picker"
+                                   RequestNavigate="ColorPickerHyperlink_RequestNavigate">
+                            Google Color Picker
+                        </Hyperlink>
+                    </TextBlock>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="About" Height="Auto">
+                <Grid Margin="8" Height="Auto">
+                    <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -97,58 +147,46 @@
                         <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="When price below..." HorizontalContentAlignment="Right"
-                       ToolTip="The price threshold for applying the lower color."/>
-                    <TextBox Grid.Row="0" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
-                         Text="{Binding LowerPrice, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Grid.Row="1" Grid.Column="0" Content="Use this color." HorizontalContentAlignment="Right"
-                       ToolTip="The lower color."/>
-                    <TextBox Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="ColorFilter"
-                         Text="{Binding LowerColor, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Grid.Row="2" Grid.Column="0" Content="When price above..." HorizontalContentAlignment="Right"
-                       ToolTip="The price threshold for applying the upper color."/>
-                    <TextBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="NumberFilter"
-                         Text="{Binding UpperPrice, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Grid.Row="3" Grid.Column="0" Content="Use this color." HorizontalContentAlignment="Right"
-                       ToolTip="The upper color."/>
-                    <TextBox Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center" Padding="5"
-                         PreviewTextInput="ColorFilter"
-                         Text="{Binding UpperColor, UpdateSourceTrigger=PropertyChanged}"/>
-                </Grid>
-            </Grid>
-        </GroupBox>
-        <GroupBox Header="About" Height="Auto">
-            <Grid Margin="8" Height="Auto">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Priceall version:"
+                    <Label Grid.Row="0" Grid.Column="0" Content="Priceall version:"
                        ToolTip="Version of Priceall. Priceall is still in early stage of development."/>
-                <Label Grid.Row="0" Grid.Column="2" Content="{Binding AppVersion}"/>
-                <Label Grid.Row="1" Grid.Column="0" Content="Updates and help:"
+                    <Label Grid.Row="0" Grid.Column="2" Content="{Binding AppVersion}"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Updates and help:"
                        ToolTip="Link to Priceall's code repository."/>
-                <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
-                    <Hyperlink NavigateUri="https://github.com/xyx0826/Priceall" RequestNavigate="OpenGithubPage">
+                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
+                    <Hyperlink NavigateUri="https://github.com/xyx0826/Priceall"
+                               RequestNavigate="ColorPickerHyperlink_RequestNavigate">
                         GitHub
                     </Hyperlink>
-                </TextBlock>
-                <Label Grid.Row="2" Grid.ColumnSpan="3" Visibility="{Binding UpdateTagVisibility}"
+                    </TextBlock>
+                    <Label Grid.Row="2" Grid.ColumnSpan="3" Visibility="{Binding UpdateTagVisibility}"
                        Content="An updated version of Priceall is available!" 
                        Foreground="Red"
                        FontStyle="Italic"/>
-            </Grid>
-        </GroupBox>
-        <Separator/>
-        <Button Foreground="Red" Content="Reset all settings" Click="ResetSettings"/>
+                </Grid>
+            </GroupBox>
+            <Separator/>
+            <Button Foreground="Red" Content="Reset all settings" Click="ResetSettingsButton_Click"/>
+        </StackPanel>
+        <!-- StackPanel for hotkeys and service-specific settings -->
+        <StackPanel Orientation="Vertical">
+            <GroupBox x:Name="AppraisalServiceSettingsGroupBox" Header="Appraisal service settings">
+                <StackPanel Name="AppraisalServiceSettingsPanel" Orientation="Vertical"/>
+            </GroupBox>
+            <GroupBox Header="Hotkeys">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="0.7*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Query"/>
+                    <hotkey:HotkeyEditor x:Name="QueryKeyEditor" Tag="QueryKey" Grid.Column="2" NewKeyCombo="HotkeyEditor_NewKeyCombo"/>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
     </StackPanel>
 </Window>

@@ -1,20 +1,19 @@
-﻿using System;
+﻿using Priceall.Properties;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace Priceall.Helper
+namespace Priceall.Services
 {
     /// <summary>
-    /// Helper class for clipboard interaction.
+    /// Services class for clipboard interaction.
     /// Provides text retrieval from clipboard or update event subscription.
     /// </summary>
-    class ClipboardHelper
+    internal class ClipboardService
     {
-        IntPtr _hwndNextViewer = IntPtr.Zero;
-        HwndSource _hwndSource;
-        Action _clipboardAction;
-        bool _isViewing = false;
+        private IntPtr _hwndNextViewer = IntPtr.Zero;
+        private HwndSource _hwndSource;
 
         #region P/Invoke
         internal const int WM_DRAWCLIPBOARD = 0x0308;
@@ -31,15 +30,43 @@ namespace Priceall.Helper
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         #endregion
 
+        #region Event
+        public event EventHandler ClipboardChanged;
+
+        protected virtual void OnClipboardChanged(EventArgs e)
+        {
+            ClipboardChanged?.Invoke(this, e);
+        }
+        #endregion
+
         /// <summary>
         /// Stores the HwndSource of the listening window and action to do.
         /// </summary>
         /// <param name="hwndSource">HwndSource of the listening window.</param>
         /// <param name="action">Action to invoke when clipboard event occurs.</param>
-        public void InitializeListener(HwndSource hwndSource, Action action)
+        public void InitializeListener(HwndSource hwndSource)
         {
             _hwndSource = hwndSource;
-            _clipboardAction = action;
+            ToggleListener();
+            Settings.Default.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == "IsUsingAutomaticRefresh")
+                    ToggleListener();
+            };
+        }
+
+        public void ToggleListener()
+        {
+            if (SettingsService.Get<bool>("IsUsingAutomaticRefresh"))
+            {
+                _hwndSource.AddHook(OnClipboardChanged);
+                _hwndNextViewer = SetClipboardViewer(_hwndSource.Handle);
+            }
+            else
+            {
+                _hwndSource.RemoveHook(OnClipboardChanged);
+                ChangeClipboardChain(_hwndSource.Handle, _hwndNextViewer);
+            }
         }
 
         /// <summary>
@@ -53,26 +80,6 @@ namespace Priceall.Helper
                 return Clipboard.GetText();
             }
             return String.Empty;
-        }
-        
-        /// <summary>
-        /// Starts processing clipboard messages by hooking up the specified window.
-        /// </summary>
-        public void StartListener()
-        {
-            _hwndSource.AddHook(OnClipboardChanged);
-            _hwndNextViewer = SetClipboardViewer(_hwndSource.Handle);
-            _isViewing = true;
-        }
-
-        /// <summary>
-        /// Stops listening to clipboard messages and remove the app from queue.
-        /// </summary>
-        public void StopListener()
-        {
-            _hwndSource.RemoveHook(OnClipboardChanged);
-            ChangeClipboardChain(_hwndSource.Handle, _hwndNextViewer);
-            _isViewing = false;
         }
 
         /// <summary>
@@ -96,7 +103,8 @@ namespace Priceall.Helper
                     break;
 
                 case WM_DRAWCLIPBOARD:
-                    _clipboardAction.Invoke();
+                    // Clipboard content has changed. Fire the event.
+                    OnClipboardChanged(EventArgs.Empty);
                     SendMessage(_hwndNextViewer, msg, wParam, lParam);
                     break;
             }

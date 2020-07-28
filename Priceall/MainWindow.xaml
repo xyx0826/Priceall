@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStyle="None" AllowsTransparency="True" ResizeMode="CanMinimize"
-        Top="{Binding WndTopPos, Mode=TwoWay}" Left="{Binding WndLeftPos, Mode=TwoWay}"
-        Width="{Binding WndWidth, Mode=TwoWay}" Height="{Binding WndHeight, Mode=TwoWay}"
-        Deactivated="SetWindowOnTop">
+        Top="{Binding WindowTopPos, Mode=TwoWay}" Left="{Binding WindowLeftPos, Mode=TwoWay}"
+        Width="{Binding WindowWidth, Mode=TwoWay}" Height="{Binding WindowHeight, Mode=TwoWay}"
+        Topmost="True"
+        Deactivated="Window_Deactivated"
+        Closing="Window_Closing">
     <Window.Background>
-        <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" Opacity="{Binding WndOpacity}">
-            <GradientStop Color="#3b5f73" Offset="1"/>
-            <GradientStop Color="#175f79" Offset="0"/>
-        </LinearGradientBrush>
+        <SolidColorBrush 
+            Color="{Binding BackgroundBrush.Color}" 
+            Opacity="{Binding WindowOpacity}"/>
     </Window.Background>
     <!-- Main StackPanel -->
     <DockPanel x:Name="MainDockPanel" LastChildFill="True">
@@ -29,8 +30,8 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Margin="4,0,0,2"
                     ToolTip="Hold to drag. Right click to pin/unpin."
-                    PreviewMouseDown="StartDragMoving" 
-                    PreviewMouseRightButtonUp="TogglePin">
+                    PreviewMouseDown="DragButton_PreviewMouseDown" 
+                    PreviewMouseRightButtonUp="DragButton_PreviewMouseRightButtonUp">
                 <Button.Template>
                     <ControlTemplate>
                         <Rectangle Style="{StaticResource ResourceKey=MoveGlyph}" 
@@ -39,7 +40,7 @@
                 </Button.Template>
             </Button>
             <Grid Background="{Binding RectBackgroundBrush}" Grid.Column="1"  Margin="4,0,0,2">
-                <Button Click="ShowSettings">
+                <Button Click="SettingsButton_Click">
                     <Button.Template>
                         <ControlTemplate>
                             <Rectangle Style="{StaticResource ResourceKey=Settings}"/>
@@ -50,7 +51,7 @@
             </Grid>
             <Button Grid.Column="2"  Margin="4,0,0,2"
                     ToolTip="Left click to quit."
-                    Click="AppShutdown">
+                    Click="QuickButton_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Rectangle Style="{StaticResource ResourceKey=Close}"/>
@@ -61,9 +62,8 @@
         <!-- Display: icons, labels, etc -->
         <Grid x:Name="AppraisalInfo"
               Margin="0,0,5,0"
-              MouseWheel="TweakWindowTransparency">
-            <Button Style="{StaticResource ResourceKey=ClearButton}"
-                Click="QueryAppraisal">
+              MouseWheel="AppraisalInfoGrid_MouseWheel">
+            <Button Style="{StaticResource ResourceKey=ClearButton}">
                 <Button.Content>
                     <DockPanel Width="{Binding ActualWidth, ElementName=AppraisalInfo}" 
                                LastChildFill="True">
@@ -72,7 +72,7 @@
                             <Label.Content>
                                 <Viewbox>
                                     <TextBlock FontFamily="{StaticResource EveSansNeue}" 
-                                               Foreground="{Binding PriceFontColor}"
+                                               Foreground="{Binding PriceFontBrush}"
                                                Text="{Binding Price}" 
                                                TextWrapping="Wrap"/>
                                 </Viewbox>

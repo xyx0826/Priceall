@@ -1,108 +1,116 @@
-# Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall) 
-<img src="Readme/Images/Priceall.png" width="128" height="128" />
+# Priceall [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xyx0826/Priceall?svg=true)](https://ci.appveyor.com/project/xyx0826/Priceall)
 
-Priceall ÊÇ EVE Online µÄ¿ìËÙ¹À¼Û¹¤¾ß¡£
+![Priceall logo](/Readme/Images/Priceall.png =128x128)
 
-Èç¹ûÄã²»Ï²»¶ÎªÁËÎïÆ·¹À¼Û¶øÇÐ³öÓÎÏ·¡¢Ê¹ÓÃä¯ÀÀÆ÷£¬Õâ¿î¹¤¾ß¾ÍÊÇÎªÄã´òÔìµÄ£¡
+Priceall ä¸“ä¸º EVE Online å¿«é€Ÿç‰©å“ä¼°ä»·è€Œç”Ÿã€‚
 
-**Priceall Ä¿Ç°Ö§³Ö EVE Äþ¾²·þÎñÆ÷¡£**
+æ— è®ºä½ æ˜¯ä¸€åæŽ¢é™©å®¶ã€åˆ¶é€ å•†è¿˜æ˜¯è´¸æ˜“å¤§äº¨ï¼ŒPriceall
+éƒ½èƒ½å¸®ä½ **é£žé€ŸæŸ¥è¯¢**ç‰©å“åˆ—è¡¨çš„ä»·æ ¼ï¼Œæ— éœ€æŠŠç›®å…‰ç§»å¼€æ¸¸æˆç•Œé¢ã€‚
 
-# ÎÄµµÄ¿Â¼
-- ÓÃ·¨£ºÏÂÔØÓëÊ¹ÓÃ
-- ¿ª·¢£ºPriceall ´úÂë¿âÐÅÏ¢
-- ¸üÐÂÈÕÖ¾£ºÐÂ¹¦ÄÜ¡¢È±ÏÝÐÞ¸´
+# å…¼å®¹æœåŠ¡
 
-# ÓÃ·¨
-µã[ÎÒ](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts)£¬È»ºóÏÂÔØ `build.zip` ¾ÍÄÜ»ñÈ¡×îÐÂ°æ±¾£¡
+![Evepraisal](/Readme/Images/evepraisal-logo.png =60x) ![Janice](/Readme/Images/janice-logo.png =60x)
 
-Priceall ¿ÉÒÔÈÃÄã**·ÉËÙ²éÑ¯**ÎïÆ·ÁÐ±íµÄ¹À¼Û£¬ÎÞÐè°ÑÄ¿¹âÒÆ¿ªÓÎÏ·»­Ãæ¡£
+# ç›®å½•
 
-**¸´ÖÆ** ÈÎÒâÎïÆ·ÁÐ±íµ½¼ôÌù°å£¬È»ºó°´¿ì½Ý¼ü `Ctrl + Shift + C`£¬Priceall ¾Í»á×Ô¶¯ÎªÄã²éÑ¯¼Û¸ñ¡£
+- ç”¨æ³•ï¼šä¸‹è½½ä¸Žä½¿ç”¨
+- å¼€å‘ï¼šPriceall ä»£ç åº“ä¿¡æ¯
+- æ›´æ–°æ—¥å¿—ï¼šæ–°åŠŸèƒ½ã€ç¼ºé™·ä¿®å¤
 
-**ÐÂ¹¦ÄÜ£º×Ô¶¯Ë¢ÐÂ£¡** ¸´ÖÆµ½¼ôÌù°åºóÎÞÐè°´¿ì½Ý¼ü¡£Priceall »á×Ô¶¯Ë¢ÐÂ¹À¼Û¡£
+# ç”¨æ³•
 
-![²Ù×÷](Readme/Images/priceall-gif-01-basic.gif)
+åœ¨[è¿™é‡Œ](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts)
+ç‚¹å‡» `build.zip` å°±å¯ä¸‹è½½æœ€æ–°ç‰ˆã€‚
 
-ÔÚÉèÖÃÀï£¬Äã¿ÉÒÔÑ¡ÔñÏÔÊ¾**¾«È·**¼Û¸ñ»ò**¼òÂÔ**¼Û¸ñ¡£
+æƒ³è¦ä¸ºç‰©å“åˆ—è¡¨ä¼°ä»·ï¼Œå°†å…¶å¤åˆ¶åˆ°å‰ªè´´æ¿å³å¯ã€‚Priceall ä¾¿ä¼šè‡ªåŠ¨ä¸ºä½ æŸ¥ä»·ã€‚
 
-![¸ñÊ½](Readme/Images/priceall-gif-02-format.gif)
+*ä¸å–œæ¬¢è‡ªåŠ¨æŸ¥è¯¢ï¼Ÿæ‰“å¼€è®¾ç½®ä¾¿å¯åˆ›å»ºå¿«æ·é”®ã€‚*
 
-ÄãÒ²¿ÉÒÔ×Ô¶¨Òå**×ÖÌåÑÕÉ«**¡£¿ÉÒÔÊÔÊÔ¹È¸èµÄ[È¡É«Æ÷](https://www.google.com/search?q=color%20picker)Å¶£¡
+æ”¯æŒé€‰æ‹©æ˜¾ç¤º**ç²¾ç¡®**ä»·æ ¼æˆ–**ç®€ç•¥**ä»·æ ¼ã€‚
 
-![ÑÕÉ«](Readme/Images/priceall-gif-03-color.gif)
+![Format](Readme/Images/priceall-gif-02-format.gif)
 
-´°¿Ú¿É±»**ÍÏ×§**µ½ÈÎÒâÎ»ÖÃ£¬È»ºóÓÒ»÷**Ëø¶¨**¡£
+éšæ„å®šåˆ¶**å­—ä½“é¢œè‰²**ã€‚
 
-![ÍÏ×§](Readme/Images/priceall-gif-04-drag.gif)
+*é¢œè‰²ä»£ç çœ‹ä¸æ‡‚ï¼Ÿè¯•è¯•[è°·æ­Œå–è‰²å™¨](https://www.google.com/search?q=color%20picker)ã€‚*
 
-Ê¹ÓÃÊó±ê¹öÂÖÀ´µ÷Õû±³¾°**Í¸Ã÷¶È**¡£´îÅä `Ctrl` ¼ü¹ö¶¯¿ÉÒÔ¸ü¸Ä´°¿Ú**´óÐ¡**¡£
+![Color](Readme/Images/priceall-gif-03-color.gif)
 
-![Ëõ·Å](Readme/Images/priceall-gif-05-resize.gif)
+æŒ‰ä½**æ‹–æ‹½**å›¾æ ‡ï¼ŒæŠŠçª—å£æ‹‰åˆ°ä»»æ„ä½ç½®ï¼Œç„¶åŽ**å³å‡»**é”å®šã€‚
 
-Èç¹û±³¾°±»µ÷Îª**ÍêÈ«Í¸Ã÷**£¬±ã¿ÉÒÔµã»÷´°¿Ú±³ºóµÄÄÚÈÝ¡££¨µã»÷´©Í¸£©
+![Drag](Readme/Images/priceall-gif-04-drag.gif)
 
-![´©Í¸](Readme/Images/priceall-gif-06-clickthrough.gif)
+ç”¨æ»šè½®è°ƒæ•´**é€æ˜Žåº¦**ï¼Œæ­é… **Ctrl** é”®æ»šåŠ¨æ¥è°ƒæ•´çª—å£**å¤§å°**ã€‚
 
-**Ê¹ÓÃÐëÖª£º**
-- Priceall ÊÇÒ»¸öÖÃ¶¥Ð¡´°¿Ú¡ª¡ªËü²»ÊÇÏñ Steam »ò Discord µÄÄÇÖÖ¡±¸²¸Ç²ã¡°£¨Overlay£©¡£ËùÒÔËü¿ÉÄÜ²»¼æÈÝÈ«ÆÁÓÎÏ·¡£
-- Priceall Ä¿Ç°Ê¹ÓÃ [Evepraisal](http://evepraisal.com) ×÷ÎªÊý¾ÝÔ´¡£ËùÒÔ Evepraisal Ö§³ÖµÄÎïÆ·ÁÐ±í Priceall ¶¼Ö§³Ö£º»õ¹ñÉ¨Ãè¡¢ºÏÍ¬¡¢À¶Í¼²ÄÁÏµÈµÈ¡£
-- Priceall µÄ¿ì½Ý¼ü£¨Ä¬ÈÏÎª `Ctrl + Shift + C`£©ÊÇ**È«¾Ö**µÄ¡£ÒòÎª¼¼ÊõÏÞÖÆ£¬ÆäËû³ÌÐò²»ÄÜ²¶×½µ½Õâ¸ö¿ì½Ý¼ü¡£
+![Resize](Readme/Images/priceall-gif-05-resize.gif)
 
-´°¿Úµ×²¿ÓÐÈý¸ö°´Å¥£ºÍÏ×§¡¢ÉèÖÃºÍ¹Ø±Õ¡£
+å¦‚æžœèƒŒæ™¯è¢«è°ƒä¸º**å®Œå…¨é€æ˜Ž**ï¼Œä¾¿å¯ä»¥ç‚¹å‡»çª—å£èƒŒåŽçš„å†…å®¹ã€‚ï¼ˆç‚¹å‡»ç©¿é€ï¼‰
 
-°´×¡ÍÏ×§°´Å¥È»ºóÒÆ¶¯Êó±ê£¬¾ÍÄÜ¸Ä±ä´°¿ÚÎ»ÖÃ¡£ÓÒ»÷ÍÏ×§°´Å¥±ã¿ÉËø¶¨/½âËø´°¿ÚÎ»ÖÃ¡£
+![Clickthrough](Readme/Images/priceall-gif-06-clickthrough.gif)
 
-½«Êó±êÔÚ´°¿ÚÉÏ¹ö¶¯±ã¿É¸ü¸Ä´°¿ÚÍ¸Ã÷¶È¡£ÈÕºó»á¼ÓÈë´°¿ÚÑÕÉ«×Ô¶¨Òå¡£
+# å¼€å‘
 
-°´×¡ `Ctrl` È»ºó½«Êó±êÔÚ´°¿ÚÉÏ¹ö¶¯±ã¿ÉËõ·Å´°¿Ú´óÐ¡¡£
+Priceall ä½¿ç”¨ C# + WPFã€‚æ¬¢è¿Žæå‡ºå»ºè®®ã€Issue æˆ– PRã€‚
 
-# ¿ª·¢
-Priceall Ê¹ÓÃ C# + WPF¡£»¶Ó­Ìá³ö½¨Òé¡¢Issue »ò PR¡£
+`master` åˆ†æ”¯å†…çš„ä»£ç å‡ä¸ºç¨³å®šç‰ˆæœ¬ã€‚ é¡µé¢é¡¶ç«¯çš„ AppVeyor æ ‡ç­¾å’Œä¸‹è½½é“¾æŽ¥ä¹Ÿä½¿ç”¨æ­¤åˆ†æ”¯è¿›è¡Œç¼–è¯‘ã€‚
 
-`master` ·ÖÖ§ÄÚµÄ´úÂë¾ùÎªÎÈ¶¨°æ±¾¡£ Ò³Ãæ¶¥¶ËµÄ AppVeyor ±êÇ©ºÍÏÂÔØÁ´½ÓÒ²Ê¹ÓÃ´Ë·ÖÖ§½øÐÐ±àÒë¡£
+Priceall çš„å¼€å‘çŽ°åœ¨ä½äºŽ `dev` åˆ†æ”¯ï¼Œå†…å«ä¸ç¨³å®šæˆ–æœªå®Œæˆçš„åŠŸèƒ½ã€‚è¯·å°†æ‰€æœ‰ PR å‘é€ç»™æ­¤åˆ†æ”¯ã€‚
 
-Priceall µÄ¿ª·¢ÏÖÔÚÎ»ÓÚ `dev` ·ÖÖ§£¬ÄÚº¬²»ÎÈ¶¨»òÎ´Íê³ÉµÄ¹¦ÄÜ¡£Çë½«ËùÓÐ PR ·¢ËÍ¸ø´Ë·ÖÖ§¡£
+æˆ‘çš„æ¸¸æˆå†…è§’è‰²åæ˜¯ `Sector Sabezan`ã€‚æ¬¢è¿ŽæåŠ©ï¼ï¼ˆé¢å…¶å®žæˆ‘é€€å‘äº†
 
-ÎÒµÄÓÎÏ·ÄÚ½ÇÉ«ÃûÊÇ `Sector Sabezan`¡£»¶Ó­¾èÖú£¡
+# æ›´æ–°æ—¥å¿—
 
-*Dataminers: also check out my other repo, `TriExplorer`. It's a modern remake of `TriExporter`, but still in development.*
+## ç‰ˆæœ¬ 1.5ï¼Œç‰ˆæœ¬å· 11
 
-# ¸üÐÂÈÕÖ¾
-## °æ±¾ 1.4, °æ±¾ºÅ 10
-- Îª Priceall ¼ÓÈëÁËÒ»¸ö¼«¼òÍ¼±ê¡£
-- ½«ÉèÖÃ´°¿ÚµÄ´úÂëÊµÏÖ¸ÄÎªÊ¹ÓÃÊÂ¼þÄ£ÐÍ¡£
+- *(karl-kaefer @ GitHub)* æ·»åŠ äº† [Janice](https://janice.e-351.com/) ä¼°ä»·æ”¯æŒã€‚
+- çŽ°åœ¨æ”¯æŒè‡ªå®šä¹‰æˆ–ç§»é™¤çƒ­é”®ã€‚
+- ä¿®å¤äº† Priceall ä¸ä¼šåœ¨æŒ‰ `Alt-F4` æ—¶å…³é—­çš„é—®é¢˜ã€‚
+- åœ¨è®¾ç½®å†…æ·»åŠ äº†è°·æ­Œå–è‰²å™¨çš„é“¾æŽ¥ã€‚
+- å¤§é‡å†…éƒ¨é‡æž„ã€‚
 
-## °æ±¾ 1.4, °æ±¾ºÅ 9
-- *(razaqq @ GitHub)* ÏÖÔÚ¿ÉÒÔÓÚÉèÖÃ´°¿Ú×Ô¶¨Òå¿ì½Ý¼ü¡£
-  - µã»÷±à¼­Æ÷£¬È»ºó°´ÏÂÄãÏëÒªµÄ¿ì½Ý¼ü¡£
-  - ÐÂµÄ¿ì½Ý¼ü»áÁ¢¿ÌÉúÐ§¡£
-  - *ÒÑÖªÎÊÌâ£º±à¼­Æ÷ÄÚµÄ¿ì½Ý¼üÏÔÊ¾ÓÐÎó¡£*
-## °æ±¾ 1.3, °æ±¾ºÅ 8
-- ÐÞ¸´ÁËÒ»¸öµ¼ÖÂ Priceall ÔÚÆô¶¯Ê±²»»áÕýÈ·ÆôÓÃ×Ô¶¯Ë¢ÐÂµÄÎÊÌâ¡£
+## ç‰ˆæœ¬ 1.4, ç‰ˆæœ¬å· 10
 
-## °æ±¾ 1.3, °æ±¾ºÅ 7
-- *(razaqq @ GitHub)* ÄãÏÖÔÚ¿ÉÒÔÆôÓÃ**×Ô¶¯Ë¢ÐÂ**À´¼àÌý¼ôÌù°åµÄÄÚÈÝ±ä»¯¡£
-  - ÆôÓÃÊ±£¬Ö»Òª¼ôÌù°åÄÚÈÝ±ä»¯£¬Priceall ±ã»áÖ´ÐÐÒ»´Î²é¼Û£¬ÎÞÐèÊ¹ÓÃ¿ì½Ý¼ü£¡²éÑ¯ÀäÈ´Ê±¼äÈÔÈ»ÓÐÐ§¡£
-  - *ÎÒÃÇÎÞ·¨Ô¤¹ÀÕâÏî¹¦ÄÜ¶Ô Evepraisal ·þÎñÆ÷´øÀ´µÄÑ¹Á¦¡£Èç¹ûËüÔì³ÉÁËÐÔÄÜÓ°Ïì£¬Priceall ¿ÉÄÜ»áÇëÄã¹ØµôÕâÏî¹¦ÄÜ¡£*
+- ä¸º Priceall åŠ å…¥äº†ä¸€ä¸ªæžç®€å›¾æ ‡ã€‚
+- å°†è®¾ç½®çª—å£çš„ä»£ç å®žçŽ°æ”¹ä¸ºä½¿ç”¨äº‹ä»¶æ¨¡åž‹ã€‚
 
-## °æ±¾ 1.2, °æ±¾ºÅ 6
-- *(Perry_Swift @ Reddit)* ÄãÏÖÔÚ¿ÉÒÔÊ¹ÓÃ**Ìõ¼þÑÕÉ«**¡£
-    - Ö¸¶¨Ò»¸ö**µÍÎ»**¼Û¸ñ¼°ÆäÑÕÉ«£¬ÒÔ¼°**¸ßÎ»**¼Û¸ñÓëÑÕÉ«¡£
-    - Èç¹û¼Û¸ñµÍÓÚµÍÎ»ãÐÖµ£¬Ëü½«»áÒÔµÍÎ»ÑÕÉ«ÏÔÊ¾¡£
-    - Èç¹û¼Û¸ñ¸ßÓÚ¸ßÎ»ãÐÖµ£¬Ëü½«»áÒÔ¸ßÎ»¼Û¸ñÏÔÊ¾¡£
-    - Èç¹ûÁ½¸öãÐÖµ³åÍ»£¨Àý£º¸ßÎ»¼Û¸ñ±ÈµÍÎ»¼Û¸ñÐ¡£©£¬**µÍÎ»**¼Û¸ñ»á±»ÓÅÏÈÊ¹ÓÃ¡£
+## ç‰ˆæœ¬ 1.4, ç‰ˆæœ¬å· 9
 
-## °æ±¾ 1.2, °æ±¾ºÅ 5
-- Priceall will now check for updates on launch. If you see the settings button turning orange, there is an update available.
-- Your settings will no longer be lost when updating Priceall.
+- *(razaqq @ GitHub)* çŽ°åœ¨å¯ä»¥äºŽè®¾ç½®çª—å£è‡ªå®šä¹‰å¿«æ·é”®ã€‚
+  - ç‚¹å‡»ç¼–è¾‘å™¨ï¼Œç„¶åŽæŒ‰ä¸‹ä½ æƒ³è¦çš„å¿«æ·é”®ã€‚
+  - æ–°çš„å¿«æ·é”®ä¼šç«‹åˆ»ç”Ÿæ•ˆã€‚
+  - *å·²çŸ¥é—®é¢˜ï¼šç¼–è¾‘å™¨å†…çš„å¿«æ·é”®æ˜¾ç¤ºæœ‰è¯¯ã€‚*
 
-## °æ±¾ 1.1, °æ±¾ºÅ 4
-- *(Tragot_Gomndor @ Reddit)* ÄãÏÖÔÚ¿ÉÒÔ°´×¡ `Ctrl` ²¢¹ö¶¯À´Ëõ·Å´°¿Ú¡£
-- *(Tragot_Gomndor @ Reddit)* ÄãÏÖÔÚ¿ÉÒÔÑ¡ÓÃ¼òÂÔ¼Û¸ñÏÔÊ¾ (Àý£º`12.34 Mil`)£¬»òÍêÕûÊý×Ö£¨Àý£º`12,345,678.90`£©
-    - *¿ÉÔÚÉèÖÃÖÐÆôÓÃÕâÏî¹¦ÄÜ¡£*
-- *(Tragot_Gomndor @ Reddit & karl-kaefer @ GitHub)* ÄãÏÖÔÚ¿ÉÒÔ½«´°¿Ú±³¾°µ÷ÎªÍêÈ«Í¸Ã÷£¬ÔÊÐíµã»÷´©Í¸¡£
-    - *´°¿ÚÉÏµÄÍ¼±ê¡¢ÎÄ±¾ºÍ°´Å¥ÈÔ¿É±»µã»÷¡£*
-- ÄãÏÖÔÚ¿ÉÒÔÑ¡ÔñÒ»¸ö 16 ½øÖÆÑÕÉ«£¨Àý£º`C4B3A2`£©×÷Îª¼Û¸ñÑÕÉ«¡£
-    - *Èç¹ûÊäÈëµÄÑÕÉ«ÎÞÐ§£¬Priceall ½«Ä¬ÈÏÊ¹ÓÃ°×É«¡£*
-- ÉèÖÃ´°¿ÚÖÐÏÖÔÚÓÐÁË¡°ÖØÖÃËùÓÐÉèÖÃ¡°°´Å¥¡£
-    - *ÒÑÖªÎÊÌâ£ºÄãÐèÒªµã»÷°´Å¥Á½´ÎÀ´ÍêÈ«ÖØÖÃ´°¿ÚµÄ´óÐ¡ºÍÎ»ÖÃ¡£*
+## ç‰ˆæœ¬ 1.3, ç‰ˆæœ¬å· 8
+
+- ä¿®å¤äº†ä¸€ä¸ªå¯¼è‡´ Priceall åœ¨å¯åŠ¨æ—¶ä¸ä¼šæ­£ç¡®å¯ç”¨è‡ªåŠ¨åˆ·æ–°çš„é—®é¢˜ã€‚
+
+## ç‰ˆæœ¬ 1.3, ç‰ˆæœ¬å· 7
+
+- *(razaqq @ GitHub)* ä½ çŽ°åœ¨å¯ä»¥å¯ç”¨**è‡ªåŠ¨åˆ·æ–°**æ¥ç›‘å¬å‰ªè´´æ¿çš„å†…å®¹å˜åŒ–ã€‚
+  - å¯ç”¨æ—¶ï¼Œåªè¦å‰ªè´´æ¿å†…å®¹å˜åŒ–ï¼ŒPriceall ä¾¿ä¼šæ‰§è¡Œä¸€æ¬¡æŸ¥ä»·ï¼Œæ— éœ€ä½¿ç”¨å¿«æ·é”®ï¼æŸ¥è¯¢å†·å´æ—¶é—´ä»ç„¶æœ‰æ•ˆã€‚
+  - *æˆ‘ä»¬æ— æ³•é¢„ä¼°è¿™é¡¹åŠŸèƒ½å¯¹ Evepraisal æœåŠ¡å™¨å¸¦æ¥çš„åŽ‹åŠ›ã€‚å¦‚æžœå®ƒé€ æˆäº†æ€§èƒ½å½±å“ï¼ŒPriceall å¯èƒ½ä¼šè¯·ä½ å…³æŽ‰è¿™é¡¹åŠŸèƒ½ã€‚*
+
+## ç‰ˆæœ¬ 1.2, ç‰ˆæœ¬å· 6
+
+- *(Perry_Swift @ Reddit)* ä½ çŽ°åœ¨å¯ä»¥ä½¿ç”¨**æ¡ä»¶é¢œè‰²**ã€‚
+  - æŒ‡å®šä¸€ä¸ª**ä½Žä½**ä»·æ ¼åŠå…¶é¢œè‰²ï¼Œä»¥åŠ**é«˜ä½**ä»·æ ¼ä¸Žé¢œè‰²ã€‚
+  - å¦‚æžœä»·æ ¼ä½ŽäºŽä½Žä½é˜ˆå€¼ï¼Œå®ƒå°†ä¼šä»¥ä½Žä½é¢œè‰²æ˜¾ç¤ºã€‚
+  - å¦‚æžœä»·æ ¼é«˜äºŽé«˜ä½é˜ˆå€¼ï¼Œå®ƒå°†ä¼šä»¥é«˜ä½ä»·æ ¼æ˜¾ç¤ºã€‚
+  - å¦‚æžœä¸¤ä¸ªé˜ˆå€¼å†²çªï¼ˆä¾‹ï¼šé«˜ä½ä»·æ ¼æ¯”ä½Žä½ä»·æ ¼å°ï¼‰ï¼Œ**ä½Žä½**ä»·æ ¼ä¼šè¢«ä¼˜å…ˆä½¿ç”¨ã€‚
+
+## ç‰ˆæœ¬ 1.2, ç‰ˆæœ¬å· 5
+
+- Priceall ä¼šåœ¨å¯åŠ¨æ—¶æ£€æŸ¥æ›´æ–°ã€‚å¦‚æžœè®¾ç½®æ ‡å¿—å˜çº¢ï¼Œå°±è¡¨æ˜Žæœ‰æ›´æ–°å¯ä¾›ä¸‹è½½ã€‚
+- æ›´æ–° Priceall æ—¶ä¸å†ä¼šä¸¢å¤±è®¾ç½®äº†ã€‚
+
+## ç‰ˆæœ¬ 1.1, ç‰ˆæœ¬å· 4
+
+- *(Tragot_Gomndor @ Reddit)* ä½ çŽ°åœ¨å¯ä»¥æŒ‰ä½ `Ctrl` å¹¶æ»šåŠ¨æ¥ç¼©æ”¾çª—å£ã€‚
+- *(Tragot_Gomndor @ Reddit)* ä½ çŽ°åœ¨å¯ä»¥é€‰ç”¨ç®€ç•¥ä»·æ ¼æ˜¾ç¤º (ä¾‹ï¼š`12.34 Mil`)ï¼Œæˆ–å®Œæ•´æ•°å­—ï¼ˆä¾‹ï¼š`12,345,678.90`ï¼‰
+  - *å¯åœ¨è®¾ç½®ä¸­å¯ç”¨è¿™é¡¹åŠŸèƒ½ã€‚*
+- *(Tragot_Gomndor @ Reddit & karl-kaefer @ GitHub)* ä½ çŽ°åœ¨å¯ä»¥å°†çª—å£èƒŒæ™¯è°ƒä¸ºå®Œå…¨é€æ˜Žï¼Œå…è®¸ç‚¹å‡»ç©¿é€ã€‚
+  - *çª—å£ä¸Šçš„å›¾æ ‡ã€æ–‡æœ¬å’ŒæŒ‰é’®ä»å¯è¢«ç‚¹å‡»ã€‚*
+- ä½ çŽ°åœ¨å¯ä»¥é€‰æ‹©ä¸€ä¸ª 16 è¿›åˆ¶é¢œè‰²ï¼ˆä¾‹ï¼š`C4B3A2`ï¼‰ä½œä¸ºä»·æ ¼é¢œè‰²ã€‚
+  - *å¦‚æžœè¾“å…¥çš„é¢œè‰²æ— æ•ˆï¼ŒPriceall å°†é»˜è®¤ä½¿ç”¨ç™½è‰²ã€‚*
+- è®¾ç½®çª—å£ä¸­çŽ°åœ¨æœ‰äº†â€œé‡ç½®æ‰€æœ‰è®¾ç½®â€œæŒ‰é’®ã€‚
+  - *å·²çŸ¥é—®é¢˜ï¼šä½ éœ€è¦ç‚¹å‡»æŒ‰é’®ä¸¤æ¬¡æ¥å®Œå…¨é‡ç½®çª—å£çš„å¤§å°å’Œä½ç½®ã€‚*

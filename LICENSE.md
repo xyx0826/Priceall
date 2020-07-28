@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2018 [xyx0826](https://github.com/xyx0826/)
+Copyright (c) 2018-2020 [xyx0826](https://github.com/xyx0826/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

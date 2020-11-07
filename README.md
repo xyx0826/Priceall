@@ -59,7 +59,7 @@ The `master` branch contains stable code. The AppVeyor badge and download link a
 
 Priceall's development now happens on the `dev` branch that may contain unfinished or unstable features. Please direct all pull requests to the `dev` branch.
 
-~~My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if you wish!~~ ive stepped away
+My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if you wish! ~~ive stepped away~~ I'm back!
 
 # Changelog
 

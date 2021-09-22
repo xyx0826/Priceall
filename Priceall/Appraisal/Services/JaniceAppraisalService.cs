@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Priceall.Http;
+using Priceall.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -12,24 +11,34 @@ namespace Priceall.Appraisal
 {
     class JaniceAppraisalService : IAppraisalService
     {
-        public const string Endpoint = "https://janice.e-351.com/api/rest/v1/appraisal";
+        private const string Endpoint = "https://janice.e-351.com/api/rest/v1/appraisal";
 
         private const string ApiKey = "A3lmazJdrn52ugFuVFrLd0mVqxfApYSx";
 
-        private AppraisalMarket _market;
-
         private readonly UriBuilder _uriBuilder;
+
+        private AppraisalSetting<AppraisalMarket> _marketSetting;
 
         public JaniceAppraisalService()
         {
             _uriBuilder = new UriBuilder(Endpoint);
+            _marketSetting = new AppraisalSetting<AppraisalMarket>(
+                JsonSettingsService.CreateSetting("Market", AppraisalMarket.TheForge));
         }
 
         private void BuildUrl()
         {
             var qs = HttpUtility.ParseQueryString(String.Empty);
             qs["key"] = ApiKey;
-            qs["market"] = _market == AppraisalMarket.TheForge ? "1" : "2";
+            qs["market"] = _marketSetting.Value switch
+            {
+                AppraisalMarket.Jita => "2",
+                AppraisalMarket.SystemR1OGn => "3",
+                AppraisalMarket.Perimeter => "4",
+                AppraisalMarket.TheForge => "5",
+                AppraisalMarket.NPC => "6",
+                _ => throw new ArgumentOutOfRangeException()
+            };
             qs["designation"] = "100";  // appraisal
             qs["pricing"] = "200";  // split
             _uriBuilder.Query = qs.ToString();
@@ -86,17 +95,16 @@ namespace Priceall.Appraisal
 
         public AppraisalMarket GetAvailableMarkets()
         {
-            return AppraisalMarket.Jita | AppraisalMarket.TheForge;
+            return AppraisalMarket.Jita | AppraisalMarket.SystemR1OGn | AppraisalMarket.Perimeter |
+                   AppraisalMarket.TheForge | AppraisalMarket.NPC;
         }
 
-        public IReadOnlyCollection<AppraisalSettings> GetCustomSettings()
-        {
-            return Array.Empty<AppraisalSettings>();
-        }
+        public IReadOnlyCollection<JsonSetting> GetCustomSettings()
+            => Array.Empty<JsonSetting>();
 
         public void SetCurrentMarket(AppraisalMarket market)
         {
-            _market = market;
+            _marketSetting.Value = market;
         }
     }
 }

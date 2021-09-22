@@ -5,40 +5,39 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
+using Priceall.Services;
 
 namespace Priceall.Appraisal
 {
     class EvepraisalAppraisalService : IAppraisalService
     {
-        public const string Endpoint = "https://evepraisal.com/appraisal.json";
-
-        // private AppraisalSettings<bool> _persistSetting;
-
-        // private AppraisalSettings[] _customSettings;
-
-        private AppraisalMarket _market/* = AppraisalMarket.Jita*/;
-
-        // private bool _isPersist;
+        private const string Endpoint = "https://evepraisal.com/appraisal.json";
 
         private readonly UriBuilder _uriBuilder;
 
+        private readonly AppraisalSetting<bool> _persistSetting;
+
+        private readonly AppraisalSetting<AppraisalMarket> _marketSetting;
+
         public EvepraisalAppraisalService()
         {
-            // _persistSetting = new AppraisalSettings<bool>(
-            //     "Persist", (isPersist) => { _isPersist = isPersist; });
-            // _customSettings = new AppraisalSettings[] { _persistSetting };
-
             _uriBuilder = new UriBuilder(Endpoint);
+            _persistSetting =
+                new AppraisalSetting<bool>(
+                    JsonSettingsService.CreateSetting("Persist", false));
+            _marketSetting =
+                new AppraisalSetting<AppraisalMarket>(
+                    JsonSettingsService.CreateSetting("Market", AppraisalMarket.Jita));
         }
 
         private void BuildUrl()
         {
             var qs = HttpUtility.ParseQueryString(String.Empty);
-            qs["market"] = _market.ToString().ToLower();
-            //if (!_isPersist)
-            //{
-            //    qs["persist"] = "no";
-            //}
+            qs["market"] = _marketSetting.Value.ToString().ToLower();
+            if (!_persistSetting.Value)
+            {
+                qs["persist"] = "no";
+            }
             _uriBuilder.Query = qs.ToString();
         }
 
@@ -77,11 +76,13 @@ namespace Priceall.Appraisal
                 return new AppraisalResult(AppraisalStatus.ContentError, error.ToObject<string>());
             }
 
-            AppraisalResult res = new AppraisalResult(AppraisalStatus.Successful);
-            res.Kind = j.SelectToken("appraisal.kind").ToObject<string>();
-            res.BuyValue = j.SelectToken("appraisal.totals.buy").ToObject<double>();
-            res.SellValue = j.SelectToken("appraisal.totals.sell").ToObject<double>();
-            res.Volume = j.SelectToken("appraisal.totals.volume").ToObject<double>();
+            var res = new AppraisalResult(AppraisalStatus.Successful)
+            {
+                Kind = j.SelectToken("appraisal.kind").ToObject<string>(),
+                BuyValue = j.SelectToken("appraisal.totals.buy").ToObject<double>(),
+                SellValue = j.SelectToken("appraisal.totals.sell").ToObject<double>(),
+                Volume = j.SelectToken("appraisal.totals.volume").ToObject<double>()
+            };
             return res;
         }
 
@@ -95,15 +96,13 @@ namespace Priceall.Appraisal
                 | AppraisalMarket.Universe;
         }
 
-        public IReadOnlyCollection<AppraisalSettings> GetCustomSettings()
-        {
-            return Array.Empty<AppraisalSettings>();
-            // return _customSettings;
-        }
+        public IReadOnlyCollection<JsonSetting> GetCustomSettings()
+            => Array.Empty<JsonSetting>();
+            // => new JsonSetting[] { _persistSetting };
 
         public void SetCurrentMarket(AppraisalMarket market)
         {
-            _market = market;
+            _marketSetting.Value = market;
         }
     }
 }

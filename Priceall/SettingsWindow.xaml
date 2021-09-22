@@ -159,13 +159,13 @@
                     </Hyperlink>
                     </TextBlock>
                     <Label Grid.Row="2" Grid.ColumnSpan="3" Visibility="{Binding UpdateTagVisibility}"
-                       Content="An updated version of Priceall is available!" 
-                       Foreground="Red"
+                       Content="An updated version of Priceall is available." 
+                       Foreground="Gray"
                        FontStyle="Italic"/>
                 </Grid>
             </GroupBox>
             <Separator/>
-            <Button Foreground="Red" Content="Reset all settings" Click="ResetSettingsButton_Click"/>
+            <!--<Button Foreground="Red" Content="Reset all settings" Click="ResetSettingsButton_Click"/>-->
         </StackPanel>
         <!-- StackPanel for hotkeys and service-specific settings -->
         <StackPanel Orientation="Vertical">

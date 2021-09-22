@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Priceall.Services;
 
 namespace Priceall.Appraisal
 {
+    /// <summary>
+    /// An online appraisal service.
+    /// </summary>
     interface IAppraisalService
     {
         /// <summary>
@@ -21,8 +25,13 @@ namespace Priceall.Appraisal
         /// Gets a collection of custom settings used by the appraisal service.
         /// </summary>
         /// <returns>A read-only collection of custom settings.</returns>
-        IReadOnlyCollection<AppraisalSettings> GetCustomSettings();
+        IReadOnlyCollection<JsonSetting> GetCustomSettings();
 
+        /// <summary>
+        /// Asynchronously runs an appraisal.
+        /// </summary>
+        /// <param name="content">The content to appraise.</param>
+        /// <returns>Appraisal result.</returns>
         Task<AppraisalResult> AppraiseAsync(string content);
     }
 }

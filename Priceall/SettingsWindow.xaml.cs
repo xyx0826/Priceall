@@ -1,18 +1,18 @@
-﻿using System.ComponentModel;
-using System.Windows.Navigation;
+﻿using System;
+using Priceall.Appraisal;
+using Priceall.Bindings;
+using Priceall.Hotkey;
+using Priceall.Hotkey.Controls;
+using Priceall.Properties;
+using Priceall.Services;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Input;
-using Priceall.Services;
-using Priceall.Hotkey.Controls;
-using Priceall.Hotkey;
-using static Priceall.Hotkey.Controls.HotkeyEditor;
-using Priceall.Properties;
 using System.Windows.Controls;
-using Priceall.Appraisal;
 using System.Windows.Data;
-using Priceall.Bindings;
+using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace Priceall
 {
@@ -21,6 +21,16 @@ namespace Priceall
     /// </summary>
     public partial class SettingsWindow : Window, INotifyPropertyChanged
     {
+        /// <summary>
+        /// Regex for validating a number.
+        /// </summary>
+        private static readonly Regex NumberRegex = new Regex("[^0-9]+");
+
+        /// <summary>
+        /// Regex for validating a hexadecimal value.
+        /// </summary>
+        private static readonly Regex HexRegex = new Regex("[^0-9A-Fa-f]+");
+
         #region Binding
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -30,10 +40,7 @@ namespace Priceall
         }
         #endregion
         
-        static readonly Regex _numberRegex = new Regex("[^0-9]+");
-        static readonly Regex _hexRegex = new Regex("[^0-9A-Fa-f]+");
-
-        static SettingsBinding _settings;
+        private static SettingsBinding _settings;
 
         public delegate void HotkeyCallback(KeyCombo keyCombo);
         static HotkeyCallback _hotkeyCallback;
@@ -49,51 +56,77 @@ namespace Priceall
             MainWindow.AppraisalService.SetCurrentMarket(_settings.SelectedMarket);
         }
 
-        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Helper method for creating a WPF binding from an <see cref="AppraisalSetting{T}"/>
+        /// of any type.
+        /// </summary>
+        /// <typeparam name="T">Any setting type.</typeparam>
+        /// <param name="setting">The setting to bind to.</param>
+        /// <returns>The WPF binding.</returns>
+        private Binding CreateSettingBinding<T>(AppraisalSetting<T> setting) where T : struct
         {
-            if (e.PropertyName == "DataSource")
+            return new Binding("Value") { Source = setting };
+        }
+
+        /// <summary>
+        /// Creates controls for the data source currently in use
+        /// and removes controls for old data sources.
+        /// </summary>
+        private void UpdateDataSourceSettings()
+        {
+            var svc = MainWindow.AppraisalService;
+
+            // Register available markets and (try to) apply currently selected market
+            _settings.MarketFlags = svc.GetAvailableMarkets();
+            svc.SetCurrentMarket(_settings.SelectedMarket);
+
+            // Clear old controls and make new ones
+            AppraisalServiceSettingsPanel.Children.Clear();
+            foreach (var setting in svc.GetCustomSettings())
             {
-                var serv = MainWindow.AppraisalService;
-                _settings.MarketFlags = serv.GetAvailableMarkets();
-                serv.SetCurrentMarket(_settings.SelectedMarket);
-                var ui = AppraisalServiceSettingsPanel.Children;
-                ui.Clear();
-
-                foreach (var settings in serv.GetCustomSettings())
+                var row = new DockPanel { LastChildFill = true };
+                var name = new Label { Content = setting.Name };
+                ContentControl control;
+                switch (setting)
                 {
-                    var settingsPanel = new DockPanel();
-                    settingsPanel.LastChildFill = true;
-
-                    var nameLabel = new Label();
-                    nameLabel.Content = settings.Name;
-                    Binding binding;
-
-                    ContentControl input;
-                    if (settings is AppraisalSettings<bool> sb)
-                    {
-                        input = new CheckBox();
-                        binding = new Binding("Value");
-                        binding.Source = sb;
-                        input.SetBinding(CheckBox.IsCheckedProperty, binding);
-                    }
-                    else
-                    {
-                        // TODO: support for other kinds of settings
+                    case AppraisalSetting<bool> sb:
+                        // Checkbox for boolean
+                        control = new CheckBox();
+                        control.SetBinding(CheckBox.IsCheckedProperty, CreateSettingBinding(sb));
                         break;
-                    }
-
-                    settingsPanel.Children.Add(nameLabel);
-                    settingsPanel.Children.Add(input);
-                    DockPanel.SetDock(nameLabel, Dock.Left);
-                    DockPanel.SetDock(input, Dock.Right);
-                    ui.Add(settingsPanel);
+                    default:
+                        // Unrecognized type
+                        throw new Exception(
+                            "Encountered a custom appraisal setting with an unsupported type.");
                 }
 
-                AppraisalServiceSettingsGroupBox.Visibility = ui.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+                row.Children.Add(name);
+                row.Children.Add(control);
+                DockPanel.SetDock(name, Dock.Left);
+                DockPanel.SetDock(control, Dock.Right);
+                AppraisalServiceSettingsPanel.Children.Add(row);
             }
-            else if (e.PropertyName == "SelectedMarket")
+
+            // Hide the whole group box if there are no settings
+            AppraisalServiceSettingsGroupBox.Visibility
+                = AppraisalServiceSettingsPanel.Children.Count > 0
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                MainWindow.AppraisalService.SetCurrentMarket(_settings.SelectedMarket);
+                case "DataSource":
+                    // Data source changed, update available settings
+                    UpdateDataSourceSettings();
+                    break;
+                case "SelectedMarket":
+                    MainWindow.AppraisalService.SetCurrentMarket(_settings.SelectedMarket);
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -103,6 +136,7 @@ namespace Priceall
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DataContext = _settings;
+            UpdateDataSourceSettings();
         }
 
         /// <summary>
@@ -120,7 +154,7 @@ namespace Priceall
         /// </summary>
         private void NumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            e.Handled = _numberRegex.IsMatch(e.Text);
+            e.Handled = NumberRegex.IsMatch(e.Text);
         }
 
         /// <summary>
@@ -128,7 +162,7 @@ namespace Priceall
         /// </summary>
         private void ColorTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            e.Handled = _hexRegex.IsMatch(e.Text);
+            e.Handled = HexRegex.IsMatch(e.Text);
         }
 
         /// <summary>
@@ -139,20 +173,20 @@ namespace Priceall
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
         }
 
-        /// <summary>
-        /// Resets all settings.
-        /// </summary>
-        private void ResetSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            // MainWindow has issue updating width and height together, 
-            // so let's just refresh twice...
-            SettingsService.Reset();
-            SettingsService.Reset();
-        }
+        ///// <summary>
+        ///// Resets all settings.
+        ///// </summary>
+        //private void ResetSettingsButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // MainWindow has issue updating width and height together, 
+        //    // so let's just refresh twice...
+        //    SettingsService.Reset();
+        //    SettingsService.Reset();
+        //}
         
         public void HotkeyEditor_NewKeyCombo(object sender, RoutedEventArgs e)
         {
-            var keyArgs = e as NewKeyComboEventArgs;
+            var keyArgs = e as HotkeyEditor.NewKeyComboEventArgs;
             var newKeyCombo = keyArgs.KeyCombo;
             // Set appropriate name for this hotkey
             newKeyCombo.Name = (string)(sender as HotkeyEditor).Tag;

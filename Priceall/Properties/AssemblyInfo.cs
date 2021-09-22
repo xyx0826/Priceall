@@ -10,12 +10,12 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Priceall")]
-[assembly: AssemblyCopyright("Made by Github.com/xyx0826. Licensed under MIT.")]
+[assembly: AssemblyCopyright("Copyright 2021 xyx0826. Licensed under The MIT License.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("0")]
-[assembly: AssemblyFileVersion("0")]
+[assembly: AssemblyVersion("1.6")]
+[assembly: AssemblyFileVersion("12")]
 
 // 将 ComVisible 设置为 false 会使此程序集中的类型
 //对 COM 组件不可见。如果需要从 COM 访问此程序集中的类型

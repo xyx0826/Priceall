@@ -73,7 +73,7 @@
                                 <Viewbox>
                                     <TextBlock FontFamily="{StaticResource EveSansNeue}" 
                                                Foreground="{Binding PriceFontBrush}"
-                                               Text="{Binding Price}" 
+                                               Text="{Binding Price, Mode=OneWay}" 
                                                TextWrapping="Wrap"/>
                                 </Viewbox>
                             </Label.Content>

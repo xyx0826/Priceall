@@ -22,7 +22,7 @@ namespace Priceall.Bindings
 
         public UiStyleBinding()
         {
-            Settings.Default.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
+            Settings.Default.PropertyChanged += (sender, e) =>
             {
                 OnPropertyChanged(e.PropertyName);
             };
@@ -33,7 +33,7 @@ namespace Priceall.Bindings
         /// </summary>
         public double WindowOpacity
         {
-            get { return Settings.Default.WindowOpacity; }
+            get => Settings.Default.WindowOpacity;
             set
             {
                 // brilliant idea from karl-kaefer: 0.0 makes the window click-through
@@ -45,7 +45,7 @@ namespace Priceall.Bindings
 
         public int WindowWidth
         {
-            get { return Settings.Default.WindowWidth; }
+            get => Settings.Default.WindowWidth;
             set
             {
                 if (value < 60) value = 60;
@@ -56,7 +56,7 @@ namespace Priceall.Bindings
 
         public int WindowHeight
         {
-            get { return Settings.Default.WindowHeight; }
+            get => Settings.Default.WindowHeight;
             set
             {
                 if (value < 20) value = 20;
@@ -67,7 +67,7 @@ namespace Priceall.Bindings
 
         public double WindowTopPos
         {
-            get { return Settings.Default.WindowTopPos; }
+            get => Settings.Default.WindowTopPos;
             set
             {
                 if (value < 0) value = 0;
@@ -78,7 +78,7 @@ namespace Priceall.Bindings
 
         public double WindowLeftPos
         {
-            get { return Settings.Default.WindowLeftPos; }
+            get => Settings.Default.WindowLeftPos;
             set
             {
                 if (value < 0) value = 0;

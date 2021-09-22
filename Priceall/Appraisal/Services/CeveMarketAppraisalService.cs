@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Priceall.Services;
 
 namespace Priceall.Appraisal
 {
@@ -15,7 +16,7 @@ namespace Priceall.Appraisal
             throw new System.NotImplementedException();
         }
 
-        public IReadOnlyCollection<AppraisalSettings> GetCustomSettings()
+        public IReadOnlyCollection<JsonSetting> GetCustomSettings()
         {
             throw new System.NotImplementedException();
         }

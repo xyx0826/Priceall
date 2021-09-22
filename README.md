@@ -10,7 +10,6 @@ this app will help you to get an appraisal on a list of items
 
 # Works with
 
-
 <img src="Readme/Images/evepraisal-logo.png" width="300"/> <img src="Readme/Images/janice-logo.png" width="300"/>
 
 # Table of Contents
@@ -62,6 +61,14 @@ Priceall's development now happens on the `dev` branch that may contain unfinish
 My in-game character is `Sector Sabezan`. Feel free to send me ISK donations if you wish! ~~ive stepped away~~ I'm back!
 
 # Changelog
+
+## Version 1.6, build 12
+
+- Upgraded project framework version.
+- Added groundwork for migrating all settings to JSON soon(TM).
+- Fixed an issue where Evepraisal appraisals were persistent by default.
+- Added new Janice markets.
+  - *Known issue: market names in the UI ain't pretty.*
 
 ## Version 1.5, build 11
 

@@ -75,7 +75,7 @@ namespace Priceall
 
             if (!HotkeyManager.InitializeHook())
             {
-                _infoBinding.Price = "Hotkey service error.";
+                _infoBinding.Price = "Hotkeys are disabled.";
             }
             else
             {

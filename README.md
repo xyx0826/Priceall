@@ -20,8 +20,12 @@ this app will help you to get an appraisal on a list of items
 
 # Usage
 
-Head over [here](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts)
+On the right side of the page, click on the latest Release.
+Download `build.zip` to get Priceall.
+
+*Alternatively,* Head over [here](https://ci.appveyor.com/project/xyx0826/Priceall/build/artifacts)
 and download `build.zip` to get the latest version.
+Note that this will not work if it's been a while since the last Priceall release.
 
 To get an appraisal, simply **copy** a list of items. Priceall will do the work for you.
 
